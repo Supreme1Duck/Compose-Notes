@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "100797914296",
+    "project_id": "compose-notes-57e9a",
+    "storage_bucket": "compose-notes-57e9a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:100797914296:android:41c467f55cb7e2df24684d",
+        "android_client_info": {
+          "package_name": "com.example.duck.fastnotes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "100797914296-86nr55sgktmkaboaeip8d4elbkou74gr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.duck.fastnotes",
+            "certificate_hash": "cf30569cd45e868dfb256a258e2b89bb2873d001"
+          }
+        },
+        {
+          "client_id": "100797914296-lukauouk297mrm185ii9nq4jmp213kse.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBO7U16m9VHTkOHzsYETjnO1t3-Y-NYHNw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "100797914296-lukauouk297mrm185ii9nq4jmp213kse.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
