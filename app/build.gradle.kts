@@ -62,6 +62,8 @@ dependencies {
     implementation(Dependencies.compose)
     implementation(Dependencies.composeMaterial)
     implementation(Dependencies.composePreview)
+    implementation(Dependencies.composeConstraint)
+    implementation(Dependencies.accompanistCompose)
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
     implementation("androidx.activity:activity-compose:1.4.0")
     testImplementation("junit:junit:4.+")
@@ -69,6 +71,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
     androidTestImplementation(Dependencies.composeTests)
     debugImplementation(Dependencies.composeTooling)
+    implementation(Dependencies.navigationCompose)
 
     //Hilt
     implementation(Dependencies.hilt)

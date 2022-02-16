@@ -12,4 +12,7 @@ object Versions {
     const val hiltVersion = "2.38.1"
     const val timberVersion = "4.7.1"
     const val coreVersion = "1.7.0"
+    const val composeConstraint = "1.0.0"
+    const val composeNavigation = "2.5.0-alpha01"
+    const val accompanistVersion = "0.24.1-alpha"
 }

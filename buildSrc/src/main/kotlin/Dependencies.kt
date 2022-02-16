@@ -35,6 +35,9 @@ object Dependencies {
     const val composePreview = "androidx.compose.ui:ui-tooling-preview:${Versions.composeVersion}"
     const val composeTests = "androidx.compose.ui:ui-test-junit4:${Versions.composeVersion}"
     const val composeTooling = "androidx.compose.ui:ui-tooling:${Versions.composeVersion}"
+    const val composeConstraint = "androidx.constraintlayout:constraintlayout-compose:${Versions.composeConstraint}"
+    const val accompanistCompose = "com.google.accompanist:accompanist-systemuicontroller:${Versions.accompanistVersion}"
+    const val navigationCompose = "androidx.navigation:navigation-compose:${Versions.composeNavigation}"
 
 
 }
