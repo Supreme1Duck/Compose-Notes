@@ -1,49 +1,72 @@
 package com.example.duck.fastnotes.features.dashboard
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.duck.fastnotes.ui.theme.PrimaryColor
-import com.example.duck.fastnotes.ui.theme.SecondaryColor
+import com.example.duck.fastnotes.R
 import com.example.duck.fastnotes.utils.Dimens
-import com.example.duck.fastnotes.utils.TextDescDefault
-import com.example.duck.fastnotes.utils.TextTitleSmall
+import com.example.duck.fastnotes.utils.TextSecondaryTitle
+import com.example.duck.fastnotes.utils.textDefaultSemiBoldStyle
 
 @ExperimentalMaterialApi
 @Composable
-fun NoteItem(title: String, description: String) {
+fun NoteItem(title: String, description: String, color: Color, icon: ImageVector) {
 
     Card(
         modifier = Modifier
             .padding(10.dp)
-            .width(150.dp),
-        backgroundColor = SecondaryColor,
+            .wrapContentHeight()
+            .padding(Dimens.SMALLER_MARGIN),
+        backgroundColor = color,
         elevation = 5.dp,
-        shape = RoundedCornerShape(10.dp),
+        shape = RoundedCornerShape(20.dp),
         onClick = {}
     ) {
-        Column {
-            
-            TextTitleSmall(text = title, Dimens.SMALLER_MARGIN)
 
-            Spacer(
-                modifier = Modifier
-                    .height(1.dp)
-                    .padding(start = 5.dp, end = 20.dp)
-                    .background(PrimaryColor)
-                    .fillMaxWidth()
+        Column {
+            Icon(
+                icon,
+                contentDescription = stringResource(id = R.string.dashboard_note_action_image),
+                modifier = Modifier.padding(Dimens.DEFAULT_MARGIN)
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(Modifier.height(Dimens.LARGE_MARGIN))
 
-            TextDescDefault(text = description)
-            
-            Spacer(modifier = Modifier.height(10.dp))
+            TextSecondaryTitle(text = title)
+
+            Spacer(modifier = Modifier.height(Dimens.SMALL_MARGIN))
+
+            Row(Modifier.padding(bottom = Dimens.LARGE_MARGIN)) {
+
+                Card(
+                    modifier = Modifier
+                        .padding(start = Dimens.DEFAULT_MARGIN)
+                        .wrapContentWidth(),
+                    backgroundColor = Color.White,
+                    shape = RoundedCornerShape(20.dp),
+                ) {
+                    Text(text = stringResource(id = R.string.dashboard_note_action_estimate, 3), style = textDefaultSemiBoldStyle(), modifier = Modifier.padding(Dimens.SMALL_MARGIN))
+                }
+
+                Card(
+                    modifier = Modifier.padding(start = Dimens.DEFAULT_MARGIN),
+                    backgroundColor = Color.White,
+                    shape = RoundedCornerShape(20.dp)
+                ) {
+                    Text(text = stringResource(id = R.string.dashboard_note_action_done, 1), style = textDefaultSemiBoldStyle(), modifier = Modifier.padding(Dimens.SMALL_MARGIN))
+                }
+
+            }
+
         }
     }
 
