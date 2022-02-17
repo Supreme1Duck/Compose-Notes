@@ -72,6 +72,7 @@ dependencies {
     androidTestImplementation(Dependencies.composeTests)
     debugImplementation(Dependencies.composeTooling)
     implementation(Dependencies.navigationCompose)
+    implementation ("joda-time:joda-time:2.10.13")
 
     //Hilt
     implementation(Dependencies.hilt)

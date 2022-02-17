@@ -2,6 +2,7 @@ package com.example.duck.fastnotes.utils
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -14,12 +15,6 @@ import androidx.compose.ui.unit.Dp
 import com.example.duck.fastnotes.ui.theme.BackgroundColor
 import com.example.duck.fastnotes.ui.theme.BlackColor
 import com.example.duck.fastnotes.ui.theme.SecondaryDarkerColor
-
-fun Modifier.defaultModifier() =
-    composed {
-        this
-            .fillMaxWidth()
-            .padding(horizontal = Dimens.DEFAULT_MARGIN) }
 
 @Composable
 fun TextTitleSmall(text: String, padding: Dp) =
@@ -41,19 +36,23 @@ fun TextDescDefault(text: String) =
 
 @Composable
 fun TextSecondaryTitle(text: String) =
-    Text(text = text,
+    Text(
+        text = text,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = Dimens.DEFAULT_MARGIN),
+            .padding(horizontal = Dimens.DEFAULT_MARGIN)
+            .padding(bottom = Dimens.SMALL_MARGIN),
         style = textSecondaryTitleBlack()
     )
 
 @Composable
 fun TextSecondaryMedium(text: String) =
-    Text(text = text,
+    Text(
+        text = text,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = Dimens.DEFAULT_MARGIN))
+            .padding(horizontal = Dimens.DEFAULT_MARGIN)
+    )
 
 
 @Composable
@@ -127,10 +126,10 @@ fun textDefaultDarkerStyleLarger() =
 @Composable
 fun textDefaultTitleStyle() =
     TextStyle(
-    color = Color.White,
-    fontSize = Dimens.TEXT_LARGE,
-    fontWeight = FontWeight.SemiBold,
-    textAlign = TextAlign.Start,
+        color = Color.White,
+        fontSize = Dimens.TEXT_LARGE,
+        fontWeight = FontWeight.SemiBold,
+        textAlign = TextAlign.Start,
     )
 
 @Composable
@@ -140,4 +139,13 @@ fun textDefaultLightStyle() =
         fontSize = Dimens.TEXT_SMALL,
         fontWeight = FontWeight.Normal,
         textAlign = TextAlign.Start
+    )
+
+@Composable
+fun textErrorStyle() =
+    TextStyle(
+        color = MaterialTheme.colors.error,
+        fontSize = Dimens.TEXT_LARGE,
+        fontWeight = FontWeight.SemiBold,
+        textAlign = TextAlign.Center
     )

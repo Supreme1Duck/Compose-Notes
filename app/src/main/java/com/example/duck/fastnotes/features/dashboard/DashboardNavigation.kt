@@ -1,26 +1,27 @@
 package com.example.duck.fastnotes.features.dashboard
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.duck.fastnotes.R
+import com.example.duck.fastnotes.features.dashboard.home.HomeScreen
+import com.example.duck.fastnotes.features.dashboard.personal.ProfileScreen
+import com.example.duck.fastnotes.features.dashboard.today.TodayScreen
 import com.example.duck.fastnotes.ui.theme.OnSecondaryColor
 import com.example.duck.fastnotes.ui.theme.SecondaryColor
+import com.example.duck.fastnotes.utils.Dimens
 
 sealed class DashboardScreens(val route: String, val label: String, val icon: ImageVector) {
 
@@ -41,7 +42,7 @@ fun DashboardNavigation(navController: NavHostController) {
         }
 
         composable(DashboardScreens.Explore.route) {
-            ExploreScreen(navController = navController)
+            TodayScreen()
         }
 
         composable(DashboardScreens.Profile.route) {
@@ -55,7 +56,7 @@ fun DashboardBottomBar(navController: NavHostController, items: List<DashboardSc
     val backStack by navController.currentBackStackEntryAsState()
     val currentRoute = backStack?.destination?.route
 
-    BottomAppBar {
+    BottomAppBar(modifier = Modifier.height(Dimens.BOTTOM_BAR_SIZE)) {
         items.forEach { screen ->
             BottomNavigationItem(selected = currentRoute == screen.route,
                 icon = { Icon(screen.icon, screen.label) },

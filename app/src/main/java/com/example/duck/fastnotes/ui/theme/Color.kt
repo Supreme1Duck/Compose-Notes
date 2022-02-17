@@ -13,3 +13,8 @@ val OnSecondaryColor = Color(0xFF8900FF)
 val BackgroundColor = Color(0xFFFAFAFA)
 
 val BlackColor = Color(0xFF101010)
+
+val PersonalNoteColor = Color(0xFFFF4F4A)
+val WorkNoteColor = Color(0xFF80C8FF)
+val HealthNoteColor = Color(0xFFFFF44A)
+val OtherNoteColor = Color(0xFFFFF44A)
