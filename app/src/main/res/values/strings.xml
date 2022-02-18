@@ -22,4 +22,7 @@
     <string name="dashboard_note_action_done">%d done</string>
 
     <string name="today_screen_no_notes">No notes for today!</string>
+    <string name="today_screen_back">Go Back</string>
+    <string name="today_screen_title">Personal Tasks</string>
+    <string name="today_screen_subtitle">You have %d tasks for today!</string>
 </resources>

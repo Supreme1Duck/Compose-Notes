@@ -12,26 +12,17 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.sp
 import com.example.duck.fastnotes.ui.theme.BackgroundColor
 import com.example.duck.fastnotes.ui.theme.BlackColor
 import com.example.duck.fastnotes.ui.theme.SecondaryDarkerColor
 
-@Composable
-fun TextTitleSmall(text: String, padding: Dp) =
-    Text(
-        text = text,
-        style = textCenteredStyle()
-    )
-
 
 @Composable
-fun TextDescDefault(text: String) =
+fun TextTitleDefault(text: String) =
     Text(
         text = text,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = Dimens.DEFAULT_MARGIN),
-        style = textDefaultStyle()
+        style = textDefaultTitleStyle()
     )
 
 @Composable
@@ -44,16 +35,6 @@ fun TextSecondaryTitle(text: String) =
             .padding(bottom = Dimens.SMALL_MARGIN),
         style = textSecondaryTitleBlack()
     )
-
-@Composable
-fun TextSecondaryMedium(text: String) =
-    Text(
-        text = text,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = Dimens.DEFAULT_MARGIN)
-    )
-
 
 @Composable
 fun textDefaultStyle() =
@@ -69,30 +50,13 @@ fun textDefaultSemiBoldStyle() =
     textDefaultStyle().copy(fontWeight = FontWeight.SemiBold)
 
 @Composable
-fun textCenteredStyle() =
+fun textSecondaryTitleStyle() =
     TextStyle(
-        color = Color.Black,
-        fontSize = Dimens.TEXT_LARGE,
-        fontWeight = FontWeight.SemiBold,
-        textAlign = TextAlign.Center,
-    )
-
-@Composable
-fun textDefaultDarkerStyleSmall() =
-    TextStyle(
-        color = SecondaryDarkerColor,
-        fontSize = Dimens.TEXT_SMALL,
-        fontWeight = FontWeight.Normal,
-        textAlign = TextAlign.Start
-    )
-
-@Composable
-fun textDefaultDarkerStyleMedium() =
-    TextStyle(
-        color = SecondaryDarkerColor,
+        SecondaryDarkerColor,
         fontSize = Dimens.TEXT_DEFAULT,
-        fontWeight = FontWeight.Normal,
-        textAlign = TextAlign.Start
+        fontWeight = FontWeight.SemiBold,
+        textAlign = TextAlign.Start,
+        letterSpacing = 2.sp
     )
 
 @Composable
@@ -113,16 +77,6 @@ fun textSecondaryTitleBlack() =
         textAlign = TextAlign.Start
     )
 
-
-@Composable
-fun textDefaultDarkerStyleLarger() =
-    TextStyle(
-        color = BackgroundColor,
-        fontSize = Dimens.TEXT_LARGER,
-        fontWeight = FontWeight.Bold,
-        textAlign = TextAlign.Start
-    )
-
 @Composable
 fun textDefaultTitleStyle() =
     TextStyle(
@@ -133,12 +87,13 @@ fun textDefaultTitleStyle() =
     )
 
 @Composable
-fun textDefaultLightStyle() =
+fun textTitleLightLarger() =
     TextStyle(
         color = Color.White,
-        fontSize = Dimens.TEXT_SMALL,
-        fontWeight = FontWeight.Normal,
-        textAlign = TextAlign.Start
+        fontSize = Dimens.TEXT_TITLE,
+        fontWeight = FontWeight.Bold,
+        textAlign = TextAlign.Start,
+        letterSpacing = 1.5.sp
     )
 
 @Composable

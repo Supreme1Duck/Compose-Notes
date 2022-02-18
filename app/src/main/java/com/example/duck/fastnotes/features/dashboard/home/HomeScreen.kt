@@ -1,4 +1,4 @@
-package com.example.duck.fastnotes.features.dashboard
+package com.example.duck.fastnotes.features.dashboard.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -24,9 +24,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.duck.fastnotes.R
-import com.example.duck.fastnotes.ui.theme.BlackColor
-import com.example.duck.fastnotes.ui.theme.OnSecondaryColor
-import com.example.duck.fastnotes.ui.theme.SecondaryDarkerColor
+import com.example.duck.fastnotes.domain.TaskItem
+import com.example.duck.fastnotes.features.dashboard.NoteItem
+import com.example.duck.fastnotes.ui.theme.*
 import com.example.duck.fastnotes.utils.Dimens
 import com.example.duck.fastnotes.utils.TextSecondaryTitle
 import com.example.duck.fastnotes.utils.textDefaultDarkerStyleLarge
@@ -128,10 +128,21 @@ fun HomeScreen(navController: NavHostController, name: String) {
 
         TextSecondaryTitle(text = stringResource(id = R.string.dashboard_title_tasks))
 
-        LazyVerticalGrid(cells = GridCells.Fixed(2), Modifier.padding(top = Dimens.SMALL_MARGIN)) {
-            item { NoteItem(title = "Personal", description = "First Item description", Color.Red, Icons.Filled.Person ) }
-            item { NoteItem(title = "Work", description = "Second Item description", Color.Green, Icons.Filled.AccountBox) }
-            item { NoteItem(title = "Health", description = "Third item description", Color.Blue, Icons.Filled.Favorite) }
+        LazyVerticalGrid(cells = GridCells.Fixed(2), contentPadding = PaddingValues(bottom = Dimens.BOTTOM_BAR_SIZE)) {
+            mockNoteObject().forEach {
+                item { NoteItem(item = it) }
+            }
         }
+
     }
+}
+
+fun mockNoteObject(): List<TaskItem> {
+    return listOf(
+//        TaskItem("Personal", imageSrc = Icons.Filled.Person, PersonalNoteColor, 0, 3),
+//        TaskItem("Work", imageSrc = Icons.Filled.Place, WorkNoteColor, 1, 0),
+//        TaskItem("Health", imageSrc = Icons.Filled.Favorite, HealthNoteColor, 3, 0),
+//        TaskItem("Health", imageSrc = Icons.Filled.Favorite, HealthNoteColor, 3, 0),
+//        TaskItem("Health", imageSrc = Icons.Filled.Favorite, HealthNoteColor, 3, 0)
+    )
 }
