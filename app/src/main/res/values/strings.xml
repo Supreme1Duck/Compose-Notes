@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">Fast Notes</string>
+
+    <string name="welcome_screen">Compose notes</string>
+    <string name="welcome_screen_online_functions">Want to use online functions?</string>
+    <string name="welcome_screen_action">Get Started</string>
+    <string name="welcome_screen_sign_up">Sing Up</string>
+
+    <string name="dashboard_navigation_edit">Edit</string>
+    <string name="dashboard_navigation_home">Home</string>
+    <string name="dashboard_navigation_date_range">Date Range</string>
+    <string name="note_item_select">Select</string>
+    <string name="dashboard_app_bar_profile">Account</string>
+    <string name="dashboard_app_bar_title">Hi %s!</string>
+    <string name="dashboard_premium_icon">Premium</string>
+    <string name="dashboard_premium_title">Go Premium!</string>
+    <string name="dashboard_premium_description">Get unlimited access to all our features!</string>
+    <string name="dashboard_title_tasks">Tasks</string>
+
+    <string name="dashboard_note_action_image">Action</string>
+    <string name="dashboard_note_action_estimate">%d left</string>
+    <string name="dashboard_note_action_done">%d done</string>
+
+    <string name="today_screen_no_notes">No notes for today!</string>
 </resources>
