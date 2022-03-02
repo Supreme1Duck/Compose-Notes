@@ -37,7 +37,15 @@ object Dependencies {
     const val composeTooling = "androidx.compose.ui:ui-tooling:${Versions.composeVersion}"
     const val composeConstraint = "androidx.constraintlayout:constraintlayout-compose:${Versions.composeConstraint}"
     const val accompanistCompose = "com.google.accompanist:accompanist-systemuicontroller:${Versions.accompanistVersion}"
+    const val accompanistInsetsCompose = "com.google.accompanist:accompanist-insets:${Versions.accompanistInsetsVersion}"
+    const val accompanistInsetsUICompose = "com.google.accompanist:accompanist-insets-ui:${Versions.accompanistInsetsVersion}"
+    const val accompanistFlow = "com.google.accompanist:accompanist-flowlayout:${Versions.accompanistInsetsVersion}"
     const val navigationCompose = "androidx.navigation:navigation-compose:${Versions.composeNavigation}"
+    const val liveDataCompose = "androidx.compose.runtime:runtime-livedata:${Versions.composeRuntime}"
+    const val runtimeCompose = "androidx.compose.runtime:runtime:${Versions.composeRuntime}"
+    const val coilCompose = "io.coil-kt:coil:${Versions.coilVersion}"
+
+    const val jodaTime = "joda-time:joda-time:${Versions.jodaTimeVersion}"
 
 
 }

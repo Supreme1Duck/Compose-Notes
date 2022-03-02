@@ -14,12 +14,4 @@ object Dimens {
     val LARGER_MARGIN = 25.dp
 
     val BOTTOM_BAR_SIZE = 54.dp
-
-    // Fonts
-    val TEXT_DEFAULT = 15.sp
-    val TEXT_SMALLER = 11.sp
-    val TEXT_SMALL = 13.sp
-    val TEXT_LARGE = 18.sp
-    val TEXT_LARGER = 20.sp
-    val TEXT_TITLE = 24.sp
 }

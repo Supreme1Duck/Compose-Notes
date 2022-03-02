@@ -64,6 +64,11 @@ dependencies {
     implementation(Dependencies.composePreview)
     implementation(Dependencies.composeConstraint)
     implementation(Dependencies.accompanistCompose)
+    implementation(Dependencies.accompanistInsetsCompose)
+    implementation(Dependencies.accompanistInsetsUICompose)
+    implementation(Dependencies.accompanistFlow)
+    implementation(Dependencies.runtimeCompose)
+    implementation(Dependencies.liveDataCompose)
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
     implementation("androidx.activity:activity-compose:1.4.0")
     testImplementation("junit:junit:4.+")
@@ -72,7 +77,10 @@ dependencies {
     androidTestImplementation(Dependencies.composeTests)
     debugImplementation(Dependencies.composeTooling)
     implementation(Dependencies.navigationCompose)
-    implementation ("joda-time:joda-time:2.10.13")
+    implementation(Dependencies.coilCompose)
+
+    //Instead Java.Date
+    implementation (Dependencies.jodaTime)
 
     //Hilt
     implementation(Dependencies.hilt)

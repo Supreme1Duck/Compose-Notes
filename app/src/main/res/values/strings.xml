@@ -11,7 +11,7 @@
     <string name="dashboard_navigation_date_range">Date Range</string>
     <string name="note_item_select">Select</string>
     <string name="dashboard_app_bar_profile">Account</string>
-    <string name="dashboard_app_bar_title">Hi %s!</string>
+    <string name="dashboard_app_bar_title">Hi, %s!</string>
     <string name="dashboard_premium_icon">Premium</string>
     <string name="dashboard_premium_title">Go Premium!</string>
     <string name="dashboard_premium_description">Get unlimited access to all our features!</string>
@@ -25,4 +25,12 @@
     <string name="today_screen_back">Go Back</string>
     <string name="today_screen_title">Personal Tasks</string>
     <string name="today_screen_subtitle">You have %d tasks for today!</string>
+
+    <string name="create_screen_title">Create</string>
+    <string name="create_screen_back">Back</string>
+    <string name="create_screen_hint_title">Title</string>
+    <string name="create_screen_hint_body">Text</string>
+
+    <string name="personal_screen_bin">Icon info</string>
+    <string name="personal_screen_title">Got you!</string>
 </resources>
