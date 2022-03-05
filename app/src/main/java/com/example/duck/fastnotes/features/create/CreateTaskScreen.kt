@@ -7,11 +7,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
@@ -22,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.duck.fastnotes.R
 import com.example.duck.fastnotes.features.create.BasicTypes.basicTypes
@@ -35,64 +38,25 @@ import com.google.accompanist.flowlayout.FlowRow
 @OptIn(ExperimentalFoundationApi::class)
 @Preview
 @Composable
-fun CreateTaskScreen(navController: NavController? = null) {
+fun CreateTaskScreen(
+    navController: NavController? = null,
+    viewModel: CreateTaskViewModel = viewModel()
+) {
 
-    var titleInput by rememberSaveable { mutableStateOf("") }
-    var bodyInput by rememberSaveable { mutableStateOf("") }
+    rememberSaveable { viewModel.title }
+    rememberSaveable { viewModel.body }
+    rememberSaveable { viewModel.color }
+    rememberSaveable { viewModel.canDone }
+
     var menuState by remember { mutableStateOf(false) }
-    var color: ColorTypeWrapper? by rememberSaveable { mutableStateOf(ColorTypeWrapper(Color.Transparent)) }
 
     var isColorSelected = false
-
-    val constraints = ConstraintSet {
-        val back = createRefFor("back")
-        val title = createRefFor("title")
-        val titleEditText = createRefFor("titleEditText")
-        val bodyEditText = createRefFor("bodyEditText")
-        val tags = createRefFor("tags")
-        val colors = createRefFor("colors")
-
-        val guideline = createGuidelineFromTop(0.7f)
-
-        constrain(back) {
-            start.linkTo(parent.start)
-            top.linkTo(title.top)
-            bottom.linkTo(title.bottom)
-        }
-        constrain(title) {
-            top.linkTo(parent.top)
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
-        }
-        constrain(titleEditText) {
-            top.linkTo(title.bottom)
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
-        }
-        constrain(bodyEditText) {
-            top.linkTo(titleEditText.bottom)
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
-            bottom.linkTo(guideline)
-            height = Dimension.fillToConstraints
-        }
-        constrain(tags) {
-            top.linkTo(guideline)
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
-        }
-        constrain(colors) {
-            top.linkTo(tags.bottom)
-            start.linkTo(parent.start)
-        }
-    }
 
     ConstraintLayout(
         constraintSet = constraints, modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = Dimens.DEFAULT_MARGIN)
     ) {
-
         Icon(
             Icons.Filled.ArrowBack,
             contentDescription = stringResource(id = R.string.create_screen_back),
@@ -114,12 +78,23 @@ fun CreateTaskScreen(navController: NavController? = null) {
             style = MaterialTheme.typography.h5
         )
 
+        Icon(
+            Icons.Filled.Done,
+            contentDescription = stringResource(id = R.string.create_screen_done),
+            modifier = Modifier
+                .layoutId("done")
+                .noRippleClickable {
+                    viewModel.getResult()?.let {
+
+                    }
+                }
+                .alpha(if (!viewModel.canDone) 0.5f else 1f)
+        )
+
         TextField(
-            value = titleInput,
+            value = viewModel.title,
             placeholder = { Text(text = stringResource(id = R.string.create_screen_hint_title)) },
-            onValueChange = {
-                titleInput = it
-            },
+            onValueChange = viewModel::setTitleText,
             singleLine = true,
             modifier = Modifier
                 .layoutId("titleEditText")
@@ -128,11 +103,9 @@ fun CreateTaskScreen(navController: NavController? = null) {
         )
 
         TextField(
-            value = bodyInput,
+            value = viewModel.body,
             placeholder = { Text(text = stringResource(id = R.string.create_screen_hint_body)) },
-            onValueChange = {
-                bodyInput = it
-            },
+            onValueChange = viewModel::setBodyText,
             modifier = Modifier
                 .layoutId("bodyEditText")
                 .fillMaxWidth()
@@ -150,7 +123,7 @@ fun CreateTaskScreen(navController: NavController? = null) {
             getBasicNotes().forEach {
                 NoteTypeItem(name = it.name) {
                     if (!isColorSelected)
-                        color = basicTypes[it.name]
+                        viewModel.setColorType(basicTypes[it.name])
                 }
             }
         }
@@ -175,7 +148,7 @@ fun CreateTaskScreen(navController: NavController? = null) {
                 Row {
                     Box(
                         Modifier
-                            .background(color?.value ?: Color.Unspecified)
+                            .background(viewModel.color.value)
                             .weight(4f)
                             .height(15.dp)
                     )
@@ -190,18 +163,71 @@ fun CreateTaskScreen(navController: NavController? = null) {
                 }
             }
 
+            val onItemClick = { color: ColorTypeWrapper ->
+                isColorSelected = true
+                viewModel.setColorType(color)
+                menuState = false
+            }
+
             DropdownMenu(
                 expanded = menuState,
                 onDismissRequest = { menuState = false }
             ) {
                 basicTypes.forEach {
                     ColorTypeItem(color = it.value.value) {
-                        isColorSelected = true
-                        color = ColorTypeWrapper(it.value.value)
-                        menuState = false
+                        onItemClick(it.value)
                     }
                 }
             }
         }
+    }
+}
+
+val constraints = ConstraintSet {
+    val back = createRefFor("back")
+    val title = createRefFor("title")
+    val done = createRefFor("done")
+    val titleEditText = createRefFor("titleEditText")
+    val bodyEditText = createRefFor("bodyEditText")
+    val tags = createRefFor("tags")
+    val colors = createRefFor("colors")
+
+    val guideline = createGuidelineFromTop(0.7f)
+
+    constrain(back) {
+        start.linkTo(parent.start)
+        top.linkTo(title.top)
+        bottom.linkTo(title.bottom)
+    }
+    constrain(title) {
+        top.linkTo(parent.top)
+        start.linkTo(parent.start)
+        end.linkTo(parent.end)
+    }
+    constrain(done) {
+        top.linkTo(title.top)
+        end.linkTo(parent.end)
+        bottom.linkTo(title.bottom)
+    }
+    constrain(titleEditText) {
+        top.linkTo(title.bottom)
+        start.linkTo(parent.start)
+        end.linkTo(parent.end)
+    }
+    constrain(bodyEditText) {
+        top.linkTo(titleEditText.bottom)
+        start.linkTo(parent.start)
+        end.linkTo(parent.end)
+        bottom.linkTo(guideline)
+        height = Dimension.fillToConstraints
+    }
+    constrain(tags) {
+        top.linkTo(guideline)
+        start.linkTo(parent.start)
+        end.linkTo(parent.end)
+    }
+    constrain(colors) {
+        top.linkTo(tags.bottom)
+        start.linkTo(parent.start)
     }
 }

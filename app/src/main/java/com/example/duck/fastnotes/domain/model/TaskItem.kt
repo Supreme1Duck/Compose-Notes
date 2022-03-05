@@ -1,4 +1,4 @@
-package com.example.duck.fastnotes.domain
+package com.example.duck.fastnotes.domain.model
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector

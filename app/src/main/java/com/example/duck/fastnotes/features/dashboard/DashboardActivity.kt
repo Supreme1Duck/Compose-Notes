@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -63,20 +64,26 @@ fun DashboardScreen() {
                 )
             },
             floatingActionButton = {
-                FloatingActionButton(onClick = {
-                    Timber.tag("AndrewDebug").d("Navigation to editing")
-                }, modifier = Modifier.padding(bottom = 10.dp)) {
-                    Icon(
-                        Icons.Filled.Add,
-                        contentDescription = stringResource(id = R.string.dashboard_navigation_edit),
-                        tint = OnPrimaryColor,
-                        modifier = Modifier.padding(2.dp)
-                    )
+                val currentRoute = navController.currentBackStackEntryFlow.collectAsState(initial = navController.currentBackStackEntry)
+                when (currentRoute.value?.destination?.route){
+                    HomeScreens.Main.route -> {
+                        FloatingActionButton(onClick = {
+                            navController.navigate(HomeScreens.Create.route)
+                        }, modifier = Modifier.padding(bottom = 10.dp)) {
+                            Icon(
+                                Icons.Filled.Add,
+                                contentDescription = stringResource(id = R.string.dashboard_navigation_edit),
+                                tint = OnPrimaryColor,
+                                modifier = Modifier.padding(2.dp)
+                            )
+                        }
+                    }
                 }
             }) {
             DashboardNavigation(navController = navController)
         }
     }
 }
+
 
 

@@ -28,6 +28,7 @@
 
     <string name="create_screen_title">Create</string>
     <string name="create_screen_back">Back</string>
+    <string name="create_screen_done">Done</string>
     <string name="create_screen_hint_title">Title</string>
     <string name="create_screen_hint_body">Text</string>
 

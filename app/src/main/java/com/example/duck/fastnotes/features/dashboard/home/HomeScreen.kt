@@ -15,29 +15,28 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.duck.fastnotes.R
-import com.example.duck.fastnotes.domain.TaskItem
-import com.example.duck.fastnotes.features.dashboard.NoteItem
+import com.example.duck.fastnotes.domain.model.TaskItem
 import com.example.duck.fastnotes.ui.theme.*
 import com.example.duck.fastnotes.utils.Dimens
-import com.example.duck.fastnotes.utils.TextSecondaryTitle
-import com.example.duck.fastnotes.utils.textDefaultDarkerStyleLarge
-import com.example.duck.fastnotes.utils.textDefaultTitleStyle
-import timber.log.Timber
 
 
 @ExperimentalMaterialApi
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(navController: NavHostController, name: String) {
+
+    var tasks by rememberSaveable { mutableStateOf(mockNoteObject()) }
 
     Column(Modifier.fillMaxSize()) {
 
@@ -56,16 +55,14 @@ fun HomeScreen(navController: NavHostController, name: String) {
             Text(
                 text = stringResource(id = R.string.dashboard_app_bar_title, name),
                 Modifier.padding(start = Dimens.DEFAULT_MARGIN),
-                style = TextStyle(
-                    fontSize = Dimens.TEXT_TITLE, fontWeight = FontWeight.SemiBold
-                )
+                style = FastNotesTypography.h3
             )
         }
 
         Card(
             Modifier
                 .fillMaxWidth()
-                .height(160.dp)
+                .height(165.dp)
                 .padding(horizontal = Dimens.DEFAULT_MARGIN)
                 .padding(bottom = Dimens.LARGE_MARGIN),
             backgroundColor = BlackColor,
@@ -91,13 +88,13 @@ fun HomeScreen(navController: NavHostController, name: String) {
                 Column {
                     Text(
                         text = stringResource(id = R.string.dashboard_premium_title),
-                        style = textDefaultTitleStyle(),
+                        style = FastNotesTypography.h3.copy(color = Color.White),
                         modifier = Modifier
                             .padding(top = Dimens.LARGE_MARGIN)
                     )
                     Text(
                         text = stringResource(id = R.string.dashboard_premium_description),
-                        style = textDefaultDarkerStyleLarge(),
+                        style = FastNotesTypography.h5.copy(color = SecondaryDarkerColor),
                         modifier = Modifier
                             .padding(top = Dimens.SMALL_MARGIN)
                             .width(240.dp)
@@ -109,11 +106,7 @@ fun HomeScreen(navController: NavHostController, name: String) {
                     modifier = Modifier
                         .align(Alignment.Bottom)
                         .padding(end = Dimens.SMALL_MARGIN, bottom = Dimens.SMALL_MARGIN)
-                        .clickable {
-                            Timber
-                                .tag("AndrewDebug")
-                                .d("Arrow Forward clicked")
-                        }
+                        .clickable {}
                 ) {
                     Icon(
                         Icons.Filled.ArrowForward,
@@ -126,23 +119,58 @@ fun HomeScreen(navController: NavHostController, name: String) {
             }
         }
 
-        TextSecondaryTitle(text = stringResource(id = R.string.dashboard_title_tasks))
+        Text(
+            text = stringResource(id = R.string.dashboard_title_tasks),
+            style = FastNotesTypography.subtitle1,
+            modifier = Modifier.padding(start = Dimens.DEFAULT_MARGIN, bottom = Dimens.SMALLER_MARGIN)
+        )
 
-        LazyVerticalGrid(cells = GridCells.Fixed(2), contentPadding = PaddingValues(bottom = Dimens.BOTTOM_BAR_SIZE)) {
-            mockNoteObject().forEach {
+        LazyVerticalGrid(
+            modifier = Modifier.padding(horizontal = Dimens.SMALLER_MARGIN),
+            cells = GridCells.Fixed(2),
+            contentPadding = PaddingValues(bottom = Dimens.BOTTOM_BAR_SIZE)
+        ) {
+            tasks.forEach {
                 item { NoteItem(item = it) }
             }
         }
-
     }
 }
 
 fun mockNoteObject(): List<TaskItem> {
     return listOf(
-//        TaskItem("Personal", imageSrc = Icons.Filled.Person, PersonalNoteColor, 0, 3),
-//        TaskItem("Work", imageSrc = Icons.Filled.Place, WorkNoteColor, 1, 0),
-//        TaskItem("Health", imageSrc = Icons.Filled.Favorite, HealthNoteColor, 3, 0),
-//        TaskItem("Health", imageSrc = Icons.Filled.Favorite, HealthNoteColor, 3, 0),
-//        TaskItem("Health", imageSrc = Icons.Filled.Favorite, HealthNoteColor, 3, 0)
+        TaskItem(
+            "Personal",
+            imageSrc = Icons.Filled.Person,
+            color = PersonalNoteColor,
+            emptyList(),
+            3,
+            1
+        ),
+        TaskItem("Work", imageSrc = Icons.Filled.Place, color = WorkNoteColor, emptyList(), 1, 1),
+        TaskItem(
+            "Health",
+            imageSrc = Icons.Filled.Favorite,
+            color = HealthNoteColor,
+            emptyList(),
+            2,
+            1
+        ),
+        TaskItem(
+            "Health",
+            imageSrc = Icons.Filled.Favorite,
+            color = HealthNoteColor,
+            emptyList(),
+            2,
+            1
+        ),
+        TaskItem(
+            "Health",
+            imageSrc = Icons.Filled.Favorite,
+            color = HealthNoteColor,
+            emptyList(),
+            2,
+            1
+        )
     )
 }

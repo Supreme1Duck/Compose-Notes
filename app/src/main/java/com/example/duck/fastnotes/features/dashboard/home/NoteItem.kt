@@ -9,8 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.duck.fastnotes.R
-import com.example.duck.fastnotes.domain.TaskItem
-import com.example.duck.fastnotes.ui.theme.BlackColor
+import com.example.duck.fastnotes.domain.model.TaskItem
 import com.example.duck.fastnotes.ui.theme.FastNotesTypography
 import com.example.duck.fastnotes.utils.Dimens
 
