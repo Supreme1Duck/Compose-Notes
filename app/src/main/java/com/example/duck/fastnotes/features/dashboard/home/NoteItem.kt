@@ -9,13 +9,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.duck.fastnotes.R
-import com.example.duck.fastnotes.domain.model.TaskItem
+import com.example.duck.fastnotes.data.TypeItem
 import com.example.duck.fastnotes.ui.theme.FastNotesTypography
 import com.example.duck.fastnotes.utils.Dimens
 
 @ExperimentalMaterialApi
 @Composable
-fun NoteItem(item: TaskItem) {
+fun NoteItem(item: TypeItem) {
 
     Card(
         modifier = Modifier

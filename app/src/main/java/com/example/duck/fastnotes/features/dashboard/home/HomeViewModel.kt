@@ -1,0 +1,42 @@
+package com.example.duck.fastnotes.features.dashboard.home
+
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.duck.fastnotes.data.OrderType
+import com.example.duck.fastnotes.data.TaskItem
+import com.example.duck.fastnotes.domain.usecase.TasksUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val useCase: TasksUseCase
+) : ViewModel() {
+
+    var tasksList: Flow<List<TaskItem>?> = useCase.getTasks()
+
+    var orderType by mutableStateOf<OrderType>(OrderType.Normal)
+        private set
+
+    fun changeOrderType(newType: OrderType) {
+        orderType = newType
+        useCase.getTasks(orderType = orderType)
+    }
+
+    fun deleteNote(id: Int){
+        viewModelScope.launch {
+            useCase.deleteTask(id)
+        }
+    }
+
+    fun insertNote(item: TaskItem){
+        viewModelScope.launch {
+            useCase.insertTask(item)
+        }
+    }
+}

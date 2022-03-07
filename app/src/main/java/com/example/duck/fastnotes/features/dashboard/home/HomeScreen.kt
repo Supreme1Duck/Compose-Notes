@@ -14,11 +14,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Person
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,17 +23,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.duck.fastnotes.R
-import com.example.duck.fastnotes.domain.model.TaskItem
+import com.example.duck.fastnotes.data.TypeItem
 import com.example.duck.fastnotes.ui.theme.*
 import com.example.duck.fastnotes.utils.Dimens
+import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlin.coroutines.coroutineContext
 
 
 @ExperimentalMaterialApi
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HomeScreen(navController: NavHostController, name: String) {
+fun HomeScreen(navController: NavHostController, name: String, viewModel : HomeViewModel = viewModel()) {
 
-    var tasks by rememberSaveable { mutableStateOf(mockNoteObject()) }
+    rememberSaveable { viewModel.tasksList.collectAsState(listOf()) }
+
+    rememberSaveable { viewModel.orderType }
 
     Column(Modifier.fillMaxSize()) {
 
@@ -137,40 +138,40 @@ fun HomeScreen(navController: NavHostController, name: String) {
     }
 }
 
-fun mockNoteObject(): List<TaskItem> {
+fun mockNoteObject(): List<TypeItem> {
     return listOf(
-        TaskItem(
-            "Personal",
-            imageSrc = Icons.Filled.Person,
-            color = PersonalNoteColor,
-            emptyList(),
-            3,
-            1
-        ),
-        TaskItem("Work", imageSrc = Icons.Filled.Place, color = WorkNoteColor, emptyList(), 1, 1),
-        TaskItem(
-            "Health",
-            imageSrc = Icons.Filled.Favorite,
-            color = HealthNoteColor,
-            emptyList(),
-            2,
-            1
-        ),
-        TaskItem(
-            "Health",
-            imageSrc = Icons.Filled.Favorite,
-            color = HealthNoteColor,
-            emptyList(),
-            2,
-            1
-        ),
-        TaskItem(
-            "Health",
-            imageSrc = Icons.Filled.Favorite,
-            color = HealthNoteColor,
-            emptyList(),
-            2,
-            1
-        )
+//        TypeItem(
+//            "Personal",
+//            imageSrc = Icons.Filled.Person,
+//            color = PersonalNoteColor,
+//            emptyList(),
+//            3,
+//            1
+//        ),
+//        TypeItem("Work", imageSrc = Icons.Filled.Place, color = WorkNoteColor, emptyList(), 1, 1),
+//        TypeItem(
+//            "Health",
+//            imageSrc = Icons.Filled.Favorite,
+//            color = HealthNoteColor,
+//            emptyList(),
+//            2,
+//            1
+//        ),
+//        TypeItem(
+//            "Health",
+//            imageSrc = Icons.Filled.Favorite,
+//            color = HealthNoteColor,
+//            emptyList(),
+//            2,
+//            1
+//        ),
+//        TypeItem(
+//            "Health",
+//            imageSrc = Icons.Filled.Favorite,
+//            color = HealthNoteColor,
+//            emptyList(),
+//            2,
+//            1
+//        )
     )
 }

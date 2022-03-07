@@ -1,10 +1,7 @@
 package com.example.duck.fastnotes.features.dashboard.today
 
 import androidx.compose.ui.graphics.Color
-import com.example.duck.fastnotes.domain.TaskDetailItem
-import org.joda.time.DateTime
-import org.joda.time.Hours
-import java.text.SimpleDateFormat
+import com.example.duck.fastnotes.domain.data.TaskDetailItem
 
 class DrawLineItem (
     val timeStart: String,

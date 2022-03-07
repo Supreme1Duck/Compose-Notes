@@ -6,14 +6,13 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowLeft
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
@@ -24,11 +23,8 @@ import androidx.compose.ui.unit.dp
 import com.example.duck.fastnotes.R
 import com.example.duck.fastnotes.ui.theme.BlackColor
 import com.example.duck.fastnotes.utils.Dimens
-import com.example.duck.fastnotes.utils.textSecondaryTitleStyle
-import com.example.duck.fastnotes.utils.textTitleLightLarger
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
-import timber.log.Timber
 
 @Preview
 @Composable
@@ -59,12 +55,12 @@ fun TodayScreen() {
             Column {
                 Text(
                     text = stringResource(id = R.string.today_screen_title),
-                    style = textTitleLightLarger(),
+                    style = MaterialTheme.typography.h1,
                     modifier = Modifier.padding(start = Dimens.LARGER_MARGIN)
                 )
                 Text(
                     text = stringResource(id = R.string.today_screen_subtitle, 3),
-                    style = textSecondaryTitleStyle(),
+                    style = MaterialTheme.typography.h3,
                     modifier = Modifier
                         .padding(vertical = Dimens.SMALL_MARGIN)
                         .padding(start = Dimens.LARGER_MARGIN)
@@ -100,8 +96,6 @@ fun TimeLineView(list: List<DrawLineItem>) {
         var offsetY = 0f
 
         val textOffsetX = 50f
-
-        Timber.tag("AndrewDebug").d("$size")
 
         val increaseValue = 200f
 
@@ -201,9 +195,6 @@ fun TimeLineView(list: List<DrawLineItem>) {
 
             when (lineType) {
                 LineType.SameTimeExists -> {
-                    Timber
-                        .tag("AndrewDebug")
-                        .d("SameTimeExists")
                     drawTimePoint()
                     drawTextTime(item.timeStart)
                     if (item.hours == 1) {
@@ -221,9 +212,6 @@ fun TimeLineView(list: List<DrawLineItem>) {
                     }
                 }
                 LineType.OnePointHourBetween -> {
-                    Timber
-                        .tag("AndrewDebug")
-                        .d("OnePointHourBetween")
                     drawTimePoint()
                     drawTextTime(item.timeStart)
                     drawTimeLine()
@@ -249,9 +237,6 @@ fun TimeLineView(list: List<DrawLineItem>) {
                     drawDividerLine()
                 }
                 LineType.OneHourBetween -> {
-                    Timber
-                        .tag("AndrewDebug")
-                        .d("OneHourBetween")
                     drawTimePoint()
                     drawTextTime(item.timeStart)
                     repeat(item.hours) { counter ->
@@ -266,9 +251,6 @@ fun TimeLineView(list: List<DrawLineItem>) {
                     drawDividerLine()
                 }
                 LineType.MultiHour -> {
-                    Timber
-                        .tag("AndrewDebug")
-                        .d("MultiHour")
                     drawTimePoint()
                     drawTextTime(item.timeStart)
                     repeat(item.hours - 1) { counter ->
@@ -283,14 +265,10 @@ fun TimeLineView(list: List<DrawLineItem>) {
                     drawDividerLine()
                 }
                 LineType.FreeTime -> {
-                    Timber
-                        .tag("AndrewDebug")
-                        .d("FreeTime")
                     drawDividerLine()
                 }
             }
         } //End of forEach()
-        Timber.tag("AndrewDebug").d("$size")
     }
 }
 
