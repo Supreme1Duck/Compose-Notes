@@ -1,6 +1,5 @@
 package com.example.duck.fastnotes.manager
 
-import com.example.duck.fastnotes.data.Task
 import com.example.duck.fastnotes.data.TaskItem
 import com.example.duck.fastnotes.database.TaskDao
 import com.example.duck.fastnotes.domain.repository.TasksRepository
@@ -25,11 +24,11 @@ class TasksRepositoryManager(
         }
     }
 
-    override suspend fun insertNote(task: Task) {
-        dao.insertTask(task)
+    override suspend fun insertNote(task: TaskItem) {
+        dao.insertTask(task.toTask())
     }
 
-    override suspend fun deleteNote(key: Int) {
-        dao.deleteTask(key)
-    }
+//    override suspend fun deleteNote(key: Int) {
+//        dao.deleteTask(key)
+//    }
 }

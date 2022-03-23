@@ -19,22 +19,27 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
     var tasksList: Flow<List<TaskItem>?> = useCase.getTasks()
-
-    var orderType by mutableStateOf<OrderType>(OrderType.Normal)
         private set
 
-    fun changeOrderType(newType: OrderType) {
-        orderType = newType
-        useCase.getTasks(orderType = orderType)
+//    var orderType = mutableStateOf<OrderType>(OrderType.Normal)
+//        private set
+
+//    fun changeOrderType(newType: OrderType) {
+//        orderType.value = newType
+//        useCase.getTasks(orderType = orderType.value)
+//    }
+
+    fun deleteNote(id: Int) {
+//        viewModelScope.launch {
+//            useCase.deleteTask(id)
+//        }
     }
 
-    fun deleteNote(id: Int){
-        viewModelScope.launch {
-            useCase.deleteTask(id)
-        }
+    fun someFun() {
+        val a = { a: Int, b: Int -> a * b * 3 }
     }
 
-    fun insertNote(item: TaskItem){
+    fun insertNote(item: TaskItem) {
         viewModelScope.launch {
             useCase.insertTask(item)
         }

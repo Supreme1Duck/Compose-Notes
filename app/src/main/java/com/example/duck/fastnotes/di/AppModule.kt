@@ -2,8 +2,8 @@ package com.example.duck.fastnotes.di
 
 import android.app.Application
 import androidx.room.Room
-import com.example.duck.fastnotes.database.db.TaskDatabase
-import com.example.duck.fastnotes.database.db.TaskDatabase.Companion.DB_NAME
+import com.example.duck.fastnotes.database.TaskDatabase
+import com.example.duck.fastnotes.database.TaskDatabase.Companion.DB_NAME
 import com.example.duck.fastnotes.domain.repository.TasksRepository
 import com.example.duck.fastnotes.domain.usecase.DeleteTask
 import com.example.duck.fastnotes.domain.usecase.GetTasks
@@ -13,10 +13,11 @@ import com.example.duck.fastnotes.manager.TasksRepositoryManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
-@InstallIn(Singleton::class)
+@InstallIn(SingletonComponent::class)
 object AppModule {
 
     @Provides

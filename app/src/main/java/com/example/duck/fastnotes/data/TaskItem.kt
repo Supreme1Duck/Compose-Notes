@@ -1,13 +1,23 @@
 package com.example.duck.fastnotes.data
 
-import com.example.duck.fastnotes.features.create.ColorTypeWrapper
 import org.joda.time.DateTime
 
 data class TaskItem(
-    val id: Int,
+    val id: Int = 0,
     val name: String,
     val body: String,
-    val color: ColorTypeWrapper,
+    val type: String,
     val date: DateTime?,
     val time: DateTime?
-)
+) {
+    fun toTask(): Task{
+        return Task(
+            id,
+            name,
+            body,
+            type,
+            date,
+            time
+        )
+    }
+}

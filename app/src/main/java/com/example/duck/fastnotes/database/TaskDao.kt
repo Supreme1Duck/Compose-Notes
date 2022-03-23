@@ -1,10 +1,12 @@
 package com.example.duck.fastnotes.database
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.example.duck.fastnotes.data.Task
-import com.example.duck.fastnotes.data.TypeItem
-import com.example.duck.fastnotes.features.create.ColorTypeWrapper
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 @Dao
 interface TaskDao {
@@ -12,12 +14,12 @@ interface TaskDao {
     @Query("SELECT * FROM tasks")
     fun getNotes(): Flow<List<Task>>
 
-    @Query("SELECT * FROM tasks WHERE color = :color")
-    fun getNotesByColor(color: ColorTypeWrapper): Flow<List<Task>>
+    @Query("SELECT * FROM tasks WHERE type = :type")
+    fun getNotesByColor(type: String): Flow<List<Task>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTask(task: Task)
 
-    @Delete
-    suspend fun deleteTask(key: Int)
+//    @Delete
+//    suspend fun deleteTask(key: Int)
 }

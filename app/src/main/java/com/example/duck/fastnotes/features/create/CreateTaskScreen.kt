@@ -1,56 +1,47 @@
 package com.example.duck.fastnotes.features.create
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.duck.fastnotes.R
-import com.example.duck.fastnotes.features.create.BasicTypes.basicTypes
 import com.example.duck.fastnotes.features.create.BasicTypes.getBasicNotes
 import com.example.duck.fastnotes.features.dashboard.HomeScreens
+import com.example.duck.fastnotes.features.dashboard.home.ToggleGroup
 import com.example.duck.fastnotes.utils.Dimens
 import com.example.duck.fastnotes.utils.ViewUtils.noRippleClickable
-import com.google.accompanist.flowlayout.FlowMainAxisAlignment
-import com.google.accompanist.flowlayout.FlowRow
 
 @OptIn(ExperimentalFoundationApi::class)
 @Preview
 @Composable
 fun CreateTaskScreen(
     navController: NavController? = null,
-    viewModel: CreateTaskViewModel = viewModel()
+    viewModel: CreateTaskViewModel = hiltViewModel()
 ) {
-
     rememberSaveable { viewModel.title }
     rememberSaveable { viewModel.body }
-    rememberSaveable { viewModel.color }
     rememberSaveable { viewModel.canDone }
-
-    var menuState by remember { mutableStateOf(false) }
-
-    var isColorSelected = false
+    rememberSaveable { viewModel.noteType }
 
     ConstraintLayout(
         constraintSet = constraints, modifier = Modifier
@@ -71,7 +62,7 @@ fun CreateTaskScreen(
 
         Text(
             text = stringResource(id = R.string.create_screen_title), modifier = Modifier
-                .layoutId("title")
+                .layoutId("label")
                 .fillMaxWidth()
                 .padding(all = Dimens.DEFAULT_MARGIN),
             textAlign = TextAlign.Center,
@@ -84,9 +75,9 @@ fun CreateTaskScreen(
             modifier = Modifier
                 .layoutId("done")
                 .noRippleClickable {
-                    viewModel.getResult()?.let {
-
-                    }
+                    try {
+                        viewModel.getResult()
+                    } catch (e: IllegalArgumentException) {}
                 }
                 .alpha(if (!viewModel.canDone) 0.5f else 1f)
         )
@@ -111,81 +102,19 @@ fun CreateTaskScreen(
                 .fillMaxWidth()
         )
 
-        FlowRow(
-            mainAxisSpacing = 10.dp,
-            crossAxisSpacing = 10.dp,
-            modifier = Modifier
-                .fillMaxWidth()
-                .layoutId("tags")
-                .padding(top = Dimens.SMALL_MARGIN),
-            lastLineMainAxisAlignment = FlowMainAxisAlignment.Center
-        ) {
-            getBasicNotes().forEach {
-                NoteTypeItem(name = it.name) {
-                    if (!isColorSelected)
-                        viewModel.setColorType(basicTypes[it.name])
-                }
-            }
-        }
-
-        Box(Modifier
-            .layoutId("colors")
-            .padding(top = Dimens.LARGE_MARGIN)
-            .clickable {
-                menuState = true
-            }
-            .shadow(7.dp)) {
-
-            Box(
-                modifier = Modifier
-                    .width(120.dp)
-                    .height(30.dp)
-                    .background(Color.White)
-                    .padding(start = 16.dp),
-                contentAlignment = Alignment.CenterStart
-            ) {
-
-                Row {
-                    Box(
-                        Modifier
-                            .background(viewModel.color.value)
-                            .weight(4f)
-                            .height(15.dp)
-                    )
-
-                    Icon(
-                        Icons.Filled.KeyboardArrowDown,
-                        contentDescription = "",
-                        Modifier
-                            .weight(1f)
-                            .height(15.dp)
-                    )
-                }
-            }
-
-            val onItemClick = { color: ColorTypeWrapper ->
-                isColorSelected = true
-                viewModel.setColorType(color)
-                menuState = false
-            }
-
-            DropdownMenu(
-                expanded = menuState,
-                onDismissRequest = { menuState = false }
-            ) {
-                basicTypes.forEach {
-                    ColorTypeItem(color = it.value.value) {
-                        onItemClick(it.value)
-                    }
-                }
-            }
+        ToggleGroup(
+            options = getBasicNotes().map { it.label to it.color.value },
+            selectedOption = viewModel.noteType.value?.label,
+            modifier = Modifier.layoutId("tags")
+        ) { label ->
+            viewModel.setNoteType(label = label)
         }
     }
 }
 
 val constraints = ConstraintSet {
     val back = createRefFor("back")
-    val title = createRefFor("title")
+    val title = createRefFor("label")
     val done = createRefFor("done")
     val titleEditText = createRefFor("titleEditText")
     val bodyEditText = createRefFor("bodyEditText")

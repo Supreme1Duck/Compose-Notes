@@ -2,7 +2,7 @@ object Versions {
 
     const val gradleVersion = "7.0.4"
     const val kotlinVersion = "1.6.10"
-    const val roomVersion = "2.4.1"
+    const val roomVersion = "2.4.2"
     const val composeVersion = "1.1.0"
     const val navigationVersion = "2.4.0"
     const val appCompatVersion = "1.4.0"
@@ -19,4 +19,6 @@ object Versions {
     const val accompanistInsetsVersion = "0.24.3-alpha"
     const val coilVersion = "1.4.0"
     const val jodaTimeVersion = "2.10.13"
+    const val moshiVersion = "1.13.0"
+    const val composeHiltNavVersion = "1.0.0"
 }

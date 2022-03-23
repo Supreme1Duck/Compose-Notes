@@ -47,5 +47,9 @@ object Dependencies {
 
     const val jodaTime = "joda-time:joda-time:${Versions.jodaTimeVersion}"
 
+    const val moshi = "com.squareup.moshi:moshi:${Versions.moshiVersion}"
+
+    const val composeHiltNav = "androidx.hilt:hilt-navigation-compose:${Versions.composeHiltNavVersion}"
+
 
 }
