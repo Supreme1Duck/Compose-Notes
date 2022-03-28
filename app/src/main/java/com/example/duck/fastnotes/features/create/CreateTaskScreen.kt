@@ -4,21 +4,18 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
@@ -26,22 +23,37 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.duck.fastnotes.R
 import com.example.duck.fastnotes.features.create.BasicTypes.getBasicNotes
-import com.example.duck.fastnotes.features.dashboard.HomeScreens
 import com.example.duck.fastnotes.features.dashboard.home.ToggleGroup
 import com.example.duck.fastnotes.utils.Dimens
 import com.example.duck.fastnotes.utils.ViewUtils.noRippleClickable
+import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalFoundationApi::class)
-@Preview
 @Composable
 fun CreateTaskScreen(
-    navController: NavController? = null,
+    navController: NavController,
     viewModel: CreateTaskViewModel = hiltViewModel()
 ) {
     rememberSaveable { viewModel.title }
     rememberSaveable { viewModel.body }
     rememberSaveable { viewModel.canDone }
     rememberSaveable { viewModel.noteType }
+
+    val scaffoldState = rememberScaffoldState()
+
+    LaunchedEffect(key1 = true) {
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                CreateTaskViewModel.UIState.SaveNote -> navController.navigateUp()
+
+                is CreateTaskViewModel.UIState.ShowSnackbar -> {
+                    scaffoldState.snackbarHostState.showSnackbar(
+                        message = event.message
+                    )
+                }
+            }
+        }
+    }
 
     ConstraintLayout(
         constraintSet = constraints, modifier = Modifier
@@ -54,9 +66,7 @@ fun CreateTaskScreen(
             modifier = Modifier
                 .layoutId("back")
                 .noRippleClickable {
-                    navController?.navigate(HomeScreens.Main.route) {
-                        popUpTo(HomeScreens.Main.route)
-                    }
+                    navController.navigateUp()
                 }
         )
 
@@ -74,18 +84,14 @@ fun CreateTaskScreen(
             contentDescription = stringResource(id = R.string.create_screen_done),
             modifier = Modifier
                 .layoutId("done")
-                .noRippleClickable {
-                    try {
-                        viewModel.getResult()
-                    } catch (e: IllegalArgumentException) {}
-                }
+                .noRippleClickable { viewModel.onEvent(CreateScreenContract.OnSaveItem) }
                 .alpha(if (!viewModel.canDone) 0.5f else 1f)
         )
 
         TextField(
             value = viewModel.title,
             placeholder = { Text(text = stringResource(id = R.string.create_screen_hint_title)) },
-            onValueChange = viewModel::setTitleText,
+            onValueChange = { viewModel.onEvent(CreateScreenContract.OnEnteredContent(it)) },
             singleLine = true,
             modifier = Modifier
                 .layoutId("titleEditText")
@@ -96,7 +102,7 @@ fun CreateTaskScreen(
         TextField(
             value = viewModel.body,
             placeholder = { Text(text = stringResource(id = R.string.create_screen_hint_body)) },
-            onValueChange = viewModel::setBodyText,
+            onValueChange = { viewModel.onEvent(CreateScreenContract.OnEnteredBody(it)) },
             modifier = Modifier
                 .layoutId("bodyEditText")
                 .fillMaxWidth()
@@ -107,7 +113,7 @@ fun CreateTaskScreen(
             selectedOption = viewModel.noteType.value?.label,
             modifier = Modifier.layoutId("tags")
         ) { label ->
-            viewModel.setNoteType(label = label)
+            viewModel.onEvent(CreateScreenContract.OnTypeChanged(label))
         }
     }
 }

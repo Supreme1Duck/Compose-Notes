@@ -4,13 +4,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.duck.fastnotes.data.TaskItem
+import com.example.duck.fastnotes.domain.usecase.TasksUseCase
 import com.example.duck.fastnotes.utils.Common.UNDEFINED_NOTE_TYPE
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class CreateTaskViewModel @Inject constructor() : ViewModel() {
+class CreateTaskViewModel @Inject constructor(
+    val useCase: TasksUseCase
+) : ViewModel() {
 
     var title by mutableStateOf("")
         private set
@@ -22,22 +30,16 @@ class CreateTaskViewModel @Inject constructor() : ViewModel() {
 
     var noteType = mutableStateOf<NoteType?>(null)
 
-    fun setTitleText(text: String) {
-        title = text
-        checkCanDone()
-    }
-
-    fun setBodyText(text: String) {
-        body = text
-    }
+    private val _eventFlow = MutableSharedFlow<UIState>()
+    val eventFlow = _eventFlow.asSharedFlow()
 
     private fun checkCanDone() {
         canDone = if (noteType.value == null) false
         else title.isNotBlank()
     }
 
-    fun setNoteType(label: String) {
-        noteType.value = when (label) {
+    private fun getNoteType(label: String): NoteType {
+        return when (label) {
             NoteType.Personal.label -> NoteType.Personal
             NoteType.Health.label -> NoteType.Health
             NoteType.Work.label -> NoteType.Work
@@ -45,11 +47,11 @@ class CreateTaskViewModel @Inject constructor() : ViewModel() {
             NoteType.Education.label -> NoteType.Education
             NoteType.Shopping.label -> NoteType.Shopping
             NoteType.Sport.label -> NoteType.Sport
-            else -> null
+            else -> throw IllegalArgumentException("Invalid note type!")
         }
     }
 
-    fun getResult(): TaskItem {
+    private fun getResult(): TaskItem {
         return if (canDone) TaskItem(
             name = title,
             body = body,
@@ -57,7 +59,7 @@ class CreateTaskViewModel @Inject constructor() : ViewModel() {
             date = null,
             time = null
         )
-        else throw IllegalArgumentException("More info required")
+        else throw IllegalArgumentException("More info required!")
     }
 
     fun onEvent(event: CreateScreenContract) {
@@ -69,11 +71,34 @@ class CreateTaskViewModel @Inject constructor() : ViewModel() {
 
             }
             CreateScreenContract.OnSaveItem -> {
-
+                viewModelScope.launch {
+                    try {
+                        useCase.insertTask(getResult())
+                        _eventFlow.emit(UIState.SaveNote)
+                    } catch (e: IllegalArgumentException) {
+                        Timber.tag("Supreme1Duck").d(e.stackTraceToString())
+                        _eventFlow.emit(UIState.ShowSnackbar("Fulfill all required fields!"))
+                    } catch (e: Exception) {
+                        Timber.tag("Supreme1Debug").d(e.stackTraceToString())
+                    }
+                }
             }
             is CreateScreenContract.OnTypeChanged -> {
-
+                noteType.value = getNoteType(event.label)
+                checkCanDone()
+            }
+            is CreateScreenContract.OnEnteredContent -> {
+                title = event.text
+                checkCanDone()
+            }
+            is CreateScreenContract.OnEnteredBody -> {
+                body = event.text
             }
         }
+    }
+
+    sealed class UIState {
+        class ShowSnackbar(val message: String): UIState()
+        object SaveNote : UIState()
     }
 }

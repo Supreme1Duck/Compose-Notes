@@ -12,6 +12,8 @@ class PersonalViewModel : ViewModel() {
 
     var currentEditPosition by mutableStateOf(-1)
 
+    var counter = mutableStateOf(0)
+
     var items = mutableStateListOf(
         MockStructure("Andrew", 22),
         MockStructure("2 - Debrew", 23),
@@ -30,5 +32,9 @@ class PersonalViewModel : ViewModel() {
 
     fun incrementItemsCount(){
         currentEditPosition += 1
+    }
+
+    fun incrementCounter(){
+        counter.value++
     }
 }
