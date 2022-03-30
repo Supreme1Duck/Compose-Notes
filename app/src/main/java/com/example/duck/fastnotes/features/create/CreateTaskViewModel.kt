@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.duck.fastnotes.data.InvalidTaskItem
 import com.example.duck.fastnotes.data.TaskItem
 import com.example.duck.fastnotes.domain.usecase.TasksUseCase
+import com.example.duck.fastnotes.utils.Common.CREATE_NOTE_ERROR
 import com.example.duck.fastnotes.utils.Common.UNDEFINED_NOTE_TYPE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -71,7 +72,7 @@ class CreateTaskViewModel @Inject constructor(
                         useCase.insertTask(getResult())
                         _eventFlow.emit(UIState.SaveNote)
                     } catch (e: InvalidTaskItem) {
-                        _eventFlow.emit(UIState.ShowSnackbar("Fulfill all required fields!"))
+                        _eventFlow.emit(UIState.ShowSnackbar())
                     }
                 }
             }
@@ -90,7 +91,7 @@ class CreateTaskViewModel @Inject constructor(
     }
 
     sealed class UIState {
-        class ShowSnackbar(val message: String) : UIState()
+        class ShowSnackbar(val message: String = CREATE_NOTE_ERROR) : UIState()
         object SaveNote : UIState()
     }
 }

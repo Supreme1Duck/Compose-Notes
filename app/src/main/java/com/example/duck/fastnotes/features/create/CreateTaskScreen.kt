@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -21,6 +22,8 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
@@ -107,6 +110,11 @@ fun CreateTaskScreen(
             placeholder = { Text(text = stringResource(id = R.string.create_screen_hint_title)) },
             onValueChange = { viewModel.onEvent(CreateScreenContract.OnEnteredContent(it)) },
             singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.Sentences,
+                autoCorrect = true,
+                imeAction = ImeAction.Next
+            ),
             keyboardActions = KeyboardActions(
                 onDone = {
                     focusManager.moveFocus(FocusDirection.Down)
