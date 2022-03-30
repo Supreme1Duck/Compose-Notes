@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.duck.fastnotes.data.InvalidTaskItem
 import com.example.duck.fastnotes.data.TaskItem
 import com.example.duck.fastnotes.domain.usecase.TasksUseCase
 import com.example.duck.fastnotes.utils.Common.UNDEFINED_NOTE_TYPE
@@ -12,7 +13,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -51,6 +51,7 @@ class CreateTaskViewModel @Inject constructor(
         }
     }
 
+    @Throws(IllegalArgumentException::class)
     private fun getResult(): TaskItem {
         return if (canDone) TaskItem(
             name = title,
@@ -59,27 +60,18 @@ class CreateTaskViewModel @Inject constructor(
             date = null,
             time = null
         )
-        else throw IllegalArgumentException("More info required!")
+        else throw InvalidTaskItem("More info required!")
     }
 
     fun onEvent(event: CreateScreenContract) {
         when (event) {
-            is CreateScreenContract.OnChangeContentFocus -> {
-
-            }
-            is CreateScreenContract.OnChangeTitleFocus -> {
-
-            }
             CreateScreenContract.OnSaveItem -> {
                 viewModelScope.launch {
                     try {
                         useCase.insertTask(getResult())
                         _eventFlow.emit(UIState.SaveNote)
-                    } catch (e: IllegalArgumentException) {
-                        Timber.tag("Supreme1Duck").d(e.stackTraceToString())
+                    } catch (e: InvalidTaskItem) {
                         _eventFlow.emit(UIState.ShowSnackbar("Fulfill all required fields!"))
-                    } catch (e: Exception) {
-                        Timber.tag("Supreme1Debug").d(e.stackTraceToString())
                     }
                 }
             }
@@ -98,7 +90,7 @@ class CreateTaskViewModel @Inject constructor(
     }
 
     sealed class UIState {
-        class ShowSnackbar(val message: String): UIState()
+        class ShowSnackbar(val message: String) : UIState()
         object SaveNote : UIState()
     }
 }

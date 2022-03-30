@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavGraphBuilder
@@ -38,6 +39,7 @@ sealed class HomeScreens(val route: String){
     object Create: HomeScreens("create")
 }
 
+@ExperimentalComposeUiApi
 @ExperimentalMaterialApi
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -58,6 +60,7 @@ fun DashboardNavigation(navController: NavHostController) {
     }
 }
 
+@ExperimentalComposeUiApi
 @OptIn(ExperimentalMaterialApi::class)
 fun NavGraphBuilder.homeGraph(navController: NavHostController){
     navigation(startDestination = HomeScreens.Main.route, route = DashboardScreens.Home.route){

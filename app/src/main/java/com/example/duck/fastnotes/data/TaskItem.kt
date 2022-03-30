@@ -21,3 +21,5 @@ data class TaskItem(
         )
     }
 }
+
+class InvalidTaskItem(message: String): Exception(message)

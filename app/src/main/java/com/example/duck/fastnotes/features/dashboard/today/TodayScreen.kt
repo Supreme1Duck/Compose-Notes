@@ -80,6 +80,13 @@ fun TodayScreen() {
 }
 
 @Composable
+fun TestComposeView(list: List<DrawLineItem>){
+    Canvas(modifier = Modifier.fillMaxSize()){
+
+    }
+}
+
+@Composable
 fun TimeLineView(list: List<DrawLineItem>) {
     Canvas(
         modifier = Modifier

@@ -4,16 +4,22 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -27,7 +33,9 @@ import com.example.duck.fastnotes.features.dashboard.home.ToggleGroup
 import com.example.duck.fastnotes.utils.Dimens
 import com.example.duck.fastnotes.utils.ViewUtils.noRippleClickable
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
+@ExperimentalComposeUiApi
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CreateTaskScreen(
@@ -39,7 +47,10 @@ fun CreateTaskScreen(
     rememberSaveable { viewModel.canDone }
     rememberSaveable { viewModel.noteType }
 
-    val scaffoldState = rememberScaffoldState()
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
+
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
@@ -47,9 +58,12 @@ fun CreateTaskScreen(
                 CreateTaskViewModel.UIState.SaveNote -> navController.navigateUp()
 
                 is CreateTaskViewModel.UIState.ShowSnackbar -> {
-                    scaffoldState.snackbarHostState.showSnackbar(
-                        message = event.message
-                    )
+                    launch {
+                        keyboardController?.hide()
+                        snackbarHostState.showSnackbar(
+                            message = event.message
+                        )
+                    }
                 }
             }
         }
@@ -93,6 +107,11 @@ fun CreateTaskScreen(
             placeholder = { Text(text = stringResource(id = R.string.create_screen_hint_title)) },
             onValueChange = { viewModel.onEvent(CreateScreenContract.OnEnteredContent(it)) },
             singleLine = true,
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    focusManager.moveFocus(FocusDirection.Down)
+                }
+            ),
             modifier = Modifier
                 .layoutId("titleEditText")
                 .fillMaxWidth()
@@ -115,6 +134,13 @@ fun CreateTaskScreen(
         ) { label ->
             viewModel.onEvent(CreateScreenContract.OnTypeChanged(label))
         }
+
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier
+                .layoutId("snackbar")
+                .padding(bottom = Dimens.BOTTOM_BAR_SIZE)
+        )
     }
 }
 
@@ -126,6 +152,7 @@ val constraints = ConstraintSet {
     val bodyEditText = createRefFor("bodyEditText")
     val tags = createRefFor("tags")
     val colors = createRefFor("colors")
+    val snackBar = createRefFor("snackbar")
 
     val guideline = createGuidelineFromTop(0.7f)
 
@@ -164,5 +191,10 @@ val constraints = ConstraintSet {
     constrain(colors) {
         top.linkTo(tags.bottom)
         start.linkTo(parent.start)
+    }
+    constrain(snackBar) {
+        bottom.linkTo(parent.bottom)
+        start.linkTo(parent.start)
+        end.linkTo(parent.end)
     }
 }
