@@ -27,7 +27,10 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
-            proguardFiles (getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
@@ -64,6 +67,12 @@ dependencies {
     implementation(Dependencies.composePreview)
     implementation(Dependencies.composeConstraint)
     implementation(Dependencies.accompanistCompose)
+    implementation(Dependencies.accompanistInsetsCompose)
+    implementation(Dependencies.accompanistInsetsUICompose)
+    implementation(Dependencies.accompanistFlow)
+    implementation(Dependencies.runtimeCompose)
+    implementation(Dependencies.liveDataCompose)
+    implementation(Dependencies.moshi)
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
     implementation("androidx.activity:activity-compose:1.4.0")
     testImplementation("junit:junit:4.+")
@@ -72,7 +81,11 @@ dependencies {
     androidTestImplementation(Dependencies.composeTests)
     debugImplementation(Dependencies.composeTooling)
     implementation(Dependencies.navigationCompose)
-    implementation ("joda-time:joda-time:2.10.13")
+    implementation(Dependencies.coilCompose)
+    implementation(Dependencies.composeHiltNav)
+
+    //Instead Java.Date
+    implementation(Dependencies.jodaTime)
 
     //Hilt
     implementation(Dependencies.hilt)
@@ -88,17 +101,17 @@ dependencies {
     kapt(Dependencies.roomCompiler)
 
     //Navigation
-    implementation (Dependencies.navigationKtx)
-    implementation (Dependencies.navigationUi)
+    implementation(Dependencies.navigationKtx)
+    implementation(Dependencies.navigationUi)
 
     //Firebase
     implementation(platform("com.google.firebase:firebase-bom:29.0.4"))
-    implementation ("com.google.firebase:firebase-analytics-ktx")
-    implementation ("com.google.firebase:firebase-firestore-ktx")
-    implementation ("com.google.firebase:firebase-auth")
-    implementation ("com.google.firebase:firebase-dynamic-links-ktx")
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-dynamic-links-ktx")
 
-    implementation (Dependencies.timber)
+    implementation(Dependencies.timber)
 
     // Retrofit and OkHttp (Not needed for now)
     // OkHttp interceptors for logging (Not needed for now)

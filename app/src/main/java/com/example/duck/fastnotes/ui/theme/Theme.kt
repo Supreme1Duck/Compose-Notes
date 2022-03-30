@@ -49,7 +49,7 @@ fun WelcomeScreenTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Com
 
     MaterialTheme(
         colors = colors,
-        typography = Typography,
+        typography = FastNotesTypography,
         shapes = Shapes,
         content = content
     )
