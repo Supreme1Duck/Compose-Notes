@@ -3,6 +3,8 @@ package com.example.duck.fastnotes.features.dashboard.home
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.GridCells
+import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -14,7 +16,6 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,7 +40,7 @@ fun HomeScreen(
 ) {
     val viewModel = hiltViewModel<HomeViewModel>()
 
-    val list = viewModel.tasksList.collectAsState(emptyList())
+    val list = viewModel.tasksList
 
     rememberSaveable { list }
 
@@ -133,14 +134,14 @@ fun HomeScreen(
             )
         )
 
-//        LazyVerticalGrid(
-//            modifier = Modifier.padding(horizontal = Dimens.SMALLER_MARGIN),
-//            cells = GridCells.Fixed(2),
-//            contentPadding = PaddingValues(bottom = Dimens.BOTTOM_BAR_SIZE)
-//        ) {
-//            list.value?.forEach {
-//                item { NoteItem(item = it) }
-//            }
-//        }
+        LazyVerticalGrid(
+            modifier = Modifier.padding(horizontal = Dimens.SMALLER_MARGIN),
+            cells = GridCells.Fixed(2),
+            contentPadding = PaddingValues(bottom = Dimens.BOTTOM_BAR_SIZE)
+        ) {
+            list.value.forEach {
+                item { NoteItem(item = it) }
+            }
+        }
     }
 }
