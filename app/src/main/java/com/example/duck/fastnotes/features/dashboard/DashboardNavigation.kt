@@ -34,9 +34,9 @@ sealed class DashboardScreens(val route: String, val label: String, val icon: Im
     object Profile : DashboardScreens("settings", "Profile", Icons.Filled.Person)
 }
 
-sealed class HomeScreens(val route: String){
-    object Main: HomeScreens("main")
-    object Create: HomeScreens("create")
+sealed class HomeScreens(val route: String) {
+    object Main : HomeScreens("main")
+    object Create : HomeScreens("create")
 }
 
 @ExperimentalComposeUiApi
@@ -62,17 +62,26 @@ fun DashboardNavigation(navController: NavHostController) {
 
 @ExperimentalComposeUiApi
 @OptIn(ExperimentalMaterialApi::class)
-fun NavGraphBuilder.homeGraph(navController: NavHostController){
-    navigation(startDestination = HomeScreens.Main.route, route = DashboardScreens.Home.route){
+fun NavGraphBuilder.homeGraph(navController: NavHostController) {
+    navigation(startDestination = HomeScreens.Main.route, route = DashboardScreens.Home.route) {
 
-        composable(HomeScreens.Main.route){
-            HomeScreen(navController = navController, name = "Amanda")
+        composable(HomeScreens.Main.route) {
+            HomeScreen(name = "Amanda") { id ->
+                navigateToSingleNote(navController, id)
+            }
         }
 
-        composable(HomeScreens.Create.route){
+        composable(HomeScreens.Create.route) {
             CreateTaskScreen(navController)
         }
     }
+}
+
+private fun navigateToSingleNote(
+    navController: NavHostController,
+    id: String
+) {
+    navController.navigate("${HomeScreens.Create.route}/$id")
 }
 
 @Composable
@@ -92,7 +101,7 @@ fun DashboardBottomBar(navController: NavHostController, items: List<DashboardSc
                 interactionSource = MutableInteractionSource(),
                 onClick = {
                     if (currentRoute != screen.route && currentGraph != screen.route) {
-                        navController.navigate(screen.route){
+                        navController.navigate(screen.route) {
                             popUpTo(DashboardScreens.Home.route) {
                                 inclusive = true
                                 saveState = true

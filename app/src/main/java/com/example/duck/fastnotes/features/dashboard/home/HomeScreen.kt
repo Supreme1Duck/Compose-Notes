@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -34,8 +35,8 @@ import com.example.duck.fastnotes.utils.Dimens
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
-    navController: NavHostController,
-    name: String,
+    name: String = " ",
+    onNoteClick: (id: String) -> Unit
 ) {
     val viewModel = hiltViewModel<HomeViewModel>()
 
@@ -43,12 +44,12 @@ fun HomeScreen(
 
     rememberSaveable { list }
 
-    Column(Modifier.fillMaxSize()) {
+    Column(Modifier.fillMaxSize().padding(horizontal = Dimens.DEFAULT_MARGIN)) {
 
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(bottom = Dimens.LARGE_MARGIN)
+                .padding(bottom = Dimens.LARGE_MARGIN, top = Dimens.SMALL_MARGIN)
         ) {
             Icon(
                 Icons.Outlined.Person,
@@ -68,18 +69,15 @@ fun HomeScreen(
             Modifier
                 .fillMaxWidth()
                 .height(165.dp)
-                .padding(horizontal = Dimens.DEFAULT_MARGIN)
                 .padding(bottom = Dimens.LARGE_MARGIN),
             backgroundColor = BlackColor,
             shape = RoundedCornerShape(30.dp)
         ) {
-            Row {
+            Row(horizontalArrangement = Arrangement.SpaceEvenly) {
                 Card(
                     backgroundColor = SecondaryDarkerColor,
                     shape = CircleShape,
-                    modifier = Modifier
-                        .padding(horizontal = Dimens.LARGE_MARGIN)
-                        .padding(top = Dimens.LARGER_MARGIN),
+                    modifier = Modifier.padding(top = Dimens.LARGER_MARGIN),
                 ) {
                     Icon(
                         Icons.Filled.Star,
@@ -90,19 +88,20 @@ fun HomeScreen(
                             .size(20.dp, 20.dp)
                     )
                 }
-                Column {
+                Column{
                     Text(
                         text = stringResource(id = R.string.dashboard_premium_title),
                         style = FastNotesTypography.h3.copy(color = Color.White),
                         modifier = Modifier
+                            .wrapContentSize()
                             .padding(top = Dimens.LARGE_MARGIN)
                     )
                     Text(
                         text = stringResource(id = R.string.dashboard_premium_description),
                         style = FastNotesTypography.h5.copy(color = SecondaryDarkerColor),
                         modifier = Modifier
+                            .width(200.dp)
                             .padding(top = Dimens.SMALL_MARGIN)
-                            .width(240.dp)
                     )
                 }
                 Card(
@@ -110,7 +109,7 @@ fun HomeScreen(
                     shape = CircleShape,
                     modifier = Modifier
                         .align(Alignment.Bottom)
-                        .padding(end = Dimens.SMALL_MARGIN, bottom = Dimens.SMALL_MARGIN)
+                        .padding(bottom = Dimens.SMALL_MARGIN)
                         .clickable {}
                 ) {
                     Icon(
