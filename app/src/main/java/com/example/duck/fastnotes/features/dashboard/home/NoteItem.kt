@@ -6,15 +6,15 @@ import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.duck.fastnotes.R
 import com.example.duck.fastnotes.data.TaskItem
+import com.example.duck.fastnotes.features.create.NoteType
 import com.example.duck.fastnotes.ui.theme.FastNotesTypography
 import com.example.duck.fastnotes.utils.Dimens
 
@@ -22,63 +22,53 @@ import com.example.duck.fastnotes.utils.Dimens
 @Composable
 fun NoteItem(item: TaskItem) {
 
-    //item.type.color.value,
-    //item.type.icon,
+    val noteType = when (item.type) {
+        NoteType.Personal.label -> NoteType.Personal
+        NoteType.Health.label -> NoteType.Health
+        NoteType.Work.label -> NoteType.Work
+        NoteType.Entertainment.label -> NoteType.Entertainment
+        NoteType.Education.label -> NoteType.Education
+        NoteType.Shopping.label -> NoteType.Shopping
+        NoteType.Sport.label -> NoteType.Sport
+        else -> throw IllegalArgumentException()
+    }
 
     Card(
         modifier = Modifier
             .wrapContentHeight()
             .padding(Dimens.SMALLER_MARGIN),
-        backgroundColor = Color.Black,
+        backgroundColor = noteType.color.value,
         elevation = 5.dp,
         shape = RoundedCornerShape(20.dp),
         onClick = {}
     ) {
-
         Column {
             Icon(
-                Icons.Filled.ThumbUp,
+                painterResource(id = noteType.iconResource),
                 contentDescription = stringResource(id = R.string.dashboard_note_action_image),
-                modifier = Modifier.padding(Dimens.DEFAULT_MARGIN)
+                modifier = Modifier.padding(Dimens.DEFAULT_MARGIN).size(27.dp)
             )
 
             Spacer(Modifier.height(Dimens.LARGE_MARGIN))
 
-            Text(text = item.name, style = FastNotesTypography.h4, modifier = Modifier.padding(start = Dimens.DEFAULT_MARGIN))
+            Text(
+                text = item.name,
+                style = FastNotesTypography.h4,
+                modifier = Modifier.padding(start = Dimens.DEFAULT_MARGIN)
+            )
 
             Spacer(modifier = Modifier.height(Dimens.SMALL_MARGIN))
 
-            Row(Modifier.padding(bottom = Dimens.LARGE_MARGIN)) {
+            Text(
+                text = item.body,
+                style = FastNotesTypography.h6,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(start = Dimens.DEFAULT_MARGIN)
+            )
 
-//                Card(
-//                    modifier = Modifier
-//                        .padding(start = Dimens.DEFAULT_MARGIN)
-//                        .wrapContentWidth(),
-//                    backgroundColor = Color.White,
-//                    shape = RoundedCornerShape(20.dp),
-//                ) {
-//                    Text(
-//                        text = stringResource(id = R.string.dashboard_note_action_estimate, item.estimate),
-//                        style = FastNotesTypography.caption,
-//                        modifier = Modifier.padding(Dimens.SMALL_MARGIN)
-//                    )
-//                }
-//
-//                Card(
-//                    modifier = Modifier.padding(start = Dimens.DEFAULT_MARGIN),
-//                    backgroundColor = Color.White,
-//                    shape = RoundedCornerShape(20.dp)
-//                ) {
-//                    Text(
-//                        text = stringResource(id = R.string.dashboard_note_action_done, item.inactive),
-//                        style = FastNotesTypography.caption,
-//                        modifier = Modifier.padding(Dimens.SMALL_MARGIN)
-//                    )
-//                }
-
-            }
-
+            if (item.body.isNotBlank())
+                Spacer(modifier = Modifier.height(Dimens.DEFAULT_MARGIN))
         }
     }
-
 }
