@@ -2,7 +2,7 @@ package com.example.duck.fastnotes.data
 
 import org.joda.time.DateTime
 
-data class TaskItem(
+data class NoteItem(
     val id: Int = 0,
     val name: String,
     val body: String,
@@ -10,8 +10,8 @@ data class TaskItem(
     val date: DateTime?,
     val time: DateTime?
 ) {
-    fun toTask(): Task{
-        return Task(
+    fun toTask(): Note{
+        return Note(
             id,
             name,
             body,

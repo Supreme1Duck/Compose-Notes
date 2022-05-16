@@ -19,7 +19,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navigation
-import com.example.duck.fastnotes.features.create.CreateTaskScreen
+import com.example.duck.fastnotes.features.create.EditNoteScreen
 import com.example.duck.fastnotes.features.dashboard.home.HomeScreen
 import com.example.duck.fastnotes.features.dashboard.personal.ProfileScreen
 import com.example.duck.fastnotes.features.dashboard.today.TodayScreen
@@ -72,7 +72,7 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
         }
 
         composable(HomeScreens.Create.route) {
-            CreateTaskScreen(navController)
+            EditNoteScreen(navController)
         }
     }
 }

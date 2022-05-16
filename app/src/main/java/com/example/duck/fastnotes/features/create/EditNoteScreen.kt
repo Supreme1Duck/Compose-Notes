@@ -9,6 +9,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,13 +42,12 @@ import kotlinx.coroutines.launch
 @ExperimentalComposeUiApi
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CreateTaskScreen(
+fun EditNoteScreen(
     navController: NavController,
-    viewModel: CreateTaskViewModel = hiltViewModel()
+    viewModel: EditNoteViewModel = hiltViewModel()
 ) {
     rememberSaveable { viewModel.title }
     rememberSaveable { viewModel.body }
-    rememberSaveable { viewModel.canDone }
     rememberSaveable { viewModel.noteType }
 
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -58,9 +58,9 @@ fun CreateTaskScreen(
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
-                CreateTaskViewModel.UIState.SaveNote -> navController.navigateUp()
+                EditNoteViewModel.UIState.SaveNote -> navController.navigateUp()
 
-                is CreateTaskViewModel.UIState.ShowSnackbar -> {
+                is EditNoteViewModel.UIState.ShowSnackbar -> {
                     launch {
                         keyboardController?.hide()
                         snackbarHostState.showSnackbar(
@@ -81,10 +81,10 @@ fun CreateTaskScreen(
             Icons.Filled.ArrowBack,
             contentDescription = stringResource(id = R.string.create_screen_back),
             modifier = Modifier
-                .layoutId("back")
-                .noRippleClickable {
-                    navController.navigateUp()
-                }
+                    .layoutId("back")
+                    .noRippleClickable {
+                        navController.navigateUp()
+                    }
         )
 
         Text(
@@ -100,15 +100,24 @@ fun CreateTaskScreen(
             Icons.Filled.Done,
             contentDescription = stringResource(id = R.string.create_screen_done),
             modifier = Modifier
-                .layoutId("done")
-                .noRippleClickable { viewModel.onEvent(CreateScreenContract.OnSaveItem) }
-                .alpha(if (!viewModel.canDone) 0.5f else 1f)
+                    .layoutId("done")
+                    .noRippleClickable { viewModel.onEvent(EditNoteScreenContract.OnSaveItem) }
+                    .alpha(if (!viewModel.checkCanDone()) 0.5f else 1f)
         )
+
+        if (viewModel.checkCanDelete())
+            Icon(
+                    Icons.Filled.Delete,
+                    contentDescription = stringResource(id = R.string.create_screen_delete),
+                    modifier = Modifier
+                            .layoutId("delete")
+                            .noRippleClickable { viewModel.onEvent(EditNoteScreenContract.OnDeleteItem) }
+            )
 
         TextField(
             value = viewModel.title,
             placeholder = { Text(text = stringResource(id = R.string.create_screen_hint_title)) },
-            onValueChange = { viewModel.onEvent(CreateScreenContract.OnEnteredContent(it)) },
+            onValueChange = { viewModel.onEvent(EditNoteScreenContract.OnEnteredContent(it)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.Sentences,
@@ -121,33 +130,33 @@ fun CreateTaskScreen(
                 }
             ),
             modifier = Modifier
-                .layoutId("titleEditText")
-                .fillMaxWidth()
-                .padding(vertical = Dimens.DEFAULT_MARGIN)
+                    .layoutId("titleEditText")
+                    .fillMaxWidth()
+                    .padding(vertical = Dimens.DEFAULT_MARGIN)
         )
 
         TextField(
             value = viewModel.body,
             placeholder = { Text(text = stringResource(id = R.string.create_screen_hint_body)) },
-            onValueChange = { viewModel.onEvent(CreateScreenContract.OnEnteredBody(it)) },
+            onValueChange = { viewModel.onEvent(EditNoteScreenContract.OnEnteredBody(it)) },
             modifier = Modifier
-                .layoutId("bodyEditText")
-                .fillMaxWidth()
+                    .layoutId("bodyEditText")
+                    .fillMaxWidth()
         )
 
         ToggleGroup(
             options = getBasicNotes().map { it.label to it.color.value },
-            selectedOption = viewModel.noteType.value?.label,
+            selectedOption = viewModel.noteType.value.label,
             modifier = Modifier.layoutId("tags")
         ) { label ->
-            viewModel.onEvent(CreateScreenContract.OnTypeChanged(label))
+            viewModel.onEvent(EditNoteScreenContract.OnTypeChanged(label))
         }
 
         SnackbarHost(
             hostState = snackbarHostState,
             modifier = Modifier
-                .layoutId("snackbar")
-                .padding(bottom = Dimens.BOTTOM_BAR_SIZE)
+                    .layoutId("snackbar")
+                    .padding(bottom = Dimens.BOTTOM_BAR_SIZE)
         )
     }
 }

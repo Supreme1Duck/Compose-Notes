@@ -13,14 +13,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.duck.fastnotes.R
-import com.example.duck.fastnotes.data.TaskItem
+import com.example.duck.fastnotes.data.NoteItem
 import com.example.duck.fastnotes.features.create.NoteType
 import com.example.duck.fastnotes.ui.theme.FastNotesTypography
 import com.example.duck.fastnotes.utils.Dimens
 
 @ExperimentalMaterialApi
 @Composable
-fun NoteItem(item: TaskItem) {
+fun NoteItem(item: NoteItem) {
 
     val noteType = when (item.type) {
         NoteType.Personal.label -> NoteType.Personal

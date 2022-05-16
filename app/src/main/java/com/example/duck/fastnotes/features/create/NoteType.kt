@@ -16,5 +16,6 @@ sealed class NoteType(
     object Education : NoteType("Education", ColorTypeWrapper(EducationNoteColor), R.drawable.ic_education)
     object Shopping : NoteType("Shopping", ColorTypeWrapper(ShoppingNoteColor), R.drawable.ic_shopping)
     object Sport : NoteType("Sport", ColorTypeWrapper(SportNoteColor), R.drawable.ic_sport)
+    object Default : NoteType("Default", ColorTypeWrapper(DefaultNoteColor), -1)
 
 }

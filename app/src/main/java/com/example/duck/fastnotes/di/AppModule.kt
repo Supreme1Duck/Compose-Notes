@@ -2,14 +2,11 @@ package com.example.duck.fastnotes.di
 
 import android.app.Application
 import androidx.room.Room
-import com.example.duck.fastnotes.database.TaskDatabase
-import com.example.duck.fastnotes.database.TaskDatabase.Companion.DB_NAME
-import com.example.duck.fastnotes.domain.repository.TasksRepository
-import com.example.duck.fastnotes.domain.usecase.DeleteTask
-import com.example.duck.fastnotes.domain.usecase.GetTasks
-import com.example.duck.fastnotes.domain.usecase.InsertTask
-import com.example.duck.fastnotes.domain.usecase.TasksUseCase
-import com.example.duck.fastnotes.manager.TasksRepositoryManager
+import com.example.duck.fastnotes.database.NotesDatabase
+import com.example.duck.fastnotes.database.NotesDatabase.Companion.DB_NAME
+import com.example.duck.fastnotes.domain.repository.NotesRepository
+import com.example.duck.fastnotes.domain.usecase.*
+import com.example.duck.fastnotes.manager.NotesRepositoryManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,28 +19,38 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideNoteDatabase(app: Application): TaskDatabase {
+    fun provideNoteDatabase(app: Application): NotesDatabase {
         return Room.databaseBuilder(
             app,
-            TaskDatabase::class.java,
+            NotesDatabase::class.java,
             DB_NAME
         ).build()
     }
 
     @Provides
     @Singleton
-    fun provideTasksRepository(db: TaskDatabase): TasksRepository {
-        return TasksRepositoryManager(db.taskDao)
+    fun provideTasksRepository(db: NotesDatabase): NotesRepository {
+        return NotesRepositoryManager(db.notesDao)
     }
 
     @Provides
     @Singleton
-    fun provideNoteUseCase(repository: TasksRepository): TasksUseCase {
-        return TasksUseCase(
-            getTasks = GetTasks(repository),
-            insertTask = InsertTask(repository),
-            deleteTask = DeleteTask(repository)
+    fun provideNoteUseCase(repository: NotesRepository): NotesUseCase {
+        return NotesUseCase(
+            getTasks = GetNotes(repository),
+            insertNote = InsertNote(repository)
         )
     }
+
+    @Provides
+    @Singleton
+    fun provideEditNoteUseCase(repository: NotesRepository): EditNoteUseCase {
+        return EditNoteUseCase(
+                getNoteById = GetNoteById(repository),
+                insertNote = InsertNote(repository),
+                deleteNote = DeleteNote(repository)
+        )
+    }
+
 
 }

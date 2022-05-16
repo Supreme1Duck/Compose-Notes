@@ -4,8 +4,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import org.joda.time.DateTime
 
-@Entity(tableName = "tasks")
-data class Task(
+@Entity(tableName = "notes")
+data class Note(
     @PrimaryKey(autoGenerate = true) val uuid: Int,
     val name: String,
     val body: String,
@@ -14,8 +14,8 @@ data class Task(
     val date: DateTime?,
     val time: DateTime?
 ) {
-    fun toTaskItem(): TaskItem {
-        return TaskItem(
+    fun toNoteItem(): NoteItem {
+        return NoteItem(
             uuid,
             name,
             body,
