@@ -56,12 +56,10 @@ fun WelcomeScreenTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Com
 }
 
 @Composable
-fun FastNotesTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
+fun FastNotesTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     val systemUiController = rememberSystemUiController()
     val colors = if (darkTheme) {
-        systemUiController.setSystemBarsColor(
-            color = Color.Transparent
-        )
+        systemUiController.setSystemBarsColor(color = Color.Transparent)
         DarkColorPalette
     } else {
         systemUiController.setNavigationBarColor(Color.White)

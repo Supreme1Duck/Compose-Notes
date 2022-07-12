@@ -28,7 +28,6 @@ import com.example.duck.fastnotes.ui.theme.SecondaryColor
 import com.example.duck.fastnotes.utils.Dimens
 
 sealed class DashboardScreens(val route: String, val label: String, val icon: ImageVector) {
-
     object Home : DashboardScreens("home", "Today", Icons.Filled.Home)
     object Explore : DashboardScreens("explore", "Explore", Icons.Filled.DateRange)
     object Profile : DashboardScreens("settings", "Profile", Icons.Filled.Person)
@@ -56,7 +55,6 @@ fun DashboardNavigation(navController: NavHostController) {
         }
 
         homeGraph(navController = navController)
-
     }
 }
 
@@ -72,14 +70,16 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
         }
 
         composable(HomeScreens.Create.route) {
-            EditNoteScreen(navController)
+            EditNoteScreen {
+                navController.navigateUp()
+            }
         }
     }
 }
 
 private fun navigateToSingleNote(
-    navController: NavHostController,
-    id: String
+        navController: NavHostController,
+        id: Int
 ) {
     navController.navigate("${HomeScreens.Create.route}/$id")
 }
@@ -93,24 +93,24 @@ fun DashboardBottomBar(navController: NavHostController, items: List<DashboardSc
     BottomAppBar(modifier = Modifier.height(Dimens.BOTTOM_BAR_SIZE)) {
         items.forEach { screen ->
             BottomNavigationItem(selected = currentRoute == screen.route || currentGraph == screen.route,
-                icon = { Icon(screen.icon, screen.label) },
-                alwaysShowLabel = false,
-                selectedContentColor = OnSecondaryColor,
-                unselectedContentColor = SecondaryColor,
-                label = { Text(screen.label) },
-                interactionSource = MutableInteractionSource(),
-                onClick = {
-                    if (currentRoute != screen.route && currentGraph != screen.route) {
-                        navController.navigate(screen.route) {
-                            popUpTo(DashboardScreens.Home.route) {
-                                inclusive = true
-                                saveState = true
+                    icon = { Icon(screen.icon, screen.label) },
+                    alwaysShowLabel = false,
+                    selectedContentColor = OnSecondaryColor,
+                    unselectedContentColor = SecondaryColor,
+                    label = { Text(screen.label) },
+                    interactionSource = MutableInteractionSource(),
+                    onClick = {
+                        if (currentRoute != screen.route && currentGraph != screen.route) {
+                            navController.navigate(screen.route) {
+                                popUpTo(DashboardScreens.Home.route) {
+                                    inclusive = true
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
                             }
-                            launchSingleTop = true
-                            restoreState = true
                         }
-                    }
-                })
+                    })
         }
     }
 }

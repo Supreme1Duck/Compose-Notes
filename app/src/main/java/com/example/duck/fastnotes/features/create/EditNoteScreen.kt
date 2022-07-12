@@ -43,13 +43,9 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun EditNoteScreen(
-    navController: NavController,
-    viewModel: EditNoteViewModel = hiltViewModel()
+    viewModel: EditNoteViewModel = hiltViewModel(),
+    onNavigateBack: () -> Unit
 ) {
-    rememberSaveable { viewModel.title }
-    rememberSaveable { viewModel.body }
-    rememberSaveable { viewModel.noteType }
-
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
 
@@ -58,7 +54,7 @@ fun EditNoteScreen(
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
-                EditNoteViewModel.UIState.SaveNote -> navController.navigateUp()
+                EditNoteViewModel.UIState.SaveNote -> onNavigateBack()
 
                 is EditNoteViewModel.UIState.ShowSnackbar -> {
                     launch {
@@ -83,7 +79,7 @@ fun EditNoteScreen(
             modifier = Modifier
                     .layoutId("back")
                     .noRippleClickable {
-                        navController.navigateUp()
+                        onNavigateBack()
                     }
         )
 
@@ -107,11 +103,11 @@ fun EditNoteScreen(
 
         if (viewModel.checkCanDelete())
             Icon(
-                    Icons.Filled.Delete,
-                    contentDescription = stringResource(id = R.string.create_screen_delete),
-                    modifier = Modifier
-                            .layoutId("delete")
-                            .noRippleClickable { viewModel.onEvent(EditNoteScreenContract.OnDeleteItem) }
+                Icons.Filled.Delete,
+                contentDescription = stringResource(id = R.string.create_screen_delete),
+                modifier = Modifier
+                    .layoutId("delete")
+                    .noRippleClickable { viewModel.onEvent(EditNoteScreenContract.OnDeleteItem) }
             )
 
         TextField(
@@ -146,7 +142,7 @@ fun EditNoteScreen(
 
         ToggleGroup(
             options = getBasicNotes().map { it.label to it.color.value },
-            selectedOption = viewModel.noteType.value.label,
+            selectedOption = viewModel.noteType.value?.label,
             modifier = Modifier.layoutId("tags")
         ) { label ->
             viewModel.onEvent(EditNoteScreenContract.OnTypeChanged(label))

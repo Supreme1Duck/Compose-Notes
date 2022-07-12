@@ -1,11 +1,7 @@
 package com.example.duck.fastnotes.features.dashboard.today
 
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -22,18 +18,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.duck.fastnotes.R
 import com.example.duck.fastnotes.ui.theme.BlackColor
+import com.example.duck.fastnotes.ui.theme.FastNotesTypography
+import com.example.duck.fastnotes.ui.theme.PrimaryColor
 import com.example.duck.fastnotes.utils.Dimens
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
+import timber.log.Timber
 
 @Preview
 @Composable
-fun TodayScreen() {
+fun TodayScreen(list: List<Unit> = emptyList()) {
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(BlackColor)
+            .verticalScroll(rememberScrollState())
             .padding(vertical = Dimens.DEFAULT_MARGIN)
             .padding(start = Dimens.SMALLER_MARGIN)
     ) {
@@ -52,15 +52,20 @@ fun TodayScreen() {
                 tint = Color.White
             )
 
-            Column {
+            Column(
+                verticalArrangement = Arrangement.Center
+            ) {
                 Text(
                     text = stringResource(id = R.string.today_screen_title),
-                    style = MaterialTheme.typography.h1,
-                    modifier = Modifier.padding(start = Dimens.LARGER_MARGIN)
+                    style = FastNotesTypography.h2,
+                    color = Color.White,
+                    modifier = Modifier.padding(start = Dimens.LARGER_MARGIN),
+
                 )
                 Text(
                     text = stringResource(id = R.string.today_screen_subtitle, 3),
-                    style = MaterialTheme.typography.h3,
+                    style = MaterialTheme.typography.subtitle1,
+                    color = PrimaryColor,
                     modifier = Modifier
                         .padding(vertical = Dimens.SMALL_MARGIN)
                         .padding(start = Dimens.LARGER_MARGIN)
@@ -68,21 +73,16 @@ fun TodayScreen() {
             }
         }
 
-        val list = listOf(
+        val list1 = listOf(
             DrawLineItem("12:00", "13:00", Color.Red, 1),
             DrawLineItem("15:00", "17:00", Color.Yellow, 2),
             DrawLineItem("17:00", "19:00", Color.Blue, 2),
             DrawLineItem("20:00", "21:00", Color.Green, 2),
+            DrawLineItem("20:00", "21:00", Color.Green, 2),
+            DrawLineItem("20:00", "21:00", Color.Green, 2)
         )
 
-        TimeLineView(list)
-    }
-}
-
-@Composable
-fun TestComposeView(list: List<DrawLineItem>){
-    Canvas(modifier = Modifier.fillMaxSize()){
-
+        TimeLineView(list1)
     }
 }
 
@@ -90,8 +90,7 @@ fun TestComposeView(list: List<DrawLineItem>){
 fun TimeLineView(list: List<DrawLineItem>) {
     Canvas(
         modifier = Modifier
-            .fillMaxSize()
-            .scrollable(rememberScrollState(), Orientation.Vertical)
+            .height(640.dp + Dimens.BOTTOM_BAR_SIZE)
             .padding(
                 top = Dimens.DEFAULT_MARGIN,
                 bottom = Dimens.BOTTOM_BAR_SIZE,
@@ -276,6 +275,8 @@ fun TimeLineView(list: List<DrawLineItem>) {
                 }
             }
         } //End of forEach()
+        Timber.tag("Supreme1Duck").d("$offsetY")
+        Timber.tag("Supreme1Duck").d("${offsetY.dp}")
     }
 }
 

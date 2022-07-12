@@ -20,7 +20,7 @@ import com.example.duck.fastnotes.utils.Dimens
 
 @ExperimentalMaterialApi
 @Composable
-fun NoteItem(item: NoteItem) {
+fun NoteItem(item: NoteItem, onClick: (Int) -> Unit) {
 
     val noteType = when (item.type) {
         NoteType.Personal.label -> NoteType.Personal
@@ -40,7 +40,7 @@ fun NoteItem(item: NoteItem) {
         backgroundColor = noteType.color.value,
         elevation = 5.dp,
         shape = RoundedCornerShape(20.dp),
-        onClick = {}
+        onClick = { onClick(item.id) }
     ) {
         Column {
             Icon(
