@@ -19,9 +19,6 @@ fun ToggleGroup(
     modifier: Modifier,
     onClick: (String) -> Unit
 ) {
-    val onSelectionChange = { text: String ->
-        onClick(text)
-    }
 
     FlowRow(
         mainAxisSpacing = 10.dp,
@@ -33,7 +30,7 @@ fun ToggleGroup(
     ) {
         options.forEach {
             NoteTypeItem(name = it.first, color = it.second, selectedOption == it.first) {
-                onSelectionChange(it.first)
+                onClick(it.first)
             }
         }
     }

@@ -37,13 +37,11 @@ import com.example.duck.fastnotes.utils.Dimens
 @Composable
 fun HomeScreen(
     name: String = " ",
-    onNoteClick: (id: String) -> Unit
+    onNoteClick: (id: Int) -> Unit
 ) {
     val viewModel = hiltViewModel<HomeViewModel>()
 
     val list = viewModel.tasksList
-
-    rememberSaveable { list }
 
     Column(Modifier.fillMaxSize().padding(horizontal = Dimens.DEFAULT_MARGIN)) {
 
@@ -139,7 +137,7 @@ fun HomeScreen(
             contentPadding = PaddingValues(bottom = Dimens.BOTTOM_BAR_SIZE)
         ) {
             list.value.forEach {
-                item { NoteItem(item = it) }
+                item { NoteItem(item = it, onClick = onNoteClick) }
             }
         }
     }

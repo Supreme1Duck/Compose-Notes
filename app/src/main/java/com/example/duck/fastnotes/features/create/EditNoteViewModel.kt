@@ -3,6 +3,7 @@ package com.example.duck.fastnotes.features.create
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,19 +12,41 @@ import com.example.duck.fastnotes.data.NoteItem
 import com.example.duck.fastnotes.domain.usecase.EditNoteUseCase
 import com.example.duck.fastnotes.utils.Common.CREATE_NOTE_ERROR
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class EditNoteViewModel @Inject constructor(
-        private val useCase: EditNoteUseCase,
-        savedStateHandle: SavedStateHandle
+    private val useCase: EditNoteUseCase,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
+    private companion object {
+        const val NOTE_KEY = "noteId"
+        const val TAG = "EditNoteViewModel"
+    }
+
+    val note: SharedFlow<NoteItem> = flow {
+        Timber.tag(TAG).d(Thread.currentThread().name)
+        val id = savedStateHandle.get<Int>(NOTE_KEY)
+        emit(useCase.getNoteById(id))
+    }.flowOn(Dispatchers.IO)
+        .catch { Timber.tag(TAG).d(it.localizedMessage) }
+        .shareIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            replay = 1
+        )
+
     init {
-        val id = savedStateHandle.get<String>("noteId")
+        viewModelScope.launch {
+            note.collect {
+                Timber.tag("DDebug").d("Working - ${Thread.currentThread().name}")
+            }
+        }
     }
 
     var title by mutableStateOf("")
@@ -32,14 +55,14 @@ class EditNoteViewModel @Inject constructor(
     var body by mutableStateOf("")
         private set
 
-    var noteType = mutableStateOf<NoteType>(NoteType.Default)
+    var noteType = MutableLiveData<NoteType>(NoteType.Default)
 
     private val _eventFlow = MutableSharedFlow<UIState>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    fun checkCanDone() : Boolean = title.isNotBlank()
+    fun checkCanDone(): Boolean = title.isNotBlank()
 
-    fun checkCanDelete() : Boolean = title.isNotBlank()
+    fun checkCanDelete(): Boolean = title.isNotBlank()
 
     private fun getNoteType(label: String): NoteType {
         return when (label) {
@@ -58,7 +81,7 @@ class EditNoteViewModel @Inject constructor(
         return NoteItem(
             name = title,
             body = body,
-            type = noteType.value.label,
+            type = noteType.value?.label ?: "",
             date = null,
             time = null
         )

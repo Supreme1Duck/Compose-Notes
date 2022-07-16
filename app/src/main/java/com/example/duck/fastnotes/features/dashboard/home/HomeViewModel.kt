@@ -20,7 +20,6 @@ class HomeViewModel @Inject constructor(
 
     init {
         getTasks()
-
     }
 
     private fun getTasks() {
