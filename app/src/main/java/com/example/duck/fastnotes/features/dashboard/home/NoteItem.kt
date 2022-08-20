@@ -13,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.duck.fastnotes.R
-import com.example.duck.fastnotes.data.NoteItem
+import com.example.duck.fastnotes.domain.data.NoteItem
 import com.example.duck.fastnotes.features.create.NoteType
 import com.example.duck.fastnotes.ui.theme.FastNotesTypography
 import com.example.duck.fastnotes.utils.Dimens

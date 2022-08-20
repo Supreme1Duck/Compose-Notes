@@ -7,8 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.duck.fastnotes.data.InvalidTaskItem
-import com.example.duck.fastnotes.data.NoteItem
+import com.example.duck.fastnotes.domain.data.InvalidTaskItem
+import com.example.duck.fastnotes.domain.data.NoteItem
 import com.example.duck.fastnotes.domain.usecase.EditNoteUseCase
 import com.example.duck.fastnotes.utils.Common.CREATE_NOTE_ERROR
 import dagger.hilt.android.lifecycle.HiltViewModel

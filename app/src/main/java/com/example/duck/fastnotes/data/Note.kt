@@ -2,6 +2,7 @@ package com.example.duck.fastnotes.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.duck.fastnotes.domain.data.NoteItem
 import org.joda.time.DateTime
 
 @Entity(tableName = "notes")

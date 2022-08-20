@@ -7,25 +7,22 @@ import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.example.duck.fastnotes.R
+import com.example.duck.fastnotes.domain.data.NoteItem
 import com.example.duck.fastnotes.ui.theme.BlackColor
 import com.example.duck.fastnotes.ui.theme.FastNotesTypography
 import com.example.duck.fastnotes.ui.theme.OnSecondaryColor
@@ -36,14 +33,18 @@ import com.example.duck.fastnotes.utils.Dimens
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
-    name: String = " ",
     onNoteClick: (id: Int) -> Unit
 ) {
     val viewModel = hiltViewModel<HomeViewModel>()
 
-    val list = viewModel.tasksList
+    val state by viewModel.homeState.collectAsState()
 
-    Column(Modifier.fillMaxSize().padding(horizontal = Dimens.DEFAULT_MARGIN)) {
+    val userName by viewModel.userName.collectAsState("")
+
+    Column(
+        Modifier
+            .fillMaxSize()
+            .padding(horizontal = Dimens.DEFAULT_MARGIN)) {
 
         Row(
             Modifier
@@ -58,7 +59,7 @@ fun HomeScreen(
                     .align(Alignment.CenterVertically)
             )
             Text(
-                text = stringResource(id = R.string.dashboard_app_bar_title, name),
+                text = stringResource(id = R.string.dashboard_app_bar_title, userName),
                 Modifier.padding(start = Dimens.DEFAULT_MARGIN),
                 style = FastNotesTypography.h3
             )
@@ -121,24 +122,28 @@ fun HomeScreen(
                 }
             }
         }
+    }
+}
 
-        Text(
-            text = stringResource(id = R.string.dashboard_title_tasks),
-            style = FastNotesTypography.subtitle1,
-            modifier = Modifier.padding(
-                start = Dimens.DEFAULT_MARGIN,
-                bottom = Dimens.SMALLER_MARGIN
-            )
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+@Composable
+fun ShowTasks(list: List<NoteItem>, onNoteClick: (id: Int) -> Unit) {
+    Text(
+        text = stringResource(id = R.string.dashboard_title_tasks),
+        style = FastNotesTypography.subtitle1,
+        modifier = Modifier.padding(
+            start = Dimens.DEFAULT_MARGIN,
+            bottom = Dimens.SMALLER_MARGIN
         )
+    )
 
-        LazyVerticalGrid(
-            modifier = Modifier.padding(horizontal = Dimens.SMALLER_MARGIN),
-            cells = GridCells.Fixed(2),
-            contentPadding = PaddingValues(bottom = Dimens.BOTTOM_BAR_SIZE)
-        ) {
-            list.value.forEach {
-                item { NoteItem(item = it, onClick = onNoteClick) }
-            }
+    LazyVerticalGrid(
+        modifier = Modifier.padding(horizontal = Dimens.SMALLER_MARGIN),
+        cells = GridCells.Fixed(2),
+        contentPadding = PaddingValues(bottom = Dimens.BOTTOM_BAR_SIZE)
+    ) {
+        list.forEach {
+            item { NoteItem(item = it, onClick = onNoteClick) }
         }
     }
 }
