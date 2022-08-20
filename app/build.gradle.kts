@@ -32,6 +32,9 @@ android {
                 "proguard-rules.pro"
             )
         }
+//        getByName("debug") {
+//            buildConfigField("String", "UserInfoFilePath", "\"UserInfo.txt\"")
+//        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8

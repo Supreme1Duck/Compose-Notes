@@ -5,8 +5,10 @@ import androidx.room.Room
 import com.example.duck.fastnotes.database.NotesDatabase
 import com.example.duck.fastnotes.database.NotesDatabase.Companion.DB_NAME
 import com.example.duck.fastnotes.domain.repository.NotesRepository
+import com.example.duck.fastnotes.domain.repository.UserInfoRepository
 import com.example.duck.fastnotes.domain.usecase.*
 import com.example.duck.fastnotes.manager.NotesRepositoryManager
+import com.example.duck.fastnotes.manager.UserInfoManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -52,5 +54,9 @@ object AppModule {
         )
     }
 
-
+    @Provides
+    @Singleton
+    fun provideUserInfoRepository(): UserInfoRepository {
+        return UserInfoManager()
+    }
 }

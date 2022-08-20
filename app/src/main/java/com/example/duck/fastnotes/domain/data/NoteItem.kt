@@ -1,5 +1,6 @@
-package com.example.duck.fastnotes.data
+package com.example.duck.fastnotes.domain.data
 
+import com.example.duck.fastnotes.data.Note
 import org.joda.time.DateTime
 
 data class NoteItem(
@@ -10,7 +11,7 @@ data class NoteItem(
     val date: DateTime?,
     val time: DateTime?
 ) {
-    fun toTask(): Note{
+    fun toTask(): Note {
         return Note(
             id,
             name,

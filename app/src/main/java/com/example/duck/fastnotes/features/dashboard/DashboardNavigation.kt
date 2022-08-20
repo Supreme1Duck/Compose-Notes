@@ -64,7 +64,7 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
     navigation(startDestination = HomeScreens.Main.route, route = DashboardScreens.Home.route) {
 
         composable(HomeScreens.Main.route) {
-            HomeScreen(name = "Amanda") { id ->
+            HomeScreen { id ->
                 navigateToSingleNote(navController, id)
             }
         }

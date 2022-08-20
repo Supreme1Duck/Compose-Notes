@@ -12,6 +12,8 @@
     <string name="note_item_select">Select</string>
     <string name="dashboard_app_bar_profile">Account</string>
     <string name="dashboard_app_bar_title">Hi, %s!</string>
+    <string name="dashboard_loading_state">Loading</string>
+    <string name="dashboard_error_state">Error while loading, retrying</string>
     <string name="dashboard_premium_icon">Premium</string>
     <string name="dashboard_premium_title">Go Premium!</string>
     <string name="dashboard_premium_description">Get unlimited access to all our features!</string>

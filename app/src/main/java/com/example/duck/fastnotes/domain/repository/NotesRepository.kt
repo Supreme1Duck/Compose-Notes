@@ -1,6 +1,6 @@
 package com.example.duck.fastnotes.domain.repository
 
-import com.example.duck.fastnotes.data.NoteItem
+import com.example.duck.fastnotes.domain.data.NoteItem
 import com.example.duck.fastnotes.features.create.ColorTypeWrapper
 import kotlinx.coroutines.flow.Flow
 
