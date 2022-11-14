@@ -40,7 +40,6 @@ sealed class HomeScreens(val route: String) {
 
 @ExperimentalComposeUiApi
 @ExperimentalMaterialApi
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DashboardNavigation(navController: NavHostController) {
 
@@ -64,9 +63,7 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
     navigation(startDestination = HomeScreens.Main.route, route = DashboardScreens.Home.route) {
 
         composable(HomeScreens.Main.route) {
-            HomeScreen { id ->
-                navigateToSingleNote(navController, id)
-            }
+            HomeScreen()
         }
 
         composable(HomeScreens.Create.route) {

@@ -7,7 +7,8 @@ import com.example.duck.fastnotes.database.NotesDatabase.Companion.DB_NAME
 import com.example.duck.fastnotes.domain.repository.NotesRepository
 import com.example.duck.fastnotes.domain.repository.UserInfoRepository
 import com.example.duck.fastnotes.domain.usecase.*
-import com.example.duck.fastnotes.manager.NotesRepositoryManager
+import com.example.duck.fastnotes.manager.NotesRepositoryImpl
+import com.example.duck.fastnotes.manager.PreferenceManager
 import com.example.duck.fastnotes.manager.UserInfoManager
 import dagger.Module
 import dagger.Provides
@@ -32,7 +33,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideTasksRepository(db: NotesDatabase): NotesRepository {
-        return NotesRepositoryManager(db.notesDao)
+        return NotesRepositoryImpl(db.notesDao)
     }
 
     @Provides
@@ -56,7 +57,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideUserInfoRepository(): UserInfoRepository {
-        return UserInfoManager()
+    fun provideUserInfoRepository(preferenceManager: PreferenceManager): UserInfoRepository {
+        return UserInfoManager(preferenceManager)
     }
 }

@@ -46,9 +46,7 @@ fun TodayScreen(list: List<Unit> = emptyList()) {
             Icon(
                 Icons.Outlined.KeyboardArrowLeft,
                 contentDescription = stringResource(R.string.today_screen_back),
-                Modifier
-                    .padding(end = Dimens.DEFAULT_MARGIN, top = Dimens.SMALLER_MARGIN)
-                    .size(32.dp),
+                Modifier.padding(end = Dimens.DEFAULT_MARGIN, top = Dimens.SMALLER_MARGIN).size(32.dp),
                 tint = Color.White
             )
 
@@ -275,8 +273,6 @@ fun TimeLineView(list: List<DrawLineItem>) {
                 }
             }
         } //End of forEach()
-        Timber.tag("Supreme1Duck").d("$offsetY")
-        Timber.tag("Supreme1Duck").d("${offsetY.dp}")
     }
 }
 

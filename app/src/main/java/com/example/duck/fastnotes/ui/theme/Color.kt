@@ -1,5 +1,7 @@
 package com.example.duck.fastnotes.ui.theme
 
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 
 val PrimaryColor = Color(0xFFFFFFFF)
@@ -22,3 +24,38 @@ val EducationNoteColor = Color(0xFFD84AFF)
 val SportNoteColor = Color(0xFFFF924A)
 val ShoppingNoteColor = Color(0xFFFF4AA8)
 val DefaultNoteColor = Color(0xFF9E9D9D)
+
+
+val WelcomePrimaryColor = Color(0xFFFFFFFF)
+val WelcomePrimaryVariantColor = Color(0xFFFFFFFF)
+val WelcomeSecondaryColor = Color(0xFFEAEAEA)
+val WelcomeSecondaryVariantColor = Color(0xFF1B1A17)
+val TestBlack = Color(0xFF1C0A00)
+val WelcomeOnSecondaryColor = Color.Black
+val WelcomeTertiaryColor = Color(0xE4E31CFA)
+
+val WelcomeOnPrimaryColor = Color(0xFF101010)
+val TestHexColor = Color(0xFFEF4444)
+val WelcomeBackgroundColor = Color.White
+
+@Immutable
+data class WelcomeScreenColors(
+    val primary: Color = WelcomePrimaryColor,
+    val primaryVariant : Color = WelcomePrimaryVariantColor,
+    val onPrimary: Color = WelcomeOnPrimaryColor,
+    val secondary: Color = WelcomeSecondaryColor,
+    val secondaryVariant: Color = WelcomeSecondaryVariantColor,
+    val onSecondary: Color = WelcomeOnSecondaryColor,
+    val tertiary: Color = WelcomeTertiaryColor,
+    val background: Color = WelcomeBackgroundColor,
+    val testBlack: Color = TestBlack
+)
+
+val WelcomeScreenColorsComposition = staticCompositionLocalOf {
+    WelcomeScreenColors()
+}
+
+val MaterialTheme.wColors: WelcomeScreenColors
+    @Composable
+    @ReadOnlyComposable
+    get() = WelcomeScreenColorsComposition.current

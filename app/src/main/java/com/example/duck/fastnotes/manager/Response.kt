@@ -1,19 +1,19 @@
 package com.example.duck.fastnotes.manager
 
-sealed class Result<out T> {
+sealed class Response<out T> {
 
-    class Success<T>(val data: T) : Result<T>()
+    class Success<T>(val data: T) : Response<T>()
 
-    class Error(val throwable: Throwable) : Result<Nothing>()
+    class Error(val throwable: Throwable?) : Response<Nothing>()
 
-    object Loading: Result<Unit>()
+    object Loading: Response<Unit>()
 
     companion object {
         fun <T> success(data: T): Success<T> {
             return Success(data)
         }
 
-        fun <T> error(throwable: Throwable): Error {
+        fun error(throwable: Throwable?): Error {
             return Error(throwable)
         }
 

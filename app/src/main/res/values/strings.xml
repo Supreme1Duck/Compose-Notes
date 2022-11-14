@@ -1,10 +1,13 @@
 <resources>
     <string name="app_name">Fast Notes</string>
 
-    <string name="welcome_screen">Compose notes</string>
+    <string name="welcome_screen_title">Fast Notes</string>
+    <string name="welcome_screen_hello">Welcome to</string>
     <string name="welcome_screen_online_functions">Want to use online functions?</string>
-    <string name="welcome_screen_action">Get Started</string>
+    <string name="welcome_screen_action">Next</string>
     <string name="welcome_screen_sign_up">Sing Up</string>
+    <string name="welcome_screen_terms_checkbox">Terms and Conditions</string>
+    <string name="welcome_screen_terms_info">"By clicking checkbox you confirm an agreement with the usage of your personal data in terms of improving service"</string>
 
     <string name="dashboard_navigation_edit">Edit</string>
     <string name="dashboard_navigation_home">Home</string>
@@ -26,6 +29,9 @@
     <string name="today_screen_no_notes">No notes for today!</string>
     <string name="today_screen_back">Go Back</string>
     <string name="today_screen_title">Personal Tasks</string>
+    <string name="today_screen_dismiss_dialog">Dismiss</string>
+    <string name="today_screen_error_dialog_title">An error occurred when getting data</string>
+    <string name="today_screen_error_dialog_retry">Retry</string>
     <string name="today_screen_subtitle">You have %d tasks for today!</string>
 
     <string name="create_screen_title">Create</string>

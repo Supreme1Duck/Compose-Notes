@@ -5,16 +5,17 @@ plugins {
     id("com.google.gms.google-services")
     id("dagger.hilt.android.plugin")
     id("androidx.navigation.safeargs.kotlin")
+    id("kotlin-parcelize")
 }
 
 android {
 
-    compileSdk = ConfigData.compileSdkVersion
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "com.example.duck.fastnotes"
         minSdk = 24
-        targetSdk = 31
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
@@ -32,16 +33,14 @@ android {
                 "proguard-rules.pro"
             )
         }
-//        getByName("debug") {
-//            buildConfigField("String", "UserInfoFilePath", "\"UserInfo.txt\"")
-//        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
+        freeCompilerArgs = listOf("-Xjvm-default=all")
     }
     buildFeatures {
         compose = true
@@ -54,6 +53,7 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    namespace = "com.example.duck.fastnotes"
 }
 
 dependencies {
@@ -76,11 +76,14 @@ dependencies {
     implementation(Dependencies.runtimeCompose)
     implementation(Dependencies.liveDataCompose)
     implementation(Dependencies.moshi)
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
-    implementation("androidx.activity:activity-compose:1.4.0")
-    testImplementation("junit:junit:4.+")
+    implementation(Dependencies.composeLifecycle)
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
+    implementation("androidx.activity:activity-compose:1.6.0")
+    testImplementation("junit:junit:4.13.2")
+    implementation("androidx.datastore:datastore:1.0.0")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+    implementation(Dependencies.dataStore)
     androidTestImplementation(Dependencies.composeTests)
     debugImplementation(Dependencies.composeTooling)
     implementation(Dependencies.navigationCompose)

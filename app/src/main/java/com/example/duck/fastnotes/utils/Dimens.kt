@@ -13,5 +13,11 @@ object Dimens {
     val LARGE_MARGIN = 20.dp
     val LARGER_MARGIN = 25.dp
 
+    val PremiumCardSize = 140.dp
+
     val BOTTOM_BAR_SIZE = 54.dp
+
+    // Welcome screen
+    val WELCOME_SCREEN_WELCOME_MARGIN = 40.dp
+    val WELCOME_SCREEN_TITLE_MARGIN = 140.dp
 }

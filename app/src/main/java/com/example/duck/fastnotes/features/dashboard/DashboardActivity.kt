@@ -3,6 +3,7 @@ package com.example.duck.fastnotes.features.dashboard
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
@@ -17,6 +18,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.duck.fastnotes.R
 import com.example.duck.fastnotes.ui.theme.FastNotesTheme
@@ -26,6 +28,8 @@ import dagger.hilt.android.AndroidEntryPoint
 @ExperimentalComposeUiApi
 @AndroidEntryPoint
 class DashboardActivity : ComponentActivity() {
+
+    val viewModel: DashboardViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,8 +62,9 @@ fun DashboardScreen() {
                 )
             },
             floatingActionButton = {
-                val currentRoute = navController.currentBackStackEntryFlow.collectAsState(initial = navController.currentBackStackEntry)
-                when (currentRoute.value?.destination?.route){
+                val currentRoute =
+                    navController.currentBackStackEntryFlow.collectAsState(initial = navController.currentBackStackEntry)
+                when (currentRoute.value?.destination?.route) {
                     HomeScreens.Main.route -> {
                         FloatingActionButton(onClick = {
                             navController.navigate(HomeScreens.Create.route)
