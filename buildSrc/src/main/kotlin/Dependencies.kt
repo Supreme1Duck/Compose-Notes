@@ -37,9 +37,12 @@ object Dependencies {
     const val accompanistInsetsUICompose = "com.google.accompanist:accompanist-insets-ui:${Versions.accompanistInsetsVersion}"
     const val accompanistFlow = "com.google.accompanist:accompanist-flowlayout:${Versions.accompanistInsetsVersion}"
     const val navigationCompose = "androidx.navigation:navigation-compose:${Versions.composeNavigation}"
+    const val navigationComposeAnimation = "com.google.accompanist:accompanist-navigation-animation:${Versions.navigationComposeAnimation}"
     const val liveDataCompose = "androidx.compose.runtime:runtime-livedata:${Versions.composeRuntime}"
     const val runtimeCompose = "androidx.compose.runtime:runtime:${Versions.composeRuntime}"
     const val coilCompose = "io.coil-kt:coil:${Versions.coilVersion}"
+    const val landscapistGlide = "com.github.skydoves:landscapist-glide:${Versions.landscapistVersion}"
+    const val landscapistCoil = "com.github.skydoves:landscapist-coil:${Versions.landscapistVersion}"
 
     const val jodaTime = "joda-time:joda-time:${Versions.jodaTimeVersion}"
 

@@ -87,8 +87,13 @@ dependencies {
     androidTestImplementation(Dependencies.composeTests)
     debugImplementation(Dependencies.composeTooling)
     implementation(Dependencies.navigationCompose)
+    implementation(Dependencies.navigationComposeAnimation)
     implementation(Dependencies.coilCompose)
     implementation(Dependencies.composeHiltNav)
+    implementation(Dependencies.landscapistGlide)
+    implementation(Dependencies.landscapistCoil)
+
+    implementation("pub.devrel:easypermissions:3.0.0")
 
     //Instead Java.Date
     implementation(Dependencies.jodaTime)

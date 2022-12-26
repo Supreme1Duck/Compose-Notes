@@ -14,6 +14,7 @@ object Versions {
     const val coreVersion = "1.7.0"
     const val composeConstraint = "1.0.0"
     const val composeNavigation = "2.5.0-alpha01"
+    const val navigationComposeAnimation = "0.28.0"
     const val composeRuntime = "1.2.0-alpha04"
     const val accompanistVersion = "0.24.1-alpha"
     const val accompanistInsetsVersion = "0.24.3-alpha"
@@ -21,4 +22,6 @@ object Versions {
     const val jodaTimeVersion = "2.10.13"
     const val moshiVersion = "1.13.0"
     const val composeHiltNavVersion = "1.0.0"
+    const val landscapistVersion = "2.1.0"
+    const val landscapistCoilVersion = "2.1.0"
 }

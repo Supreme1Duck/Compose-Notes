@@ -3,8 +3,10 @@ package com.example.duck.fastnotes.features.welcome
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,24 +16,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.duck.fastnotes.R
 import com.example.duck.fastnotes.ui.theme.WelcomeScreenTheme
 import com.example.duck.fastnotes.ui.theme.WelcomeTheme
 import com.example.duck.fastnotes.utils.Dimens
-import com.example.duck.fastnotes.utils.ViewUtils.noRippleClickable
-import com.example.duck.fastnotes.utils.ViewUtils.roundRectShadow
-import com.example.duck.fastnotes.utils.ui.CustomShadowParams
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
 class WelcomeScreenActivity : ComponentActivity() {
 
@@ -40,7 +37,7 @@ class WelcomeScreenActivity : ComponentActivity() {
 
         setContent {
             WelcomeScreenTheme {
-                WelcomeScreen()
+                WelcomeScreenWrapper()
             }
         }
     }
@@ -53,18 +50,67 @@ class WelcomeScreenActivity : ComponentActivity() {
     }
 }
 
-@Preview
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun WelcomeScreen(){
+fun WelcomeScreenWrapper() {
+    var navController = rememberAnimatedNavController()
+    var nextEnabled by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+
+    var buttonState : StartedButtonState by remember {
+        mutableStateOf(
+            StartedButtonState.WelcomeScreenStateDisabled(context.getString(R.string.welcome_screen_action))
+        )
+    }
+
+    val onAgreementChange = { it: Boolean ->
+        buttonState =
+            if (it) StartedButtonState.WelcomeScreenStateEnabled(context.getString(R.string.welcome_screen_action))
+            else StartedButtonState.WelcomeScreenStateDisabled(context.getString(R.string.welcome_screen_action))
+    }
+
+    Column(Modifier.fillMaxSize()) {
+        WelcomeNavHost(
+            modifier = Modifier.fillMaxWidth().fillMaxHeight(0.9f),
+            navController = navController,
+            onAgreementChange = onAgreementChange
+        )
+
+        StartedButton(
+            modifier = Modifier.fillMaxWidth(),
+            buttonState
+        ) {
+            if (buttonState is StartedButtonState.WelcomeScreenStateEnabled) {
+                navController.navigate(WelcomeScreenRoutes.SIGN_IN_SCREEN)
+                buttonState = StartedButtonState.SignInState(context.getString(R.string.welcome_screen_sign_up))
+            }
+
+            if (buttonState is StartedButtonState.SignInState) {
+                Log.d("DDebug", "Signed in")
+            }
+
+            if (buttonState is StartedButtonState.SignUpState) {
+                Log.d("DDebug", "Signed Up")
+            }
+        }
+    }
+}
+
+@Composable
+fun WelcomeScreen(
+    onAgreementConfirmed: (Boolean) -> Unit
+) {
+    var isAgreementConfirmed by remember { mutableStateOf(false) }
+
     val context = LocalContext.current
     ConstraintLayout(
         Modifier
             .fillMaxSize()
+            .padding(bottom = 30.dp)
             .background(WelcomeTheme.colors.background),
     ) {
-        val (title, appName, imageSign, userInfo, userAgreement, buttonCnt) = createRefs()
-
-        var isAgreementChecked by remember { mutableStateOf(false) }
+        val (title, appName, imageSign, userInfo, userAgreement) = createRefs()
 
         WelcomeText(text = context.resources.getString(R.string.welcome_screen_hello),
             modifier = Modifier.constrainAs(title) {
@@ -98,24 +144,17 @@ fun WelcomeScreen(){
 
         UserAgreement(
             modifier = Modifier.constrainAs(userAgreement) {
-                start.linkTo(buttonCnt.start, 8.dp)
-                end.linkTo(buttonCnt.end)
-                bottom.linkTo(buttonCnt.top, 20.dp)
-            },
-            text = stringResource(id = R.string.welcome_screen_terms_checkbox),
-            isChecked = isAgreementChecked,
-            onCheckedChange = {
-                isAgreementChecked = it
-            }
-        )
-
-        StartedButton(text = context.getString(R.string.welcome_screen_action),
-            enabled = isAgreementChecked,
-            modifier = Modifier.constrainAs(buttonCnt) {
-                start.linkTo(parent.start)
+                start.linkTo(parent.start, 8.dp)
                 end.linkTo(parent.end)
                 bottom.linkTo(parent.bottom)
-            })
+            },
+            text = stringResource(id = R.string.welcome_screen_terms_checkbox),
+            isChecked = isAgreementConfirmed,
+            onCheckedChange = {
+                onAgreementConfirmed(it)
+                isAgreementConfirmed = it
+            }
+        )
     }
 }
 
@@ -200,36 +239,9 @@ fun UserAgreement(modifier: Modifier, text: String, isChecked: Boolean, onChecke
     }
 }
 
-@Composable
-fun StartedButton(modifier: Modifier, text: String, enabled: Boolean) {
-    Button(
-        onClick = {},
-        modifier = modifier
-            .padding(horizontal = 100.dp)
-            .padding(bottom = 20.dp)
-            .height(45.dp)
-            .roundRectShadow(
-                CustomShadowParams.defaultButtonShadow(),
-                13.dp
-            )
-            .fillMaxWidth(),
-        elevation = ButtonDefaults.elevation(
-            0.dp
-        ),
-        enabled = enabled,
-        shape = RoundedCornerShape(13.dp),
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = WelcomeTheme.colors.testBlack,
-            disabledBackgroundColor = WelcomeTheme.colors.secondary
-        ),
-        contentPadding = PaddingValues(horizontal = 16.dp),
-    ) {
-        Text(
-            text = text,
-            style = WelcomeTheme.typography.button,
-            color = Color.White,
-            textAlign = TextAlign.Center,
-            letterSpacing = 0.5.sp
-        )
-    }
+sealed class StartedButtonState(enabled: Boolean, text: String): ButtonState(enabled, text) {
+    class WelcomeScreenStateDisabled(text: String) : StartedButtonState(false, text)
+    class WelcomeScreenStateEnabled(text: String) : StartedButtonState(true, text)
+    class SignInState(text: String) : StartedButtonState(true, text)
+    class SignUpState(text: String) : StartedButtonState(true, text)
 }

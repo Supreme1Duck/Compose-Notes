@@ -28,13 +28,12 @@ val DefaultNoteColor = Color(0xFF9E9D9D)
 
 val WelcomePrimaryColor = Color(0xFFFFFFFF)
 val WelcomePrimaryVariantColor = Color(0xFFFFFFFF)
+val WelcomeOnPrimaryColor = Color(0xFF101010)
 val WelcomeSecondaryColor = Color(0xFFEAEAEA)
 val WelcomeSecondaryVariantColor = Color(0xFF1B1A17)
-val TestBlack = Color(0xFF1C0A00)
 val WelcomeOnSecondaryColor = Color.Black
 val WelcomeTertiaryColor = Color(0xE4E31CFA)
 
-val WelcomeOnPrimaryColor = Color(0xFF101010)
 val TestHexColor = Color(0xFFEF4444)
 val WelcomeBackgroundColor = Color.White
 
@@ -48,7 +47,6 @@ data class WelcomeScreenColors(
     val onSecondary: Color = WelcomeOnSecondaryColor,
     val tertiary: Color = WelcomeTertiaryColor,
     val background: Color = WelcomeBackgroundColor,
-    val testBlack: Color = TestBlack
 )
 
 val WelcomeScreenColorsComposition = staticCompositionLocalOf {
