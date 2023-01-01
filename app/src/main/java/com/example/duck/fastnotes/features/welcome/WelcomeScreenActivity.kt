@@ -53,8 +53,7 @@ class WelcomeScreenActivity : ComponentActivity() {
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun WelcomeScreenWrapper() {
-    var navController = rememberAnimatedNavController()
-    var nextEnabled by remember { mutableStateOf(false) }
+    val navController = rememberAnimatedNavController()
 
     val context = LocalContext.current
 
@@ -72,7 +71,9 @@ fun WelcomeScreenWrapper() {
 
     Column(Modifier.fillMaxSize()) {
         WelcomeNavHost(
-            modifier = Modifier.fillMaxWidth().fillMaxHeight(0.9f),
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.9f),
             navController = navController,
             onAgreementChange = onAgreementChange
         )
@@ -87,7 +88,6 @@ fun WelcomeScreenWrapper() {
             }
 
             if (buttonState is StartedButtonState.SignInState) {
-                Log.d("DDebug", "Signed in")
             }
 
             if (buttonState is StartedButtonState.SignUpState) {
@@ -239,6 +239,7 @@ fun UserAgreement(modifier: Modifier, text: String, isChecked: Boolean, onChecke
     }
 }
 
+@Stable
 sealed class StartedButtonState(enabled: Boolean, text: String): ButtonState(enabled, text) {
     class WelcomeScreenStateDisabled(text: String) : StartedButtonState(false, text)
     class WelcomeScreenStateEnabled(text: String) : StartedButtonState(true, text)
