@@ -36,12 +36,12 @@ fun WelcomeNavHost(
             WelcomeScreen(onAgreementChange)
         }
 
-        composable(SIGN_IN_SCREEN) {
-            SignInScreen()
+        composable(SIGN_UP_SCREEN) {
+            SignUpScreen()
         }
 
-        composable(SIGN_UP_SCREEN) {
-
+        composable(SIGN_IN_SCREEN) {
+            SignInScreen()
         }
     }
 }

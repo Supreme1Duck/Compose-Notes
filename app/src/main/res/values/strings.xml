@@ -5,16 +5,21 @@
     <string name="welcome_screen_hello">Welcome to</string>
     <string name="welcome_screen_online_functions">Want to use online functions?</string>
     <string name="welcome_screen_action">Next</string>
-    <string name="welcome_screen_sign_up">Sign Up</string>
     <string name="welcome_screen_terms_checkbox">Terms and Conditions</string>
     <string name="welcome_screen_terms_info">"By clicking checkbox you confirm an agreement with the usage of your personal data in terms of improving service"</string>
     <string name="welcome_screen_checkmark_description">CheckMark</string>
 
     <string name="welcome_screen_navigation_start">start</string>
 
-    <string name="sign_in_screen_name">Sign In</string>
+    <string name="sign_in_screen_action">Sign In</string>
 
-    <string name="sign_up_screen_name">Sign Up</string>
+    <string name="sign_up_screen_action">Sign Up</string>
+    <string name="sign_up_screen_title">Login to save your data!</string>
+    <string name="sign_up_screen_continue_without_reg">Continue without registration</string>
+    <string name="sign_up_already_have_acc">Already have an account?</string>
+    <string name="sign_up_screen_action_sign_in">Sign In</string>
+    <string name="sign_up_screen_email_hint">Email</string>
+    <string name="sign_up_screen_password_hint">Password</string>
 
     <string name="dashboard_navigation_edit">Edit</string>
     <string name="dashboard_navigation_home">Home</string>

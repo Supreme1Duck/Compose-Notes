@@ -12,6 +12,8 @@ data class Spacing(
     val large: Dp = 20.dp,
     val larger: Dp = 32.dp,
     val extraLarge: Dp = 64.dp,
+    val extraLarger: Dp = 96.dp,
+    val maxLarge: Dp = 128.dp,
     val bottom: Dp = 40.dp,
 )
 

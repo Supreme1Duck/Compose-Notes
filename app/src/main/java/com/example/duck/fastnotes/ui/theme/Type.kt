@@ -103,6 +103,16 @@ val WTypography = Typography(
         fontWeight = FontWeight.W600,
         fontSize = 46.sp
     ),
+    h2 = TextStyle(
+        fontFamily = welcomeFontFamilySourceSans,
+        fontWeight = FontWeight.W600,
+        fontSize = 32.sp
+    ),
+    h3 = TextStyle(
+        fontFamily = welcomeFontFamilySourceSans,
+        fontWeight = FontWeight.W600,
+        fontSize = 24.sp
+    ),
     subtitle1 = TextStyle(
         fontFamily = welcomeFontFamilyMontserrat,
         fontWeight = FontWeight.W400,
@@ -128,6 +138,8 @@ val WTypography = Typography(
 
 data class WelcomeScreenTypography(
     val h1: TextStyle = WTypography.h1,
+    val h2: TextStyle = WTypography.h2,
+    val h3: TextStyle = WTypography.h3,
     val subtitle1: TextStyle = WTypography.subtitle1,
     val subtitle2: TextStyle = WTypography.subtitle2,
     val caption: TextStyle = WTypography.caption,
