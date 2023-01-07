@@ -26,6 +26,7 @@ import com.example.duck.fastnotes.utils.ViewUtils.roundRectShadow
 import com.example.duck.fastnotes.utils.ui.CustomShadowParams
 import com.example.duck.fastnotes.utils.ui.toDp
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -38,9 +39,7 @@ fun StartedButton(
     var startOffset by remember { mutableStateOf(0f) }
     var clickable by remember { mutableStateOf(true) }
 
-    val onAnimationEnd = remember { {
-        clickable = true
-    } }
+    val onAnimationEnd = remember { { clickable = true } }
 
     val enabled = state.enabled
 
@@ -53,8 +52,10 @@ fun StartedButton(
             .fillMaxWidth()
             .onGloballyPositioned { startOffset = it.positionInRoot().x },
         onClick = {
-            if (clickable)
+            if (clickable) {
+                clickable = false
                 onClick()
+            }
         },
         elevation = ButtonDefaults.elevation(
             0.dp
@@ -159,7 +160,7 @@ fun animateForward(
     onAnimationEnd: () -> Unit
 ) {
     // Animate Current Text
-    coroutineScope.launch {
+    coroutineScope.launch(Dispatchers.Default) {
         launch {
             animate(
                 0f,
@@ -182,7 +183,7 @@ fun animateForward(
     }
 
     // Animate Checkmark
-    coroutineScope.launch {
+    coroutineScope.launch(Dispatchers.Default) {
         launch {
             animate(startOffset, 0f, animationSpec = tween(durationMillis = 500)) { value, _ ->
                 iconPosition(value)
@@ -211,7 +212,7 @@ fun animateForward(
     }
 
     // Animate Next Text
-    coroutineScope.launch {
+    coroutineScope.launch(Dispatchers.Default) {
         delay(500)
         launch {
             animate(

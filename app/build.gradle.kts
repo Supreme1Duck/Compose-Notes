@@ -10,6 +10,14 @@ plugins {
 
 android {
 
+    signingConfigs {
+        create("release") {
+            storeFile = file("C:\\Users\\BSL\\Desktop\\keystore\\keystore-fn.jks")
+            storePassword = "Electroduck3"
+            keyAlias = "fastnotes"
+            keyPassword = "Electroduck3"
+        }
+    }
     compileSdk = 33
 
     defaultConfig {
@@ -23,10 +31,22 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        signingConfig = signingConfigs.getByName("release")
     }
 
     buildTypes {
         getByName("release") {
+            isMinifyEnabled = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            signingConfig = signingConfigs.getByName("release")
+        }
+    }
+
+    buildTypes {
+        getByName("debug") {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

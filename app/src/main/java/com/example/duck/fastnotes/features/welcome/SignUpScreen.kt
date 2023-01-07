@@ -31,7 +31,6 @@ import com.example.duck.fastnotes.ui.theme.WelcomeTheme
 @Preview
 @Composable
 fun SignUpScreen() {
-
     Column(
         Modifier
             .fillMaxSize()

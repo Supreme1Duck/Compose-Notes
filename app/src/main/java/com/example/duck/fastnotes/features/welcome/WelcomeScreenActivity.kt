@@ -16,6 +16,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.duck.fastnotes.R
 import com.example.duck.fastnotes.ui.theme.WelcomeScreenTheme
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class WelcomeScreenActivity : ComponentActivity() {
 
@@ -44,7 +46,29 @@ fun WelcomeScreenWrapper(welcomeViewModel: WelcomeViewModel = viewModel()) {
 
     val state by welcomeViewModel.state.collectAsState()
 
-    val onAgreementChange = { it: Boolean ->
+    val onAgreementChange = remember { { it: Boolean -> } }
+
+    LaunchedEffect(key1 = state) {
+        when (state.navigateAction) {
+            NavigateActions.ACTION_TO_SIGN_UP -> {
+                navController.navigate(WelcomeScreenRoutes.SIGN_UP_SCREEN)
+            }
+            NavigateActions.ACTION_SIGN_UP -> {
+
+            }
+            NavigateActions.ACTION_TO_SIGN_IN -> {
+//                navController.navigate(WelcomeScreenRoutes.SIGN_IN_SCREEN)
+            }
+            NavigateActions.ACTION_SIGN_IN -> {
+
+            }
+            NavigateActions.ACTION_TO_CONTINUE_WITHOUT_REGISTRATION -> {
+
+            }
+            null -> {
+                Log.d("DDebug", "No Navigation")
+            }
+        }
     }
 
     val onContinueWithoutRegistration = {
