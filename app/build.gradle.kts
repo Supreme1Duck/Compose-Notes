@@ -45,15 +45,6 @@ android {
         }
     }
 
-    buildTypes {
-        getByName("debug") {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -93,6 +84,7 @@ dependencies {
     implementation(Dependencies.accompanistInsetsCompose)
     implementation(Dependencies.accompanistInsetsUICompose)
     implementation(Dependencies.accompanistFlow)
+    implementation(Dependencies.accompanistUiController)
     implementation(Dependencies.runtimeCompose)
     implementation(Dependencies.liveDataCompose)
     implementation(Dependencies.moshi)

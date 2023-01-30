@@ -63,6 +63,12 @@ fun WelcomeScreenTheme(content: @Composable () -> Unit) {
         WelcomeScreenTypographyComposition provides WelcomeTheme.typography,
         WelcomeScreenSpacingComposition provides WelcomeTheme.spacing
     ) {
+        val controller = rememberSystemUiController()
+        controller.setSystemBarsColor(
+            color = Color.Transparent,
+            darkIcons = true
+        )
+
         content()
     }
 }

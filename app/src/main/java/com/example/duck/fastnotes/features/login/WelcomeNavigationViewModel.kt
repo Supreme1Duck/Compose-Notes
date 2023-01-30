@@ -1,7 +1,7 @@
-package com.example.duck.fastnotes.features.welcome
+package com.example.duck.fastnotes.features.login
 
+import android.util.Log
 import androidx.annotation.IntegerRes
-import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.duck.fastnotes.R
@@ -9,8 +9,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-@Immutable
-class WelcomeViewModel : ViewModel() {
+/*
+    ViewModel used in navigation between screens
+*/
+class WelcomeNavigationViewModel : ViewModel() {
+
+    companion object {
+        val buttonClickCallback = ButtonClickCallback()
+    }
 
     private val buttonTextsMap = mapOf(
         WelcomeScreenRoutes.WELCOME_SCREEN to R.string.welcome_screen_action,
@@ -47,16 +53,35 @@ class WelcomeViewModel : ViewModel() {
         }
     }
 
-    fun sendNavigateIntent(navigationAction: NavigateActions) {
+    fun onButtonClick() {
         viewModelScope.launch {
-            _state.emit(_state.value.copy(navigateAction = navigationAction))
+            _state.emit(
+                _state.value.copy(hasClicked = true)
+            )
         }
+    }
+
+    fun onScreenSuccess() {
+        Log.d("DDebug", "OnScreenSuccess - $state")
+    }
+
+    fun onContinueWithoutRegistration() {
+
+    }
+
+    fun onSignIn() {
+
+    }
+
+    fun onSignUp() {
+
     }
 }
 
 data class WelcomeScreenState(
     val navigateAction: NavigateActions?,
-    val buttonState: StartedButtonState
+    val buttonState: StartedButtonState,
+    val hasClicked: Boolean = false
 )
 
 data class StartedButtonState(

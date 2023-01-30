@@ -36,6 +36,7 @@ object Dependencies {
     const val accompanistInsetsCompose = "com.google.accompanist:accompanist-insets:${Versions.accompanistInsetsVersion}"
     const val accompanistInsetsUICompose = "com.google.accompanist:accompanist-insets-ui:${Versions.accompanistInsetsVersion}"
     const val accompanistFlow = "com.google.accompanist:accompanist-flowlayout:${Versions.accompanistInsetsVersion}"
+    const val accompanistUiController = "com.google.accompanist:accompanist-systemuicontroller:${Versions.accompanistUiControllerVersion}"
     const val navigationCompose = "androidx.navigation:navigation-compose:${Versions.composeNavigation}"
     const val navigationComposeAnimation = "com.google.accompanist:accompanist-navigation-animation:${Versions.navigationComposeAnimation}"
     const val liveDataCompose = "androidx.compose.runtime:runtime-livedata:${Versions.composeRuntime}"

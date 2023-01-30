@@ -1,4 +1,4 @@
-package com.example.duck.fastnotes.features.welcome
+package com.example.duck.fastnotes.features.login
 
 import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.tween
@@ -13,18 +13,18 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.duck.fastnotes.ui.theme.WelcomeTheme
 import com.example.duck.fastnotes.utils.ViewUtils.roundRectShadow
 import com.example.duck.fastnotes.utils.ui.CustomShadowParams
-import com.example.duck.fastnotes.utils.ui.toDp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -36,6 +36,8 @@ fun StartedButton(
     state: StartedButtonState,
     onClick: () -> Unit,
 ) {
+    val viewModel: ButtonViewModel = hiltViewModel()
+
     var startOffset by remember { mutableStateOf(0f) }
     var clickable by remember { mutableStateOf(true) }
 
@@ -53,8 +55,7 @@ fun StartedButton(
             .onGloballyPositioned { startOffset = it.positionInRoot().x },
         onClick = {
             if (clickable) {
-                clickable = false
-                onClick()
+                viewModel.onButtonClick()
             }
         },
         elevation = ButtonDefaults.elevation(
@@ -124,29 +125,43 @@ fun AnimatedText(state: ButtonTextState, startOffset: Float, onAnimationEnd: () 
         }
     }
 
+    ButtonText(offset = { textPosition }, textFade = { textFade }, text = currentText)
+
+    if (iconFade != 0f)
+        IconButton(iconPosition = { iconPosition }, { iconFade })
+}
+
+@Composable
+fun ButtonText(offset: () -> Float, textFade: () -> Float, text: String) {
     Text(
         modifier = Modifier
-            .alpha(textFade)
             .fillMaxWidth()
-            .offset(x = textPosition.toDp),
-        text = currentText,
+            .graphicsLayer {
+                alpha = textFade()
+                translationX = offset()
+            },
+        text = text,
         style = WelcomeTheme.typography.button,
         color = Color.White,
         textAlign = TextAlign.Center,
         letterSpacing = 0.5.sp
     )
+}
 
-    if (iconFade != 0f)
-        Icon(
-            imageVector = Icons.Filled.Check,
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .size(20.dp)
-                .alpha(iconFade)
-                .offset(x = iconPosition.toDp),
-            tint = Color.White
-        )
+@Composable
+fun IconButton(iconPosition: () -> Float, iconFade: () -> Float) {
+    Icon(
+        imageVector = Icons.Filled.Check,
+        contentDescription = null,
+        modifier = Modifier
+            .fillMaxWidth()
+            .size(20.dp)
+            .graphicsLayer {
+                alpha = iconFade()
+                translationX = iconPosition()
+            },
+        tint = Color.White
+    )
 }
 
 fun animateForward(

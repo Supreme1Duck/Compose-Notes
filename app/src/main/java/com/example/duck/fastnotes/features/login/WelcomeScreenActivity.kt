@@ -1,4 +1,4 @@
-package com.example.duck.fastnotes.features.welcome
+package com.example.duck.fastnotes.features.login
 
 import android.content.Context
 import android.content.Intent
@@ -11,14 +11,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.duck.fastnotes.R
 import com.example.duck.fastnotes.ui.theme.WelcomeScreenTheme
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class WelcomeScreenActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,14 +39,12 @@ class WelcomeScreenActivity : ComponentActivity() {
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun WelcomeScreenWrapper(welcomeViewModel: WelcomeViewModel = viewModel()) {
+fun WelcomeScreenWrapper(welcomeNavigationViewModel: WelcomeNavigationViewModel = viewModel()) {
     val navController = rememberAnimatedNavController()
 
-    val state by welcomeViewModel.state.collectAsState()
+    val state by welcomeNavigationViewModel.state.collectAsState()
 
-    val onAgreementChange = remember { { it: Boolean -> } }
-
-    LaunchedEffect(key1 = state) {
+    LaunchedEffect(key1 = state.navigateAction) {
         when (state.navigateAction) {
             NavigateActions.ACTION_TO_SIGN_UP -> {
                 navController.navigate(WelcomeScreenRoutes.SIGN_UP_SCREEN)
@@ -71,24 +67,17 @@ fun WelcomeScreenWrapper(welcomeViewModel: WelcomeViewModel = viewModel()) {
         }
     }
 
-    val onContinueWithoutRegistration = {
-        Log.d("DDebug", "On Continue without registration")
-    }
-
     Column(Modifier.fillMaxSize()) {
         WelcomeNavHost(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.9f),
+            modifier = Modifier.fillMaxWidth().fillMaxHeight(0.9f),
             navController = navController,
-            onAgreementChange = onAgreementChange
+            onScreenSuccess = welcomeNavigationViewModel::onScreenSuccess,
         )
 
         StartedButton(
             modifier = Modifier.fillMaxWidth(),
-            state.buttonState,
-        ) {
-            welcomeViewModel.sendNavigateIntent(navController.currentBackStackEntry?.destination?.route ?: "")
-        }
+            state = state.buttonState,
+            onClick = welcomeNavigationViewModel::onButtonClick
+        )
     }
 }

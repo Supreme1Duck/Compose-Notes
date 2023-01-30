@@ -1,4 +1,4 @@
-package com.example.duck.fastnotes.features.welcome
+package com.example.duck.fastnotes.features.login
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +17,7 @@ import com.example.duck.fastnotes.ui.theme.WelcomeTheme
 
 @Preview
 @Composable
-fun SignInScreen(navHostController: NavHostController = rememberNavController()) {
+fun SignInScreen(clickAction: Boolean = false, navHostController: NavHostController = rememberNavController(), onScreenSuccess: () -> Unit = {}) {
 
     Column(Modifier.fillMaxSize().padding(WelcomeTheme.spacing.large), horizontalAlignment = Alignment.CenterHorizontally) {
 

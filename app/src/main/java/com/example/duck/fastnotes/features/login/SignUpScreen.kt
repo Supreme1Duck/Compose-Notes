@@ -1,9 +1,8 @@
-package com.example.duck.fastnotes.features.welcome
+package com.example.duck.fastnotes.features.login
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -19,7 +18,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,19 +25,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.duck.fastnotes.R
 import com.example.duck.fastnotes.ui.theme.WelcomeTheme
+import com.example.duck.fastnotes.utils.ViewUtils.noRippleClickable
 
 @Preview
 @Composable
-fun SignUpScreen() {
+fun SignUpScreen(clickAction: Boolean = false, onContinueWithoutRegistration: () -> Unit = {}, onSignIn: () -> Unit = {}, onScreenSuccess: () -> Unit = {}) {
     Column(
         Modifier
             .fillMaxSize()
-            .padding(WelcomeTheme.spacing.default),
+            .padding(horizontal = WelcomeTheme.spacing.default),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         MainContent()
 
-        AdditionalMethods()
+        AdditionalMethods(onContinueWithoutRegistration, onSignIn)
     }
 }
 
@@ -72,21 +71,18 @@ fun MainContent() {
 }
 
 @Composable
-fun AdditionalMethods() {
+fun AdditionalMethods(onContinueWithoutRegistration: () -> Unit, onSignIn: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = WelcomeTheme.spacing.default)
+            .height(150.dp)
+            .padding(top = WelcomeTheme.spacing.default, bottom = WelcomeTheme.spacing.default)
     ) {
-        ContinueWithoutRegText(
-            modifier = Modifier.padding(
-                top = WelcomeTheme.spacing.large,
-                bottom = WelcomeTheme.spacing.bottom
-            )
-        )
+        ContinueWithoutRegText(onContinueWithoutRegistration = onContinueWithoutRegistration)
 
-        SignInText(modifier = Modifier)
+        SignInText(onSignIn = onSignIn)
     }
 }
 
@@ -102,7 +98,6 @@ fun SignUpLogo(modifier: Modifier) {
 @Composable
 fun SignUpTitle() {
     Text(
-        modifier = Modifier,
         text = stringResource(id = R.string.sign_up_screen_title),
         style = WelcomeTheme.typography.h3.copy(
             fontWeight = FontWeight.Normal,
@@ -150,7 +145,9 @@ fun PasswordInput(
             .background(WelcomeTheme.colors.secondary)
     ) {
         TextField(
-            modifier = Modifier.fillMaxSize().align(Alignment.CenterStart),
+            modifier = Modifier
+                .fillMaxSize()
+                .align(Alignment.CenterStart),
             value = text,
             onValueChange = onValueChange,
             singleLine = true,
@@ -169,8 +166,8 @@ fun PasswordInput(
 }
 
 @Composable
-fun ContinueWithoutRegText(modifier: Modifier) {
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier) {
+fun ContinueWithoutRegText(modifier: Modifier = Modifier, onContinueWithoutRegistration: () -> Unit) {
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier.noRippleClickable { onContinueWithoutRegistration() }) {
         Divider(
             modifier = Modifier.weight(1f),
             color = WelcomeTheme.colors.onPrimary,
@@ -191,7 +188,7 @@ fun ContinueWithoutRegText(modifier: Modifier) {
 }
 
 @Composable
-fun SignInText(modifier: Modifier) {
+fun SignInText(modifier: Modifier = Modifier, onSignIn: () -> Unit) {
     Row(modifier) {
         Text(
             text = stringResource(id = R.string.sign_up_already_have_acc),
@@ -199,7 +196,9 @@ fun SignInText(modifier: Modifier) {
         )
 
         Text(
-            modifier = Modifier.padding(start = WelcomeTheme.spacing.smaller),
+            modifier = Modifier.padding(start = WelcomeTheme.spacing.smaller).noRippleClickable {
+                onSignIn()
+            },
             text = stringResource(id = R.string.sign_up_screen_action_sign_in),
             style = WelcomeTheme.typography.caption.copy(color = WelcomeTheme.colors.tertiary),
             textDecoration = TextDecoration.Underline

@@ -18,6 +18,7 @@ object Versions {
     const val composeRuntime = "1.2.0-alpha04"
     const val accompanistVersion = "0.24.1-alpha"
     const val accompanistInsetsVersion = "0.24.3-alpha"
+    const val accompanistUiControllerVersion = "0.27.0"
     const val coilVersion = "1.4.0"
     const val jodaTimeVersion = "2.10.13"
     const val moshiVersion = "1.13.0"

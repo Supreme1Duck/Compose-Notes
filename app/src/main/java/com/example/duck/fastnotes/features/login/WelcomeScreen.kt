@@ -1,4 +1,4 @@
-package com.example.duck.fastnotes.features.welcome
+package com.example.duck.fastnotes.features.login
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -11,21 +11,48 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import com.example.duck.fastnotes.R
 import com.example.duck.fastnotes.ui.theme.WelcomeTheme
 import com.example.duck.fastnotes.utils.Dimens
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
-fun WelcomeScreen(
-    onAgreementConfirmed: (Boolean) -> Unit
-) {
-    var isAgreementConfirmed by remember { mutableStateOf(false) }
+fun WelcomeScreen(viewModel: WelcomeScreenViewModel = hiltViewModel(), onScreenSuccess: () -> Unit) {
+
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    val lifeCycleOwner = LocalLifecycleOwner.current
+
+    LaunchedEffect(key1 = true) {
+        lifeCycleOwner.lifecycleScope.launch {
+            viewModel.event.flowWithLifecycle(lifeCycleOwner.lifecycle, Lifecycle.State.STARTED)
+                .collect {
+                    when (it) {
+                        ScreenStatus.Failure -> {
+
+                        }
+
+                        ScreenStatus.Success -> {
+                            onScreenSuccess()
+                        }
+                    }
+                }
+        }
+    }
 
     val context = LocalContext.current
     ConstraintLayout(
@@ -52,11 +79,13 @@ fun WelcomeScreen(
         )
 
         ImageLogo(
-            modifier = Modifier.height(85.dp).constrainAs(imageSign) {
-                top.linkTo(appName.bottom, margin = 80.dp)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            }
+            modifier = Modifier
+                .height(85.dp)
+                .constrainAs(imageSign) {
+                    top.linkTo(appName.bottom, margin = 80.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                }
         )
 
         UserInfo(text = stringResource(id = R.string.welcome_screen_terms_info),
@@ -73,11 +102,8 @@ fun WelcomeScreen(
                 bottom.linkTo(parent.bottom)
             },
             text = stringResource(id = R.string.welcome_screen_terms_checkbox),
-            isChecked = isAgreementConfirmed,
-            onCheckedChange = {
-                onAgreementConfirmed(it)
-                isAgreementConfirmed = it
-            }
+            isChecked = state.isAgreementChecked,
+            onCheckedChange = viewModel::setCheckedState
         )
     }
 }
