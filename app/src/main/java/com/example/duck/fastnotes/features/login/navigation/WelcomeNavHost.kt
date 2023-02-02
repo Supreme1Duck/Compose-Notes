@@ -1,4 +1,4 @@
-package com.example.duck.fastnotes.features.login
+package com.example.duck.fastnotes.features.login.navigation
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
@@ -6,9 +6,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import com.example.duck.fastnotes.R
-import com.example.duck.fastnotes.features.login.WelcomeScreenRoutes.SIGN_IN_SCREEN
-import com.example.duck.fastnotes.features.login.WelcomeScreenRoutes.SIGN_UP_SCREEN
-import com.example.duck.fastnotes.features.login.WelcomeScreenRoutes.WELCOME_SCREEN
+import com.example.duck.fastnotes.features.login.signin.SignInScreen
+import com.example.duck.fastnotes.features.login.signup.SignUpScreen
+import com.example.duck.fastnotes.features.login.welcome.WelcomeScreen
+import com.example.duck.fastnotes.features.login.navigation.WelcomeScreenRoutes.SIGN_IN_SCREEN
+import com.example.duck.fastnotes.features.login.navigation.WelcomeScreenRoutes.SIGN_UP_SCREEN
+import com.example.duck.fastnotes.features.login.navigation.WelcomeScreenRoutes.WELCOME_SCREEN
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController

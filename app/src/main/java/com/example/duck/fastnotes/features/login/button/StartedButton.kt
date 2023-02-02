@@ -1,4 +1,4 @@
-package com.example.duck.fastnotes.features.login
+package com.example.duck.fastnotes.features.login.button
 
 import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.tween
@@ -22,6 +22,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.duck.fastnotes.features.login.navigation.ButtonTextState
+import com.example.duck.fastnotes.features.login.navigation.StartedButtonState
 import com.example.duck.fastnotes.ui.theme.WelcomeTheme
 import com.example.duck.fastnotes.utils.ViewUtils.roundRectShadow
 import com.example.duck.fastnotes.utils.ui.CustomShadowParams
@@ -34,16 +36,12 @@ import kotlinx.coroutines.launch
 fun StartedButton(
     modifier: Modifier,
     state: StartedButtonState,
-    onClick: () -> Unit,
 ) {
     val viewModel: ButtonViewModel = hiltViewModel()
 
+    val uiState by viewModel.uiState.collectAsState()
+
     var startOffset by remember { mutableStateOf(0f) }
-    var clickable by remember { mutableStateOf(true) }
-
-    val onAnimationEnd = remember { { clickable = true } }
-
-    val enabled = state.enabled
 
     Button(
         modifier = modifier
@@ -54,14 +52,14 @@ fun StartedButton(
             .fillMaxWidth()
             .onGloballyPositioned { startOffset = it.positionInRoot().x },
         onClick = {
-            if (clickable) {
+            if (uiState.clickable) {
                 viewModel.onButtonClick()
             }
         },
         elevation = ButtonDefaults.elevation(
             0.dp
         ),
-        enabled = enabled,
+        enabled = true,
         shape = RoundedCornerShape(13.dp),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = WelcomeTheme.colors.onPrimary,
@@ -71,7 +69,7 @@ fun StartedButton(
     ) {
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             if (startOffset != 0f)
-                AnimatedText(state.textState, startOffset, onAnimationEnd)
+                AnimatedText(state.textState, startOffset, viewModel::onAnimationEnd)
         }
     }
 }
@@ -97,6 +95,7 @@ fun AnimatedText(state: ButtonTextState, startOffset: Float, onAnimationEnd: () 
             is ButtonTextState.DisplayText -> {
                 textPosition = 0f
                 textFade = 1f
+                onAnimationEnd()
             }
             is ButtonTextState.AnimateForward -> {
                 animateForward(
@@ -113,9 +112,7 @@ fun AnimatedText(state: ButtonTextState, startOffset: Float, onAnimationEnd: () 
             is ButtonTextState.AnimateBackwards -> {
                 animateBackwards(
                     { textPosition = it },
-                    { iconPosition = it },
                     { textFade = it },
-                    { iconFade = it },
                     { currentText = text },
                     coroutineScope,
                     startOffset,
@@ -254,48 +251,44 @@ fun animateForward(
 
 fun animateBackwards(
     textPosition: (Float) -> Unit,
-    iconPosition: (Float) -> Unit,
     textFade: (Float) -> Unit,
-    iconFade: (Float) -> Unit,
     onCurrentAnimationEnd: () -> Unit,
     coroutineScope: CoroutineScope,
     startOffset: Float,
     onAnimationEnd: () -> Unit
 ) {
-    // Animate Checkmark
-    coroutineScope.launch {
+    // Animate Current Text
+    coroutineScope.launch(Dispatchers.Default) {
         launch {
-            animate(startOffset, 0f, animationSpec = tween(durationMillis = 500)) { value, _ ->
-                iconPosition(value)
-            }
-
-            delay(200)
-
-            animate(0f, -startOffset, animationSpec = tween(durationMillis = 500)) { value, _ ->
-                iconPosition(value)
+            animate(
+                0f,
+                startOffset,
+                animationSpec = tween(durationMillis = 300)
+            ) { value, _ ->
+                textPosition(value)
             }
         }
 
         launch {
-            animate(0f, 1f, animationSpec = tween(durationMillis = 500)) { value, _ ->
-                iconFade(value)
+            animate(
+                1f,
+                0f,
+                animationSpec = tween(durationMillis = 300)
+            ) { value, _ ->
+                textFade(value)
             }
-
-            delay(200)
-
-            animate(1f, 0f, animationSpec = tween(durationMillis = 500)) { value, _ ->
-                iconFade(value)
-            }
+            onCurrentAnimationEnd()
         }
     }
 
     // Animate Next Text
-    coroutineScope.launch {
+    coroutineScope.launch(Dispatchers.Default) {
+        delay(300)
         launch {
             animate(
-                startOffset,
+                -startOffset,
                 0f,
-                animationSpec = tween(durationMillis = 500, delayMillis = 220)
+                animationSpec = tween(durationMillis = 300)
             ) { value, _ ->
                 textPosition(value)
             }
@@ -305,10 +298,11 @@ fun animateBackwards(
             animate(
                 0f,
                 1f,
-                animationSpec = tween(durationMillis = 500, delayMillis = 200)
+                animationSpec = tween(durationMillis = 300)
             ) { value, _ ->
-                textPosition(value)
+                textFade(value)
             }
+            onAnimationEnd()
         }
     }
 }

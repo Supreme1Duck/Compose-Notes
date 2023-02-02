@@ -5,6 +5,7 @@
     <string name="welcome_screen_hello">Welcome to</string>
     <string name="welcome_screen_online_functions">Want to use online functions?</string>
     <string name="welcome_screen_action">Next</string>
+    <string name="welcome_screen_checkbox_alert">Please confirm the agreement!</string>
     <string name="welcome_screen_terms_checkbox">Terms and Conditions</string>
     <string name="welcome_screen_terms_info">"By clicking checkbox you confirm an agreement with the usage of your personal data in terms of improving service"</string>
     <string name="welcome_screen_checkmark_description">CheckMark</string>

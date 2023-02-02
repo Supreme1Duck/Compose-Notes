@@ -1,5 +1,6 @@
-package com.example.duck.fastnotes.features.login
+package com.example.duck.fastnotes.features.login.welcome
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,6 +26,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.example.duck.fastnotes.R
+import com.example.duck.fastnotes.features.login.ScreenStatus
 import com.example.duck.fastnotes.ui.theme.WelcomeTheme
 import com.example.duck.fastnotes.utils.Dimens
 import kotlinx.coroutines.launch
@@ -32,6 +34,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun WelcomeScreen(viewModel: WelcomeScreenViewModel = hiltViewModel(), onScreenSuccess: () -> Unit) {
+    val context = LocalContext.current
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -43,7 +46,7 @@ fun WelcomeScreen(viewModel: WelcomeScreenViewModel = hiltViewModel(), onScreenS
                 .collect {
                     when (it) {
                         ScreenStatus.Failure -> {
-
+                            Toast.makeText(context, context.getString(R.string.welcome_screen_checkbox_alert), Toast.LENGTH_SHORT).show()
                         }
 
                         ScreenStatus.Success -> {
@@ -54,7 +57,6 @@ fun WelcomeScreen(viewModel: WelcomeScreenViewModel = hiltViewModel(), onScreenS
         }
     }
 
-    val context = LocalContext.current
     ConstraintLayout(
         Modifier
             .fillMaxSize()

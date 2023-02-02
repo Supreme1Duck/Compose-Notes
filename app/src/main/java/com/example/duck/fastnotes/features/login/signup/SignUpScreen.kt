@@ -1,4 +1,4 @@
-package com.example.duck.fastnotes.features.login
+package com.example.duck.fastnotes.features.login.signup
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -23,30 +23,38 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.duck.fastnotes.R
+import com.example.duck.fastnotes.features.login.welcome.ImageLogo
 import com.example.duck.fastnotes.ui.theme.WelcomeTheme
 import com.example.duck.fastnotes.utils.ViewUtils.noRippleClickable
 
 @Preview
 @Composable
 fun SignUpScreen(clickAction: Boolean = false, onContinueWithoutRegistration: () -> Unit = {}, onSignIn: () -> Unit = {}, onScreenSuccess: () -> Unit = {}) {
+    val viewModel = hiltViewModel<SignUpViewModel>()
+
+    val uiState by viewModel.state.collectAsState()
+
     Column(
         Modifier
             .fillMaxSize()
             .padding(horizontal = WelcomeTheme.spacing.default),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        MainContent()
+        MainContent(
+            email = uiState.email,
+            password = uiState.password,
+            onEmailChange = viewModel::onEmailChanged,
+            onPasswordChange = viewModel::onPasswordChanged
+        )
 
         AdditionalMethods(onContinueWithoutRegistration, onSignIn)
     }
 }
 
 @Composable
-fun MainContent() {
-    var emailInput by remember { mutableStateOf("") }
-    var passwordInput by remember { mutableStateOf("") }
-
+fun MainContent(email: String, password: String, onEmailChange: (String) -> Unit, onPasswordChange: (String) -> Unit ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         ImageLogo(
             modifier = Modifier
@@ -60,12 +68,12 @@ fun MainContent() {
 
         SignUpTitle()
 
-        EmailInput(modifier = Modifier.padding(top = WelcomeTheme.spacing.extraLarger), emailInput) {
-            emailInput = it
+        EmailInput(modifier = Modifier.padding(top = WelcomeTheme.spacing.extraLarger), email) {
+            onEmailChange(it)
         }
 
-        PasswordInput(modifier = Modifier.padding(top = WelcomeTheme.spacing.default), passwordInput) {
-            passwordInput = it
+        PasswordInput(modifier = Modifier.padding(top = WelcomeTheme.spacing.default), password) {
+            onPasswordChange(it)
         }
     }
 }
@@ -106,7 +114,7 @@ fun SignUpTitle() {
 }
 
 @Composable
-fun EmailInput(modifier: Modifier, text: String, isError: Boolean = false, onValueChange: (String) -> Unit) {
+fun EmailInput(modifier: Modifier, text: String, onValueChange: (String) -> Unit) {
     Box(modifier = modifier
         .fillMaxWidth()
         .height(65.dp)
@@ -134,7 +142,6 @@ fun EmailInput(modifier: Modifier, text: String, isError: Boolean = false, onVal
 fun PasswordInput(
     modifier: Modifier,
     text: String,
-    isError: Boolean = false,
     onValueChange: (String) -> Unit
 ) {
     Box(
@@ -196,9 +203,11 @@ fun SignInText(modifier: Modifier = Modifier, onSignIn: () -> Unit) {
         )
 
         Text(
-            modifier = Modifier.padding(start = WelcomeTheme.spacing.smaller).noRippleClickable {
-                onSignIn()
-            },
+            modifier = Modifier
+                .padding(start = WelcomeTheme.spacing.smaller)
+                .noRippleClickable {
+                    onSignIn()
+                },
             text = stringResource(id = R.string.sign_up_screen_action_sign_in),
             style = WelcomeTheme.typography.caption.copy(color = WelcomeTheme.colors.tertiary),
             textDecoration = TextDecoration.Underline

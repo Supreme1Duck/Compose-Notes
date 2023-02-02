@@ -14,7 +14,7 @@
         android:theme="@style/Theme.FastNotes">
 
         <activity
-            android:name=".features.login.WelcomeScreenActivity"
+            android:name=".features.login.navigation.WelcomeScreenActivity"
             android:exported="true"
             android:theme="@style/Theme.FastNotes.NoActionBar"
             android:screenOrientation="portrait">
