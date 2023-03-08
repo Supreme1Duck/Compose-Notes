@@ -1,40 +1,55 @@
 package com.example.duck.fastnotes.features.login.signup
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.duck.fastnotes.R
+import com.example.duck.fastnotes.features.login.navigation.ButtonActionsReceiver
 import com.example.duck.fastnotes.features.login.welcome.ImageLogo
 import com.example.duck.fastnotes.ui.theme.WelcomeTheme
 import com.example.duck.fastnotes.utils.ViewUtils.noRippleClickable
 
-@Preview
 @Composable
-fun SignUpScreen(clickAction: Boolean = false, onContinueWithoutRegistration: () -> Unit = {}, onSignIn: () -> Unit = {}, onScreenSuccess: () -> Unit = {}) {
+fun SignUpScreen(
+    buttonActionsReceiver: ButtonActionsReceiver,
+    onContinueWithoutRegistration: () -> Unit = {},
+    onSignIn: () -> Unit = {},
+    isOnTop: Boolean = false
+) {
     val viewModel = hiltViewModel<SignUpViewModel>()
 
     val uiState by viewModel.state.collectAsState()
+
+    LaunchedEffect(key1 = isOnTop) {
+        if (isOnTop) {
+            buttonActionsReceiver.clickActionFlow.collect {
+                viewModel.onButtonClick()
+            }
+        }
+    }
 
     Column(
         Modifier
@@ -45,6 +60,8 @@ fun SignUpScreen(clickAction: Boolean = false, onContinueWithoutRegistration: ()
         MainContent(
             email = uiState.email,
             password = uiState.password,
+            isEmailError = uiState.emailError,
+            isPasswordError = uiState.passwordError,
             onEmailChange = viewModel::onEmailChanged,
             onPasswordChange = viewModel::onPasswordChanged
         )
@@ -54,7 +71,7 @@ fun SignUpScreen(clickAction: Boolean = false, onContinueWithoutRegistration: ()
 }
 
 @Composable
-fun MainContent(email: String, password: String, onEmailChange: (String) -> Unit, onPasswordChange: (String) -> Unit ) {
+fun MainContent(email: String, password: String, isEmailError: Boolean, isPasswordError: Boolean, onEmailChange: (String) -> Unit, onPasswordChange: (String) -> Unit ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         ImageLogo(
             modifier = Modifier
@@ -68,11 +85,11 @@ fun MainContent(email: String, password: String, onEmailChange: (String) -> Unit
 
         SignUpTitle()
 
-        EmailInput(modifier = Modifier.padding(top = WelcomeTheme.spacing.extraLarger), email) {
+        EmailInput(modifier = Modifier.padding(top = WelcomeTheme.spacing.extraLarger), email, isEmailError) {
             onEmailChange(it)
         }
 
-        PasswordInput(modifier = Modifier.padding(top = WelcomeTheme.spacing.default), password) {
+        PasswordInput(modifier = Modifier.padding(top = WelcomeTheme.spacing.default), password, isPasswordError) {
             onPasswordChange(it)
         }
     }
@@ -114,20 +131,23 @@ fun SignUpTitle() {
 }
 
 @Composable
-fun EmailInput(modifier: Modifier, text: String, onValueChange: (String) -> Unit) {
+fun EmailInput(modifier: Modifier, text: String, isError: Boolean, onValueChange: (String) -> Unit) {
     Box(modifier = modifier
         .fillMaxWidth()
-        .height(65.dp)
-        .clip(RoundedCornerShape(18.dp, 18.dp, 18.dp, 18.dp))
-        .background(WelcomeTheme.colors.secondary)
     ) {
-        TextField(
+        OutlinedTextField(
             modifier = Modifier
-                .fillMaxSize()
+                .wrapContentHeight()
+                .fillMaxWidth()
                 .align(Alignment.CenterStart),
+            label = { Text(text = LocalContext.current.getString(R.string.sign_up_screen_email_hint)) },
             value = text,
             onValueChange = onValueChange,
             singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Next
+            ),
+            isError = isError,
             placeholder = {
                 Text(text = stringResource(id = R.string.sign_up_screen_email_hint))              
             },
@@ -142,22 +162,26 @@ fun EmailInput(modifier: Modifier, text: String, onValueChange: (String) -> Unit
 fun PasswordInput(
     modifier: Modifier,
     text: String,
+    isError: Boolean,
     onValueChange: (String) -> Unit
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(65.dp)
-            .clip(RoundedCornerShape(18.dp, 18.dp, 18.dp, 18.dp))
-            .background(WelcomeTheme.colors.secondary)
     ) {
-        TextField(
+        OutlinedTextField(
             modifier = Modifier
-                .fillMaxSize()
+                .wrapContentHeight()
+                .fillMaxWidth()
                 .align(Alignment.CenterStart),
             value = text,
             onValueChange = onValueChange,
             singleLine = true,
+            label = { Text(text = LocalContext.current.getString(R.string.sign_up_screen_password_hint)) },
+            isError = isError,
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Done
+            ),
             visualTransformation = PasswordVisualTransformation(),
             placeholder = {
                 Text(

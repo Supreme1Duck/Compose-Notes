@@ -27,18 +27,31 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.example.duck.fastnotes.R
 import com.example.duck.fastnotes.features.login.ScreenStatus
+import com.example.duck.fastnotes.features.login.navigation.ButtonActionsReceiver
 import com.example.duck.fastnotes.ui.theme.WelcomeTheme
 import com.example.duck.fastnotes.utils.Dimens
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
-fun WelcomeScreen(viewModel: WelcomeScreenViewModel = hiltViewModel(), onScreenSuccess: () -> Unit) {
+fun WelcomeScreen(
+    viewModel: WelcomeScreenViewModel = hiltViewModel(),
+    buttonActionsReceiver: ButtonActionsReceiver,
+    isOnTop: Boolean = false
+) {
     val context = LocalContext.current
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     val lifeCycleOwner = LocalLifecycleOwner.current
+
+    LaunchedEffect(key1 = isOnTop) {
+        if (isOnTop) {
+            buttonActionsReceiver.clickActionFlow.collect {
+                viewModel.onButtonClick()
+            }
+        }
+    }
 
     LaunchedEffect(key1 = true) {
         lifeCycleOwner.lifecycleScope.launch {
@@ -50,7 +63,7 @@ fun WelcomeScreen(viewModel: WelcomeScreenViewModel = hiltViewModel(), onScreenS
                         }
 
                         ScreenStatus.Success -> {
-                            onScreenSuccess()
+                            buttonActionsReceiver.onScreenSuccess()
                         }
                     }
                 }

@@ -3,7 +3,6 @@ package com.example.duck.fastnotes.features.login.navigation
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.*
@@ -69,19 +68,14 @@ fun WelcomeScreenWrapper(welcomeNavigationViewModel: WelcomeNavigationViewModel 
                     NavigateActions.ACTION_TO_CONTINUE_WITHOUT_REGISTRATION -> {
 
                     }
-                    null -> {
-                        Log.d("DDebug", "No Navigation")
-                    }
                 }
             }
     }
 
     LaunchedEffect(key1 = Unit) {
-        Log.d("DDebug", "New Launch event")
         navController.currentBackStackEntryFlow
             .flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
             .collect {
-                Log.d("DDebug", "New collect event")
                 welcomeNavigationViewModel.sendNavigateIntent(it.destination.route ?: "")
             }
     }
@@ -92,16 +86,13 @@ fun WelcomeScreenWrapper(welcomeNavigationViewModel: WelcomeNavigationViewModel 
                 .fillMaxWidth()
                 .fillMaxHeight(0.9f),
             navController = navController,
-            onScreenSuccess = {
-                welcomeNavigationViewModel.onScreenSuccess(
-                    navController.currentBackStackEntry?.destination?.route ?: ""
-                )
-            },
+            buttonActionsReceiver = welcomeNavigationViewModel,
         )
 
         StartedButton(
             modifier = Modifier.fillMaxWidth(),
-            state = state.buttonState
+            state = state.buttonState,
+            viewModel = welcomeNavigationViewModel
         )
     }
 }

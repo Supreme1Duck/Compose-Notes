@@ -21,7 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.duck.fastnotes.features.login.navigation.ButtonActionsProducer
 import com.example.duck.fastnotes.features.login.navigation.ButtonTextState
 import com.example.duck.fastnotes.features.login.navigation.StartedButtonState
 import com.example.duck.fastnotes.ui.theme.WelcomeTheme
@@ -36,10 +36,9 @@ import kotlinx.coroutines.launch
 fun StartedButton(
     modifier: Modifier,
     state: StartedButtonState,
+    viewModel: ButtonActionsProducer
 ) {
-    val viewModel: ButtonViewModel = hiltViewModel()
-
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.buttonState.collectAsState()
 
     var startOffset by remember { mutableStateOf(0f) }
 
@@ -69,7 +68,7 @@ fun StartedButton(
     ) {
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             if (startOffset != 0f)
-                AnimatedText(state.textState, startOffset, viewModel::onAnimationEnd)
+                AnimatedText(state.textState, startOffset, viewModel::onButtonAnimationEnd)
         }
     }
 }

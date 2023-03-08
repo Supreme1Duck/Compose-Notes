@@ -7,7 +7,7 @@ object Versions {
     const val appCompatVersion = "1.4.0"
     const val coroutinesVersion = "1.5.2"
     const val dataStoreVersion = "1.1.0-dev01"
-    const val viewModelVersion = "2.4.0"
+    const val viewModelVersion = "2.5.1"
     const val materialVersion = "1.5.0"
     const val hiltVersion = "2.38.1"
     const val timberVersion = "4.7.1"

@@ -7,31 +7,39 @@ import com.example.duck.fastnotes.features.login.WelcomeBaseViewModel
 class SignUpViewModel: WelcomeBaseViewModel<SignUpState>(SignUpState.initialState()) {
 
     fun onEmailChanged(email: String) {
-        if (email.isValidEmail())
-            asyncReduce { state ->
-                state.copy(email = email)
-            }
+        reduce { state ->
+            state.copy(email = email, emailError = false)
+        }
     }
 
     fun onPasswordChanged(password: String) {
-        if (password.isValidPassword())
-            asyncReduce { state ->
-                state.copy(password = password)
-            }
+        reduce { state ->
+            state.copy(password = password, passwordError = false)
+        }
     }
 
     override fun validate(): Boolean {
-        return currentState.email.isValidEmail() && currentState.password.isValidPassword()
+        if (!currentState.email.isValidEmail()) {
+            reduce { it.copy(emailError = true) }
+            return false
+        }
+        if (!currentState.password.isValidPassword()) {
+            reduce { it.copy(passwordError = true) }
+            return false
+        }
+        return true
     }
 }
 
 data class SignUpState(
     val email: String,
-    val password: String
+    val password: String,
+    val emailError: Boolean,
+    val passwordError: Boolean,
 ) {
     companion object {
         fun initialState(): SignUpState {
-            return SignUpState("", "")
+            return SignUpState("", "", emailError = false, passwordError = false)
         }
     }
 }
