@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Fast Notes</string>
 
+    <string name="confirm_button_text">OK</string>
+
     <string name="welcome_screen_title">Fast Notes</string>
     <string name="welcome_screen_hello">Welcome to</string>
     <string name="welcome_screen_online_functions">Want to use online functions?</string>
@@ -21,6 +23,9 @@
     <string name="sign_up_screen_action_sign_in">Sign In</string>
     <string name="sign_up_screen_email_hint">Email</string>
     <string name="sign_up_screen_password_hint">Password</string>
+    <string name="sign_up_screen_password_special_symbols_not_allowed">Special symbols are not allowed</string>
+    <string name="sign_up_screen_password_spaces_not_allowed">No spaces are allowed</string>
+    <string name="sign_up_screen_password_min_10_characters">Password must contain minimum 10 characters</string>
 
     <string name="dashboard_navigation_edit">Edit</string>
     <string name="dashboard_navigation_home">Home</string>

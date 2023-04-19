@@ -7,4 +7,8 @@ interface ButtonActionsReceiver {
     val clickActionFlow: Flow<Unit>
 
     fun onScreenSuccess()
+
+    fun onButtonEnable()
+
+    fun onButtonDisable()
 }

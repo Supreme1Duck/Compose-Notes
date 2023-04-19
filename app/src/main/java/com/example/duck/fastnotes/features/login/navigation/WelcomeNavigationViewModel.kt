@@ -4,9 +4,11 @@ import androidx.annotation.IntegerRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.duck.fastnotes.R
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
     * VM used in navigation between login screens.
@@ -22,15 +24,8 @@ import kotlinx.coroutines.launch
     * state - state of the welcome navigation screen.
     * event - observable holder for one-time events.
 */
-class WelcomeNavigationViewModel : ViewModel(), ButtonActionsProducer, ButtonActionsReceiver {
-
-    private val _clickActionChannel = Channel<Unit>()
-    override val clickActionFlow: Flow<Unit> = _clickActionChannel.receiveAsFlow()
-
-    private val _buttonState = MutableStateFlow(ButtonUIState(clickable = false))
-    override val buttonState: StateFlow<ButtonUIState> = _buttonState.asStateFlow()
-
-    private var currentScreen: String = WelcomeScreenRoutes.WELCOME_SCREEN
+@HiltViewModel
+class WelcomeNavigationViewModel @Inject constructor() : ViewModel(), ButtonActionsProducer, ButtonActionsReceiver {
 
     private val screenList = listOf(
         WelcomeScreenRoutes.WELCOME_SCREEN,
@@ -44,10 +39,13 @@ class WelcomeNavigationViewModel : ViewModel(), ButtonActionsProducer, ButtonAct
         WelcomeScreenRoutes.SIGN_IN_SCREEN to R.string.sign_in_screen_action
     )
 
-    private val _state : MutableStateFlow<WelcomeNavigationState> = MutableStateFlow(
-        WelcomeNavigationState(StartedButtonState(textState = ButtonTextState.DisplayText(buttonTextsMap[WelcomeScreenRoutes.WELCOME_SCREEN] ?: 0), true))
-    )
-    val state = _state.asStateFlow()
+    private val _clickActionChannel = Channel<Unit>()
+    override val clickActionFlow: Flow<Unit> = _clickActionChannel.receiveAsFlow()
+
+    private val _buttonState = MutableStateFlow(StartedButtonState(textState = ButtonTextState.DisplayText(buttonTextsMap[WelcomeScreenRoutes.WELCOME_SCREEN] ?: 0), enabled = false))
+    override val buttonState: StateFlow<StartedButtonState> = _buttonState.asStateFlow()
+
+    private var currentScreen: String = WelcomeScreenRoutes.WELCOME_SCREEN
 
     private val _event = Channel<NavigateActions>()
     val event = _event.receiveAsFlow()
@@ -69,12 +67,13 @@ class WelcomeNavigationViewModel : ViewModel(), ButtonActionsProducer, ButtonAct
         if (currentScreen == route)
             return
 
+        _buttonState.value = _buttonState.value.copy(enabled = false)
+
         viewModelScope.launch {
             if (screenList.indexOf(route) < screenList.indexOf(currentScreen)) {
-                _state.emit(
-                    _state.value.copy(
-                        buttonState = StartedButtonState(ButtonTextState.AnimateBackwards(buttonTextsMap[route] ?: 0, buttonTextsMap[currentScreen] ?: 0), true)
-                    )
+                _buttonState.value = _buttonState.value.copy(
+                    textState = ButtonTextState.AnimateBackwards(buttonTextsMap[route] ?: 0, buttonTextsMap[currentScreen] ?: 0),
+                    enabled = true
                 )
 
                 currentScreen = route
@@ -82,10 +81,9 @@ class WelcomeNavigationViewModel : ViewModel(), ButtonActionsProducer, ButtonAct
                 if (route == screenList[0])
                     return@launch
 
-                _state.emit(
-                    _state.value.copy(
-                        buttonState = StartedButtonState(ButtonTextState.AnimateForward(buttonTextsMap[route] ?: 0, buttonTextsMap[currentScreen] ?: 0), true)
-                    )
+                _buttonState.value = _buttonState.value.copy(
+                    textState = ButtonTextState.AnimateForward(buttonTextsMap[route] ?: 0, buttonTextsMap[currentScreen] ?: 0),
+                    enabled = true
                 )
 
                 currentScreen = route
@@ -99,12 +97,20 @@ class WelcomeNavigationViewModel : ViewModel(), ButtonActionsProducer, ButtonAct
         }
     }
 
+    override fun onButtonAnimationEnd() {
+        _buttonState.value = _buttonState.value.copy(enabled = true)
+    }
+
     override fun onScreenSuccess() {
         onScreenSuccess(currentScreen)
     }
 
-    override fun onButtonAnimationEnd() {
-        _buttonState.value = _buttonState.value.copy(clickable = true)
+    override fun onButtonDisable() {
+        _buttonState.value = _buttonState.value.copy(enabled = false)
+    }
+
+    override fun onButtonEnable() {
+        _buttonState.value = _buttonState.value.copy(enabled = true)
     }
 
     fun onContinueWithoutRegistration() {
@@ -119,15 +125,6 @@ class WelcomeNavigationViewModel : ViewModel(), ButtonActionsProducer, ButtonAct
 
     }
 }
-
-data class WelcomeNavigationState(
-    val buttonState: StartedButtonState
-)
-
-data class StartedButtonState(
-    val textState: ButtonTextState,
-    val enabled: Boolean
-)
 
 sealed class ButtonTextState(@IntegerRes val text: Int, @IntegerRes val textFrom: Int?) {
     class DisplayText(@IntegerRes text: Int) : ButtonTextState(text, null)

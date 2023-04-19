@@ -34,7 +34,7 @@ val WelcomeSecondaryVariantColor = Color(0xFF1B1A17)
 val WelcomeOnSecondaryColor = Color.Black
 val WelcomeTertiaryColor = Color(0xE4E31CFA)
 
-val TestHexColor = Color(0xFFEF4444)
+val ErrorColor = Color(0xFFEF4444)
 val WelcomeBackgroundColor = Color.White
 
 @Immutable
@@ -47,6 +47,7 @@ data class WelcomeScreenColors(
     val onSecondary: Color = WelcomeOnSecondaryColor,
     val tertiary: Color = WelcomeTertiaryColor,
     val background: Color = WelcomeBackgroundColor,
+    val error: Color = ErrorColor
 )
 
 val WelcomeScreenColorsComposition = staticCompositionLocalOf {

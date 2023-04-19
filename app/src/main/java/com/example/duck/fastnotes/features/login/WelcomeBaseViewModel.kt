@@ -42,5 +42,5 @@ abstract class WelcomeBaseViewModel<UIState>(
         }
     }
 
-    abstract override fun validate(): Boolean
+    abstract override suspend fun validate(): Boolean
 }

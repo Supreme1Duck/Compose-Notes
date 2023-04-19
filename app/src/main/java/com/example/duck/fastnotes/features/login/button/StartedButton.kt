@@ -51,7 +51,7 @@ fun StartedButton(
             .fillMaxWidth()
             .onGloballyPositioned { startOffset = it.positionInRoot().x },
         onClick = {
-            if (uiState.clickable) {
+            if (uiState.enabled) {
                 viewModel.onButtonClick()
             }
         },

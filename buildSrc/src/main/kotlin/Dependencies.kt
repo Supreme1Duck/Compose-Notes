@@ -16,7 +16,8 @@ object Dependencies {
 
     const val timber = "com.jakewharton.timber:timber:${Versions.timberVersion}"
 
-    const val material = "com.google.android.material:material:${Versions.materialVersion}"
+    const val material = "androidx.compose.material3:material3:${Versions.materialVersion}"
+    const val materialWindowSize = "androidx.compose.material3:material3-window-size-class:${Versions.materialVersion}"
 
     const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.viewModelVersion}"
 

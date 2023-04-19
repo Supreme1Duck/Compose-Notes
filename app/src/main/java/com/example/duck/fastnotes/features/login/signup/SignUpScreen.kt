@@ -1,18 +1,15 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.example.duck.fastnotes.features.login.signup
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -31,6 +28,12 @@ import com.example.duck.fastnotes.features.login.navigation.ButtonActionsReceive
 import com.example.duck.fastnotes.features.login.welcome.ImageLogo
 import com.example.duck.fastnotes.ui.theme.WelcomeTheme
 import com.example.duck.fastnotes.utils.ViewUtils.noRippleClickable
+import com.example.duck.fastnotes.features.login.signup.ValidationUtils.PasswordValidationResult
+import com.example.duck.fastnotes.utils.ui.DialogState
+import com.example.duck.fastnotes.utils.ui.ObserverUtils.collectAsState
+import com.example.duck.fastnotes.utils.ui.ServerErrorDialog
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.flow.consumeAsFlow
 
 @Composable
 fun SignUpScreen(
@@ -43,12 +46,32 @@ fun SignUpScreen(
 
     val uiState by viewModel.state.collectAsState()
 
+    val showDialog by viewModel.showDialogEvent.collectAsState(initial = DialogState.initial)
+
     LaunchedEffect(key1 = isOnTop) {
         if (isOnTop) {
             buttonActionsReceiver.clickActionFlow.collect {
                 viewModel.onButtonClick()
             }
         }
+    }
+
+    LaunchedEffect(key1 = uiState.isButtonEnabled) {
+        if (uiState.isButtonEnabled) {
+            Log.d("DDebug", "on Button Enable")
+            buttonActionsReceiver.onButtonEnable()
+        } else {
+            Log.d("DDebug", "on Button disable")
+            buttonActionsReceiver.onButtonDisable()
+        }
+    }
+
+    if (showDialog.show) {
+        Log.d("DDebug", "Show dialog on UI")
+        ServerErrorDialog(
+            description = showDialog.description,
+            onCloseDialog = viewModel::onCloseDialog
+        )
     }
 
     Column(
@@ -61,7 +84,7 @@ fun SignUpScreen(
             email = uiState.email,
             password = uiState.password,
             isEmailError = uiState.emailError,
-            isPasswordError = uiState.passwordError,
+            passwordValidationResult = uiState.passwordValidationResult,
             onEmailChange = viewModel::onEmailChanged,
             onPasswordChange = viewModel::onPasswordChanged
         )
@@ -71,7 +94,7 @@ fun SignUpScreen(
 }
 
 @Composable
-fun MainContent(email: String, password: String, isEmailError: Boolean, isPasswordError: Boolean, onEmailChange: (String) -> Unit, onPasswordChange: (String) -> Unit ) {
+fun MainContent(email: String, password: String, isEmailError: Boolean, passwordValidationResult: PasswordValidationResult, onEmailChange: (String) -> Unit, onPasswordChange: (String) -> Unit) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         ImageLogo(
             modifier = Modifier
@@ -89,7 +112,7 @@ fun MainContent(email: String, password: String, isEmailError: Boolean, isPasswo
             onEmailChange(it)
         }
 
-        PasswordInput(modifier = Modifier.padding(top = WelcomeTheme.spacing.default), password, isPasswordError) {
+        PasswordInput(modifier = Modifier.padding(top = WelcomeTheme.spacing.default), password, passwordValidationResult) {
             onPasswordChange(it)
         }
     }
@@ -162,9 +185,10 @@ fun EmailInput(modifier: Modifier, text: String, isError: Boolean, onValueChange
 fun PasswordInput(
     modifier: Modifier,
     text: String,
-    isError: Boolean,
+    validationStatus: PasswordValidationResult,
     onValueChange: (String) -> Unit
 ) {
+    val context = LocalContext.current
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -177,8 +201,7 @@ fun PasswordInput(
             value = text,
             onValueChange = onValueChange,
             singleLine = true,
-            label = { Text(text = LocalContext.current.getString(R.string.sign_up_screen_password_hint)) },
-            isError = isError,
+            label = { Text(text = context.getString(R.string.sign_up_screen_password_hint)) },
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Done
             ),
@@ -191,6 +214,29 @@ fun PasswordInput(
             },
             leadingIcon = {
                 Icon(imageVector = Icons.Filled.Lock, contentDescription = null)
+            },
+            supportingText = {
+                when (validationStatus) {
+                    PasswordValidationResult.PasswordValidationError.SpecialSymbolsError -> {
+                        Text(
+                            text = context.getString(R.string.sign_up_screen_password_special_symbols_not_allowed),
+                            style = WelcomeTheme.typography.caption.copy(color = WelcomeTheme.colors.error)
+                        )
+                    }
+                    PasswordValidationResult.PasswordValidationError.SpaceError -> {
+                        Text(
+                            text = context.getString(R.string.sign_up_screen_password_spaces_not_allowed),
+                            style = WelcomeTheme.typography.caption.copy(color = WelcomeTheme.colors.error)
+                        )
+                    }
+                    PasswordValidationResult.PasswordValidationError.Less10 -> {
+                        Text(
+                            text = context.getString(R.string.sign_up_screen_password_min_10_characters),
+                            style = WelcomeTheme.typography.caption.copy(color = WelcomeTheme.colors.error)
+                        )
+                    }
+                    PasswordValidationResult.Success -> {}
+                }
             }
         )
     }

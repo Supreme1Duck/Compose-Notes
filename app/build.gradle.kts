@@ -76,6 +76,7 @@ dependencies {
 
     implementation(Dependencies.appCompat)
     implementation(Dependencies.material)
+    implementation(Dependencies.materialWindowSize)
     implementation(Dependencies.compose)
     implementation(Dependencies.composeMaterial)
     implementation(Dependencies.composePreview)
@@ -107,7 +108,7 @@ dependencies {
 
     implementation("pub.devrel:easypermissions:3.0.0")
 
-    //Instead Java.Date
+    //Instead of Java.Date
     implementation(Dependencies.jodaTime)
 
     //Hilt
@@ -128,10 +129,10 @@ dependencies {
     implementation(Dependencies.navigationUi)
 
     //Firebase
-    implementation(platform("com.google.firebase:firebase-bom:29.0.4"))
+    implementation(platform("com.google.firebase:firebase-bom:31.2.3"))
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-firestore-ktx")
-    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-dynamic-links-ktx")
 
     implementation(Dependencies.timber)

@@ -1,8 +1,11 @@
 package com.example.duck.fastnotes.features.login.welcome
 
 import com.example.duck.fastnotes.features.login.WelcomeBaseViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class WelcomeScreenViewModel : WelcomeBaseViewModel<WelcomeScreenState>(
+@HiltViewModel
+class WelcomeScreenViewModel @Inject constructor() : WelcomeBaseViewModel<WelcomeScreenState>(
     initialUiState = WelcomeScreenState(false)
 ) {
     fun setCheckedState(checked: Boolean) {
@@ -11,7 +14,7 @@ class WelcomeScreenViewModel : WelcomeBaseViewModel<WelcomeScreenState>(
         }
     }
 
-    override fun validate(): Boolean {
+    override suspend fun validate(): Boolean {
         return state.value.isAgreementChecked
     }
 }

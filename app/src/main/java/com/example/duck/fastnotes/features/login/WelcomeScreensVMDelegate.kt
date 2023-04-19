@@ -12,7 +12,7 @@ interface WelcomeScreensVMDelegate<UIState> {
 
     fun onButtonClick()
 
-    fun validate(): Boolean
+    suspend fun validate(): Boolean
 }
 
 sealed interface ScreenStatus {
