@@ -8,7 +8,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.platform.LocalContext
@@ -76,7 +75,7 @@ fun WelcomeScreen(
             .padding(bottom = 30.dp)
             .background(WelcomeTheme.colors.background),
     ) {
-        val (title, appName, imageSign, userInfo, userAgreement) = createRefs()
+        val (title, appName, imgLogo, userInfo, userAgreement) = createRefs()
 
         WelcomeText(text = context.resources.getString(R.string.welcome_screen_hello),
             modifier = Modifier.constrainAs(title) {
@@ -93,15 +92,12 @@ fun WelcomeScreen(
             },
         )
 
-        ImageLogo(
-            modifier = Modifier
-                .height(85.dp)
-                .constrainAs(imageSign) {
-                    top.linkTo(appName.bottom, margin = 80.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
-        )
+        WelcomeLogo(modifier = Modifier.constrainAs(imgLogo) {
+            top.linkTo(appName.bottom)
+            start.linkTo(appName.start)
+            end.linkTo(appName.end)
+            bottom.linkTo(userInfo.top)
+        })
 
         UserInfo(text = stringResource(id = R.string.welcome_screen_terms_info),
             modifier = Modifier.constrainAs(userInfo) {
@@ -153,11 +149,20 @@ fun AppName(modifier: Modifier, text: String) {
 @Composable
 fun ImageLogo(modifier: Modifier) {
     Icon(
-        painter = painterResource(id = R.drawable.ic_logo),
+        painter = painterResource(id = R.drawable.villain_logo),
         contentDescription = null,
         modifier = modifier
             .fillMaxWidth()
-            .rotate(-1f)
+    )
+}
+
+@Composable
+fun WelcomeLogo(modifier: Modifier) {
+    Icon(
+        painter = painterResource(id = R.drawable.west),
+        contentDescription = null,
+        modifier = modifier
+            .size(200.dp)
     )
 }
 

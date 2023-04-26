@@ -1,5 +1,6 @@
 package com.example.duck.fastnotes.features.dashboard.home
 
+import android.util.Log
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.viewModelScope
 import com.example.duck.fastnotes.domain.data.NoteItem
@@ -48,18 +49,19 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun getUserInfo() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val result = userInfoUseCase()
-            if (result.isSuccess) {
-                val userInfo = result.getOrThrow()
+        viewModelScope.launch {
+            try {
+                val result = userInfoUseCase()
                 withContext(Dispatchers.Main) {
                     reducer.sendEvent(
                         HomeScreenEvents.ShowUserData(
-                            name = userInfo.userName,
-                            isPremium = userInfo.isPremium
+                            name = result.login,
+                            isPremium = false
                         )
                     )
                 }
+            } catch (e: Exception) {
+                Log.e("Villain", "HomeViewModel getUserInfo e: ${e.printStackTrace()}")
             }
         }
     }

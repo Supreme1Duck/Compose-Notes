@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">Fast Notes</string>
+    <string name="app_name">Villain</string>
 
     <string name="confirm_button_text">OK</string>
 
-    <string name="welcome_screen_title">Fast Notes</string>
+    <string name="welcome_screen_title">VILLAIN</string>
     <string name="welcome_screen_hello">Welcome to</string>
     <string name="welcome_screen_online_functions">Want to use online functions?</string>
     <string name="welcome_screen_action">Next</string>

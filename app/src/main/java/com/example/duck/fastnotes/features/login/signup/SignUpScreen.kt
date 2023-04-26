@@ -2,7 +2,6 @@
 
 package com.example.duck.fastnotes.features.login.signup
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -13,7 +12,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -24,16 +22,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.duck.fastnotes.R
+import com.example.duck.fastnotes.features.login.ScreenStatus
 import com.example.duck.fastnotes.features.login.navigation.ButtonActionsReceiver
+import com.example.duck.fastnotes.features.login.signup.ValidationUtils.PasswordValidationResult
 import com.example.duck.fastnotes.features.login.welcome.ImageLogo
 import com.example.duck.fastnotes.ui.theme.WelcomeTheme
 import com.example.duck.fastnotes.utils.ViewUtils.noRippleClickable
-import com.example.duck.fastnotes.features.login.signup.ValidationUtils.PasswordValidationResult
 import com.example.duck.fastnotes.utils.ui.DialogState
-import com.example.duck.fastnotes.utils.ui.ObserverUtils.collectAsState
 import com.example.duck.fastnotes.utils.ui.ServerErrorDialog
-import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.flow.consumeAsFlow
 
 @Composable
 fun SignUpScreen(
@@ -58,16 +54,21 @@ fun SignUpScreen(
 
     LaunchedEffect(key1 = uiState.isButtonEnabled) {
         if (uiState.isButtonEnabled) {
-            Log.d("DDebug", "on Button Enable")
             buttonActionsReceiver.onButtonEnable()
         } else {
-            Log.d("DDebug", "on Button disable")
             buttonActionsReceiver.onButtonDisable()
         }
     }
 
+    LaunchedEffect(key1 = Unit) {
+        viewModel.event.collect {
+            if (it == ScreenStatus.Success) {
+                buttonActionsReceiver.onScreenSuccess()
+            }
+        }
+    }
+
     if (showDialog.show) {
-        Log.d("DDebug", "Show dialog on UI")
         ServerErrorDialog(
             description = showDialog.description,
             onCloseDialog = viewModel::onCloseDialog
@@ -80,21 +81,22 @@ fun SignUpScreen(
             .padding(horizontal = WelcomeTheme.spacing.default),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        MainContent(
+        MainContent()
+
+        SignUpMethods(
+            onContinueWithoutRegistration = onContinueWithoutRegistration,
+            onSignIn = onSignIn,
             email = uiState.email,
             password = uiState.password,
             isEmailError = uiState.emailError,
             passwordValidationResult = uiState.passwordValidationResult,
             onEmailChange = viewModel::onEmailChanged,
-            onPasswordChange = viewModel::onPasswordChanged
-        )
-
-        AdditionalMethods(onContinueWithoutRegistration, onSignIn)
+            onPasswordChange = viewModel::onPasswordChanged)
     }
 }
 
 @Composable
-fun MainContent(email: String, password: String, isEmailError: Boolean, passwordValidationResult: PasswordValidationResult, onEmailChange: (String) -> Unit, onPasswordChange: (String) -> Unit) {
+fun MainContent() {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         ImageLogo(
             modifier = Modifier
@@ -104,49 +106,51 @@ fun MainContent(email: String, password: String, isEmailError: Boolean, password
                 .width(120.dp)
         )
 
-        SignUpLogo(modifier = Modifier.padding(top = WelcomeTheme.spacing.larger))
-
         SignUpTitle()
-
-        EmailInput(modifier = Modifier.padding(top = WelcomeTheme.spacing.extraLarger), email, isEmailError) {
-            onEmailChange(it)
-        }
-
-        PasswordInput(modifier = Modifier.padding(top = WelcomeTheme.spacing.default), password, passwordValidationResult) {
-            onPasswordChange(it)
-        }
     }
 }
 
 @Composable
-fun AdditionalMethods(onContinueWithoutRegistration: () -> Unit, onSignIn: () -> Unit) {
+fun SignUpMethods(
+    onContinueWithoutRegistration: () -> Unit,
+    onSignIn: () -> Unit,
+    email: String,
+    password: String,
+    isEmailError: Boolean,
+    passwordValidationResult: PasswordValidationResult,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween,
+        verticalArrangement = Arrangement.Bottom,
         modifier = Modifier
             .fillMaxWidth()
-            .height(150.dp)
+            .height(450.dp)
             .padding(top = WelcomeTheme.spacing.default, bottom = WelcomeTheme.spacing.default)
     ) {
-        ContinueWithoutRegText(onContinueWithoutRegistration = onContinueWithoutRegistration)
+        EmailInput(text = email, isError = isEmailError) {
+            onEmailChange(it)
+        }
+
+        PasswordInput(modifier = Modifier.padding(bottom = WelcomeTheme.spacing.bottom), text = password, validationStatus = passwordValidationResult) {
+            onPasswordChange(it)
+        }
+
+        ContinueWithoutRegText(modifier = Modifier.padding(bottom = WelcomeTheme.spacing.bottom), onContinueWithoutRegistration = onContinueWithoutRegistration)
 
         SignInText(onSignIn = onSignIn)
     }
 }
 
 @Composable
-fun SignUpLogo(modifier: Modifier) {
-    Icon(
-        modifier = modifier.size(140.dp),
-        painter = painterResource(id = R.mipmap.ic_sign_up_foreground),
-        contentDescription = null
-    )
-}
-
-@Composable
 fun SignUpTitle() {
     Text(
+        modifier = Modifier
+            .padding(top = 70.dp)
+            .fillMaxWidth(),
         text = stringResource(id = R.string.sign_up_screen_title),
+        textAlign = TextAlign.Center,
         style = WelcomeTheme.typography.h3.copy(
             fontWeight = FontWeight.Normal,
         )
@@ -154,7 +158,7 @@ fun SignUpTitle() {
 }
 
 @Composable
-fun EmailInput(modifier: Modifier, text: String, isError: Boolean, onValueChange: (String) -> Unit) {
+fun EmailInput(modifier: Modifier = Modifier, text: String, isError: Boolean, onValueChange: (String) -> Unit) {
     Box(modifier = modifier
         .fillMaxWidth()
     ) {
@@ -183,7 +187,7 @@ fun EmailInput(modifier: Modifier, text: String, isError: Boolean, onValueChange
 
 @Composable
 fun PasswordInput(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     text: String,
     validationStatus: PasswordValidationResult,
     onValueChange: (String) -> Unit

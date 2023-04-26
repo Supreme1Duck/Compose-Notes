@@ -2,7 +2,9 @@ package com.example.duck.fastnotes.data
 
 import java.io.Serializable
 
-data class UserInfo(
-    val userName: String,
-    val isPremium: Boolean
+data class UserInfoData(
+    val login: String,
+    val name: String,
+    val imageUrl: String,
+    val registeredSince: String
 ): Serializable

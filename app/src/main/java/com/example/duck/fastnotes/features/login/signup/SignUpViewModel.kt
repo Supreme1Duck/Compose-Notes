@@ -1,7 +1,7 @@
 package com.example.duck.fastnotes.features.login.signup
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.example.duck.fastnotes.domain.repository.UserInfoRepository
 import com.example.duck.fastnotes.features.login.WelcomeBaseViewModel
 import com.example.duck.fastnotes.features.login.signup.ValidationUtils.PasswordValidationResult
 import com.example.duck.fastnotes.features.login.signup.ValidationUtils.isValidEmail
@@ -12,18 +12,22 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor(): WelcomeBaseViewModel<SignUpState>(SignUpState.initialState()) {
+class SignUpViewModel @Inject constructor(
+    private val userInfoRepository: UserInfoRepository
+): WelcomeBaseViewModel<SignUpState>(SignUpState.initialState()) {
 
     private val auth: FirebaseAuth by lazy {
         Firebase.auth
     }
 
-    val showDialogEvent = Channel<DialogState>()
+    private val _showDialogEvent = Channel<DialogState>()
+    val showDialogEvent = _showDialogEvent.consumeAsFlow()
 
     fun onEmailChanged(email: String) {
         reduce { state ->
@@ -62,21 +66,20 @@ class SignUpViewModel @Inject constructor(): WelcomeBaseViewModel<SignUpState>(S
 
     private suspend fun signUpWithEmail(email: String, password: String): Boolean {
         return try {
-            Log.d("DDebug", "Try in signUp: $email - $password")
             auth.createUserWithEmailAndPassword(email, password).await()
             reduce { state -> state.copy(isButtonEnabled = true) }
+            userInfoRepository.addLogin(login = email)
             true
         } catch (e: Exception) {
-            Log.d("DDebug", "Catch in signUp: ${e.localizedMessage}")
             reduce { state -> state.copy(isButtonEnabled = true) }
-            showDialogEvent.send(DialogState.show(e.localizedMessage ?: ""))
+            _showDialogEvent.send(DialogState.show(e.localizedMessage ?: ""))
             false
         }
     }
 
     fun onCloseDialog() {
         viewModelScope.launch {
-            showDialogEvent.send(DialogState.close())
+            _showDialogEvent.send(DialogState.close())
         }
     }
 }

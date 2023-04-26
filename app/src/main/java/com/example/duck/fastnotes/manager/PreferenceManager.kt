@@ -1,46 +1,74 @@
 package com.example.duck.fastnotes.manager
 
 import android.content.Context
-import android.util.Log
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.example.duck.fastnotes.data.UserInfoData
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class PreferenceManager @Inject constructor(@ApplicationContext private val context: Context) {
 
     private companion object {
-        // store keys
-        private const val SETTINGS_KEY = "settings_key"
-        private const val USER_KEY = "user_key"
+        private const val USER_INFO_NAME = "user_info"
 
-        // preference keys
-        private const val REGISTER_KEY = "register_key"
-        private val REGIS = booleanPreferencesKey(REGISTER_KEY)
+        private const val USER_LOGIN_KEY = "USER_LOGIN_KEY"
+        private const val USER_NAME_KEY = "USER_NAME_KEY"
+        private const val USER_IMAGE_KEY = "USER_IMAGE_KEY"
+        private const val USER_REGISTER_FROM_KEY = "USER_IMAGE_KEY"
+
+        private val loginKey = stringPreferencesKey(USER_LOGIN_KEY)
+        private val nameKey = stringPreferencesKey(USER_NAME_KEY)
+        private val imageKey = stringPreferencesKey(USER_IMAGE_KEY)
+        private val registeredSince = stringPreferencesKey(USER_REGISTER_FROM_KEY)
     }
 
-    private val Context.settingsDataStore: DataStore<Preferences> by preferencesDataStore(name = SETTINGS_KEY)
-    private val Context.protoStore: DataStore<Preferences> by preferencesDataStore(name = USER_KEY)
+    private val Context.userDataStore by preferencesDataStore(name = USER_INFO_NAME)
 
-    fun getRegistration(): Flow<Boolean> {
-        return context.settingsDataStore.data
-            .catch {
-                Log.d("DDebug", "Preference Manager: $it")
-            }
-            .map {
-                it[REGIS] ?: false
-            }
+    suspend fun getUserData(): UserInfoData {
+        val preference = context.userDataStore.data.first()
+        val login = preference[loginKey] ?: ""
+        val name = preference[nameKey] ?: ""
+        val imageUrl = preference[imageKey] ?: ""
+        val registeredSince = preference[registeredSince] ?: ""
+
+        return UserInfoData(
+            login = login,
+            name = name,
+            imageUrl = imageUrl,
+            registeredSince = registeredSince
+        )
     }
 
-    suspend fun setRegistered(registered: Boolean) {
-        context.settingsDataStore.edit { prefs ->
-            prefs[REGIS] = registered
+    suspend fun addLogin(login: String?) {
+        context.userDataStore.edit { prefs ->
+            prefs[loginKey] = login ?: ""
+        }
+    }
+
+    // TODO()
+    suspend fun addName(name: String?) {
+
+    }
+
+    // TODO()
+    suspend fun addImageUrl(imageUrl: String?) {
+
+    }
+
+    // TODO()
+    suspend fun addRegisteredFrom(date: String?) {
+
+    }
+
+    suspend fun clearData() {
+        context.userDataStore.edit { prefs ->
+            prefs[loginKey] = ""
+            prefs[nameKey] = ""
+            prefs[imageKey] = ""
+            prefs[registeredSince] = ""
         }
     }
 }
