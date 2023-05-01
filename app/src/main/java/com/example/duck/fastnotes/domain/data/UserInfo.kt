@@ -5,4 +5,5 @@ class UserInfo(
     val name: String,
     val imageUrl: String,
     val registeredSince: String,
+    val notRegistered: Boolean
 )

@@ -7,11 +7,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import com.example.duck.fastnotes.R
 import com.example.duck.fastnotes.features.login.LoginUtils.isOnTop
+import com.example.duck.fastnotes.features.login.BaseWelcomeScreen
 import com.example.duck.fastnotes.features.login.navigation.WelcomeScreenRoutes.SIGN_IN_SCREEN
 import com.example.duck.fastnotes.features.login.navigation.WelcomeScreenRoutes.SIGN_UP_SCREEN
 import com.example.duck.fastnotes.features.login.navigation.WelcomeScreenRoutes.WELCOME_SCREEN
 import com.example.duck.fastnotes.features.login.signin.SignInScreen
+import com.example.duck.fastnotes.features.login.signin.SignInViewModel
 import com.example.duck.fastnotes.features.login.signup.SignUpScreen
+import com.example.duck.fastnotes.features.login.signup.SignUpViewModel
 import com.example.duck.fastnotes.features.login.welcome.WelcomeScreen
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
@@ -30,6 +33,8 @@ fun WelcomeNavHost(
     navController: NavHostController = rememberAnimatedNavController(),
     startDestination: String = stringResource(id = R.string.welcome_screen_navigation_start),
     buttonActionsReceiver: ButtonActionsReceiver,
+    onSignIn: () -> Unit,
+    onContinueWithoutRegistration: () -> Unit
 ) {
     AnimatedNavHost(
         modifier = modifier,
@@ -43,12 +48,16 @@ fun WelcomeNavHost(
 
         composable(SIGN_UP_SCREEN) {
             val isOnTop = navController.isOnTop(route = SIGN_UP_SCREEN)
-            SignUpScreen(buttonActionsReceiver = buttonActionsReceiver, isOnTop = isOnTop)
+            BaseWelcomeScreen<SignUpViewModel>(isOnTop, buttonActionsReceiver) {
+                SignUpScreen(onContinueWithoutRegistration = onContinueWithoutRegistration, onSignIn = onSignIn)
+            }
         }
 
         composable(SIGN_IN_SCREEN) {
             val isOnTop = navController.isOnTop(SIGN_IN_SCREEN)
-            SignInScreen(buttonActionsReceiver = buttonActionsReceiver, isOnTop = isOnTop)
+            BaseWelcomeScreen<SignInViewModel>(isOnTop, buttonActionsReceiver) {
+                SignInScreen()
+            }
         }
     }
 }

@@ -8,7 +8,6 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.draw.DrawModifier
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.unit.Dp
-import com.example.duck.fastnotes.data.Note
 import com.example.duck.fastnotes.utils.ui.ComposeCompatShadowsRenderer
 import com.example.duck.fastnotes.utils.ui.CustomShadowParams
 

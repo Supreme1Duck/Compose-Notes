@@ -9,7 +9,8 @@ object Mapper {
             login,
             name,
             imageUrl,
-            registeredSince
+            registeredSince,
+            notRegistered
         )
     }
 

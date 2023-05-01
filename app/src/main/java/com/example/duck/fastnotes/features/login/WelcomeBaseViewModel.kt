@@ -2,6 +2,8 @@ package com.example.duck.fastnotes.features.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.duck.fastnotes.utils.ui.DialogState
+import com.google.firebase.FirebaseException
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -22,6 +24,29 @@ abstract class WelcomeBaseViewModel<UIState>(
     private val uiEvent = Channel<ScreenStatus>()
     override val event: Flow<ScreenStatus> = uiEvent.receiveAsFlow()
 
+    private val _errorEvent = Channel<LoginError>()
+
+    private val _showDialogEvent = Channel<DialogState>()
+    val showDialogEvent = _showDialogEvent.consumeAsFlow()
+
+    private val _buttonClickable = MutableStateFlow(true)
+    val buttonClickable = _buttonClickable.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            _errorEvent.consumeAsFlow().collect {
+                when (it) {
+                    is LoginError.FirebaseError -> {
+                        _showDialogEvent.send(DialogState.Error(it.error))
+                    }
+                    LoginError.UnknownError -> {
+                        _showDialogEvent.send(DialogState.UnknownError)
+                    }
+                }
+            }
+        }
+    }
+
     fun reduce(action: (UIState) -> UIState) {
         viewModelScope.launch {
             uiState.update { action(currentState) }
@@ -34,11 +59,32 @@ abstract class WelcomeBaseViewModel<UIState>(
 
     override fun onButtonClick() {
         viewModelScope.launch {
-            if (validate())
-                uiEvent.send(ScreenStatus.Success)
-            else {
-                uiEvent.send(ScreenStatus.Failure)
+            setButtonClickable(false)
+            try {
+                val result = validate()
+
+                if (result) {
+                    uiEvent.send(ScreenStatus.Success)
+                } else {
+                    uiEvent.send(ScreenStatus.Failure)
+                }
+            } catch (e: FirebaseException) {
+                _errorEvent.send(LoginError.FirebaseError(e.localizedMessage ?: ""))
+            } catch (e: Exception) {
+                _errorEvent.send(LoginError.UnknownError)
             }
+        }.invokeOnCompletion {
+            setButtonClickable(true)
+        }
+    }
+
+    fun setButtonClickable(clickable: Boolean) {
+        _buttonClickable.value = clickable
+    }
+
+    fun onCloseDialog() {
+        viewModelScope.launch {
+            _showDialogEvent.send(DialogState.None)
         }
     }
 

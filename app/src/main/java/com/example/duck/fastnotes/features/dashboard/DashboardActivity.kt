@@ -1,5 +1,7 @@
 package com.example.duck.fastnotes.features.dashboard
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,12 +20,16 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import com.example.duck.fastnotes.R
+import com.example.duck.fastnotes.features.login.navigation.WelcomeScreenActivity
 import com.example.duck.fastnotes.ui.theme.FastNotesTheme
 import com.example.duck.fastnotes.ui.theme.OnPrimaryColor
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 @ExperimentalComposeUiApi
 @AndroidEntryPoint
@@ -37,6 +43,22 @@ class DashboardActivity : ComponentActivity() {
         setContent {
             DashboardScreen()
         }
+
+        viewModel.notRegisteredEvent.consumeAsFlow().onEach {
+            logout()
+        }.launchIn(lifecycleScope)
+    }
+
+    companion object {
+        fun create(context: Context) {
+            val intent = Intent(context, DashboardActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(intent)
+        }
+    }
+
+    private fun logout() {
+        WelcomeScreenActivity.open(this)
     }
 }
 

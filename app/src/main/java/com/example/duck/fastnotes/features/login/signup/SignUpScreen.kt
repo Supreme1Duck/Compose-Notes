@@ -22,57 +22,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.duck.fastnotes.R
-import com.example.duck.fastnotes.features.login.ScreenStatus
-import com.example.duck.fastnotes.features.login.navigation.ButtonActionsReceiver
 import com.example.duck.fastnotes.features.login.signup.ValidationUtils.PasswordValidationResult
 import com.example.duck.fastnotes.features.login.welcome.ImageLogo
 import com.example.duck.fastnotes.ui.theme.WelcomeTheme
 import com.example.duck.fastnotes.utils.ViewUtils.noRippleClickable
-import com.example.duck.fastnotes.utils.ui.DialogState
-import com.example.duck.fastnotes.utils.ui.ServerErrorDialog
+import kotlinx.coroutines.launch
 
 @Composable
 fun SignUpScreen(
-    buttonActionsReceiver: ButtonActionsReceiver,
     onContinueWithoutRegistration: () -> Unit = {},
-    onSignIn: () -> Unit = {},
-    isOnTop: Boolean = false
+    onSignIn: () -> Unit = {}
 ) {
     val viewModel = hiltViewModel<SignUpViewModel>()
 
     val uiState by viewModel.state.collectAsState()
 
-    val showDialog by viewModel.showDialogEvent.collectAsState(initial = DialogState.initial)
-
-    LaunchedEffect(key1 = isOnTop) {
-        if (isOnTop) {
-            buttonActionsReceiver.clickActionFlow.collect {
-                viewModel.onButtonClick()
-            }
-        }
-    }
-
-    LaunchedEffect(key1 = uiState.isButtonEnabled) {
-        if (uiState.isButtonEnabled) {
-            buttonActionsReceiver.onButtonEnable()
-        } else {
-            buttonActionsReceiver.onButtonDisable()
-        }
-    }
-
     LaunchedEffect(key1 = Unit) {
-        viewModel.event.collect {
-            if (it == ScreenStatus.Success) {
-                buttonActionsReceiver.onScreenSuccess()
+        launch {
+            viewModel.continueWithoutRegistrationAction.collect {
+                onContinueWithoutRegistration()
             }
         }
-    }
-
-    if (showDialog.show) {
-        ServerErrorDialog(
-            description = showDialog.description,
-            onCloseDialog = viewModel::onCloseDialog
-        )
     }
 
     Column(
@@ -81,10 +51,10 @@ fun SignUpScreen(
             .padding(horizontal = WelcomeTheme.spacing.default),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        MainContent()
+        MainContent(stringResource(id = R.string.sign_up_screen_title))
 
         SignUpMethods(
-            onContinueWithoutRegistration = onContinueWithoutRegistration,
+            onContinueWithoutRegistration = viewModel::onContinueWithoutRegistration,
             onSignIn = onSignIn,
             email = uiState.email,
             password = uiState.password,
@@ -96,7 +66,7 @@ fun SignUpScreen(
 }
 
 @Composable
-fun MainContent() {
+fun MainContent(title: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         ImageLogo(
             modifier = Modifier
@@ -106,7 +76,7 @@ fun MainContent() {
                 .width(120.dp)
         )
 
-        SignUpTitle()
+        LoginTitle(title)
     }
 }
 
@@ -144,12 +114,12 @@ fun SignUpMethods(
 }
 
 @Composable
-fun SignUpTitle() {
+fun LoginTitle(text: String) {
     Text(
         modifier = Modifier
             .padding(top = 70.dp)
             .fillMaxWidth(),
-        text = stringResource(id = R.string.sign_up_screen_title),
+        text = text,
         textAlign = TextAlign.Center,
         style = WelcomeTheme.typography.h3.copy(
             fontWeight = FontWeight.Normal,

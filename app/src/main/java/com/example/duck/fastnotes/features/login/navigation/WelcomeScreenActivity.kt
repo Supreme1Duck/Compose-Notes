@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalComposeUiApi::class)
+
 package com.example.duck.fastnotes.features.login.navigation
 
 import android.content.Context
@@ -9,11 +11,14 @@ import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.duck.fastnotes.features.dashboard.DashboardActivity
 import com.example.duck.fastnotes.features.login.button.StartedButton
 import com.example.duck.fastnotes.ui.theme.WelcomeScreenTheme
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -35,6 +40,7 @@ class WelcomeScreenActivity : ComponentActivity() {
     companion object {
         fun open(context: Context) {
             val intent = Intent(context, WelcomeScreenActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)
         }
     }
@@ -45,6 +51,7 @@ class WelcomeScreenActivity : ComponentActivity() {
 fun WelcomeScreenWrapper(welcomeNavigationViewModel: WelcomeNavigationViewModel = viewModel()) {
     val navController = rememberAnimatedNavController()
     val lifecycleOwner = LocalLifecycleOwner.current
+    val context = LocalContext.current
 
     val buttonState by welcomeNavigationViewModel.buttonState.collectAsState()
 
@@ -57,16 +64,16 @@ fun WelcomeScreenWrapper(welcomeNavigationViewModel: WelcomeNavigationViewModel 
                         navController.navigate(WelcomeScreenRoutes.SIGN_UP_SCREEN)
                     }
                     NavigateActions.ACTION_SIGN_UP -> {
-
+                        DashboardActivity.create(context)
                     }
                     NavigateActions.ACTION_TO_SIGN_IN -> {
-//                navController.navigate(WelcomeScreenRoutes.SIGN_IN_SCREEN)
+                        navController.navigate(WelcomeScreenRoutes.SIGN_IN_SCREEN)
                     }
                     NavigateActions.ACTION_SIGN_IN -> {
-
+                        DashboardActivity.create(context)
                     }
                     NavigateActions.ACTION_TO_CONTINUE_WITHOUT_REGISTRATION -> {
-
+                        DashboardActivity.create(context)
                     }
                 }
             }
@@ -87,6 +94,8 @@ fun WelcomeScreenWrapper(welcomeNavigationViewModel: WelcomeNavigationViewModel 
                 .fillMaxHeight(0.9f),
             navController = navController,
             buttonActionsReceiver = welcomeNavigationViewModel,
+            onSignIn = welcomeNavigationViewModel::onSignIn,
+            onContinueWithoutRegistration = welcomeNavigationViewModel::onContinueWithoutRegistration
         )
 
         StartedButton(

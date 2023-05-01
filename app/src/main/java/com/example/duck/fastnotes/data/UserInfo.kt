@@ -6,5 +6,6 @@ data class UserInfoData(
     val login: String,
     val name: String,
     val imageUrl: String,
-    val registeredSince: String
+    val registeredSince: String,
+    val notRegistered: Boolean = false
 ): Serializable

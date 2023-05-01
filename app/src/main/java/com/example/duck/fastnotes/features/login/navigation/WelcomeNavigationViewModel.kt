@@ -114,15 +114,15 @@ class WelcomeNavigationViewModel @Inject constructor() : ViewModel(), ButtonActi
     }
 
     fun onContinueWithoutRegistration() {
-
+        viewModelScope.launch {
+            _event.send(NavigateActions.ACTION_TO_CONTINUE_WITHOUT_REGISTRATION)
+        }
     }
 
     fun onSignIn() {
-
-    }
-
-    fun onSignUp() {
-
+        viewModelScope.launch {
+            _event.send(NavigateActions.ACTION_TO_SIGN_IN)
+        }
     }
 }
 

@@ -6,15 +6,11 @@ import com.example.duck.fastnotes.features.login.WelcomeBaseViewModel
 import com.example.duck.fastnotes.features.login.signup.ValidationUtils.PasswordValidationResult
 import com.example.duck.fastnotes.features.login.signup.ValidationUtils.isValidEmail
 import com.example.duck.fastnotes.features.login.signup.ValidationUtils.isValidPassword
-import com.example.duck.fastnotes.utils.ui.DialogState
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import com.example.duck.fastnotes.utils.ui.ObserverUtils.call
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,12 +18,8 @@ class SignUpViewModel @Inject constructor(
     private val userInfoRepository: UserInfoRepository
 ): WelcomeBaseViewModel<SignUpState>(SignUpState.initialState()) {
 
-    private val auth: FirebaseAuth by lazy {
-        Firebase.auth
-    }
-
-    private val _showDialogEvent = Channel<DialogState>()
-    val showDialogEvent = _showDialogEvent.consumeAsFlow()
+    private val _continueWithoutRegistrationAction = Channel<Unit>()
+    val continueWithoutRegistrationAction = _continueWithoutRegistrationAction.consumeAsFlow()
 
     fun onEmailChanged(email: String) {
         reduce { state ->
@@ -42,18 +34,17 @@ class SignUpViewModel @Inject constructor(
     }
 
     override suspend fun validate(): Boolean {
-        reduce { state -> state.copy(isButtonEnabled = false) }
 
         val (email, password) = currentState
 
         if (!email.isValidEmail()) {
-            reduce { it.copy(emailError = true, isButtonEnabled = true) }
+            reduce { it.copy(emailError = true) }
             return false
         }
 
         val passwordValidationResult = validatePassword(password)
         if (passwordValidationResult !is PasswordValidationResult.Success) {
-            reduce { it.copy(passwordValidationResult = passwordValidationResult, isButtonEnabled = true) }
+            reduce { it.copy(passwordValidationResult = passwordValidationResult) }
             return false
         }
 
@@ -65,21 +56,14 @@ class SignUpViewModel @Inject constructor(
     }
 
     private suspend fun signUpWithEmail(email: String, password: String): Boolean {
-        return try {
-            auth.createUserWithEmailAndPassword(email, password).await()
-            reduce { state -> state.copy(isButtonEnabled = true) }
-            userInfoRepository.addLogin(login = email)
-            true
-        } catch (e: Exception) {
-            reduce { state -> state.copy(isButtonEnabled = true) }
-            _showDialogEvent.send(DialogState.show(e.localizedMessage ?: ""))
-            false
-        }
+        userInfoRepository.registerUser(email, password)
+        return true
     }
 
-    fun onCloseDialog() {
+    fun onContinueWithoutRegistration() {
         viewModelScope.launch {
-            _showDialogEvent.send(DialogState.close())
+            userInfoRepository.setContinuedWithoutRegistration()
+            _continueWithoutRegistrationAction.call()
         }
     }
 }
@@ -88,8 +72,7 @@ data class SignUpState(
     val email: String,
     val password: String,
     val emailError: Boolean,
-    val passwordValidationResult: PasswordValidationResult,
-    val isButtonEnabled: Boolean = true
+    val passwordValidationResult: PasswordValidationResult
 ) {
     companion object {
         fun initialState(): SignUpState {
