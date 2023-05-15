@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -19,53 +18,26 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import com.example.duck.fastnotes.R
-import com.example.duck.fastnotes.features.login.ScreenStatus
-import com.example.duck.fastnotes.features.login.navigation.ButtonActionsReceiver
 import com.example.duck.fastnotes.ui.theme.WelcomeTheme
 import com.example.duck.fastnotes.utils.Dimens
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.receiveAsFlow
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun WelcomeScreen(
-    viewModel: WelcomeScreenViewModel = hiltViewModel(),
-    buttonActionsReceiver: ButtonActionsReceiver,
-    isOnTop: Boolean = false
+    viewModel: WelcomeScreenViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    val lifeCycleOwner = LocalLifecycleOwner.current
-
-    LaunchedEffect(key1 = isOnTop) {
-        if (isOnTop) {
-            buttonActionsReceiver.clickActionFlow.collect {
-                viewModel.onButtonClick()
-            }
-        }
-    }
-
     LaunchedEffect(key1 = true) {
-        lifeCycleOwner.lifecycleScope.launch {
-            viewModel.event.flowWithLifecycle(lifeCycleOwner.lifecycle, Lifecycle.State.STARTED)
-                .collect {
-                    when (it) {
-                        ScreenStatus.Failure -> {
-                            Toast.makeText(context, context.getString(R.string.welcome_screen_checkbox_alert), Toast.LENGTH_SHORT).show()
-                        }
-
-                        ScreenStatus.Success -> {
-                            buttonActionsReceiver.onScreenSuccess()
-                        }
-                    }
-                }
+        viewModel.errorNotCheckedEvent.receiveAsFlow().collect {
+            Toast.makeText(context, R.string.welcome_screen_checkbox_alert, Toast.LENGTH_SHORT).show()
         }
     }
 

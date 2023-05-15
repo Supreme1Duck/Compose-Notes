@@ -1,5 +1,6 @@
 package com.example.duck.fastnotes.manager
 
+import android.util.Log
 import com.example.duck.fastnotes.data.Mapper.toUserInfo
 import com.example.duck.fastnotes.domain.data.UserInfo
 import com.example.duck.fastnotes.domain.repository.UserInfoRepository

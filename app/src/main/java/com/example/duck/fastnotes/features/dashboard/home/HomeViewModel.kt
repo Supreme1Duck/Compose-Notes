@@ -29,15 +29,15 @@ class HomeViewModel @Inject constructor(
     override val state: StateFlow<HomeState> = reducer.state
 
     init {
-        reducer.sendEvent(HomeScreenEvents.ShowLoading)
-
-        getUserInfo()
-
-        getTasks()
+        getInitialData()
     }
 
     fun dismissDialog() {
         reducer.sendEvent(HomeScreenEvents.DismissDialog)
+    }
+
+    private fun getInitialData() {
+
     }
 
     private fun getTasks() {
@@ -55,8 +55,7 @@ class HomeViewModel @Inject constructor(
                 withContext(Dispatchers.Main) {
                     reducer.sendEvent(
                         HomeScreenEvents.ShowUserData(
-                            name = result.login,
-                            isPremium = false
+                            name = result.login
                         )
                     )
                 }
@@ -90,7 +89,7 @@ data class HomeState (
 
 sealed interface HomeScreenEvents : UiEvent {
     data class ShowList(val list: List<NoteItem>): HomeScreenEvents
-    data class ShowUserData(val name: String, val isPremium: Boolean): HomeScreenEvents
+    data class ShowUserData(val name: String): HomeScreenEvents
     data class EditItem(val id: Int): HomeScreenEvents
     object AddItem: HomeScreenEvents
     object ShowLoading: HomeScreenEvents

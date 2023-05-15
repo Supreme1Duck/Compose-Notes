@@ -20,7 +20,7 @@
     <string name="sign_in_screen_title">Log in to continue!</string>
 
     <string name="sign_up_screen_action">Sign Up</string>
-    <string name="sign_up_screen_title">Login to save your data!</string>
+    <string name="sign_up_screen_title">Log in to save your data!</string>
     <string name="sign_up_screen_continue_without_reg">Continue without registration</string>
     <string name="sign_up_already_have_acc">Already have an account?</string>
     <string name="sign_up_screen_action_sign_in">Sign In</string>
@@ -36,6 +36,7 @@
     <string name="note_item_select">Select</string>
     <string name="dashboard_app_bar_profile">Account</string>
     <string name="dashboard_app_bar_title">Hi, %s!</string>
+    <string name="dashboard_app_bar_empty_name">friend</string>
     <string name="dashboard_loading_state">Loading</string>
     <string name="dashboard_error_state">Error while loading, retrying</string>
     <string name="dashboard_premium_icon">Premium</string>

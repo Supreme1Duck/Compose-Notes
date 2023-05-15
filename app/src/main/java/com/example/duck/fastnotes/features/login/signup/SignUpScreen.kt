@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -51,22 +52,34 @@ fun SignUpScreen(
             .padding(horizontal = WelcomeTheme.spacing.default),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        MainContent(stringResource(id = R.string.sign_up_screen_title))
-
-        SignUpMethods(
-            onContinueWithoutRegistration = viewModel::onContinueWithoutRegistration,
-            onSignIn = onSignIn,
+        MainContent(
+            title = stringResource(id = R.string.sign_up_screen_title),
             email = uiState.email,
             password = uiState.password,
             isEmailError = uiState.emailError,
+            isPasswordError = false,
             passwordValidationResult = uiState.passwordValidationResult,
             onEmailChange = viewModel::onEmailChanged,
-            onPasswordChange = viewModel::onPasswordChanged)
+            onPasswordChange = viewModel::onPasswordChanged
+        )
+
+        SignUpMethods(
+            onContinueWithoutRegistration = viewModel::onContinueWithoutRegistration,
+            onSignIn = onSignIn
+        )
     }
 }
 
 @Composable
-fun MainContent(title: String) {
+fun MainContent(
+    title: String, email: String,
+    password: String,
+    isEmailError: Boolean,
+    isPasswordError: Boolean,
+    passwordValidationResult: PasswordValidationResult,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         ImageLogo(
             modifier = Modifier
@@ -77,19 +90,51 @@ fun MainContent(title: String) {
         )
 
         LoginTitle(title)
+
+        LoginLogo(Modifier.padding(top = WelcomeTheme.spacing.default))
+
+        LoginInputs(
+            email = email,
+            password = password,
+            isEmailError = isEmailError,
+            isPasswordError = isPasswordError,
+            passwordValidationResult = passwordValidationResult,
+            onEmailChange = onEmailChange,
+            onPasswordChange = onPasswordChange
+        )
+    }
+}
+
+@Composable
+fun LoginInputs(
+    email: String,
+    password: String,
+    isEmailError: Boolean,
+    isPasswordError: Boolean,
+    passwordValidationResult: PasswordValidationResult,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+) {
+    Column(modifier = Modifier.padding(top = WelcomeTheme.spacing.default)) {
+        EmailInput(text = email, isError = isEmailError) {
+            onEmailChange(it)
+        }
+
+        PasswordInput(
+            modifier = Modifier.padding(bottom = WelcomeTheme.spacing.bottom),
+            text = password,
+            isPasswordError,
+            validationStatus = passwordValidationResult
+        ) {
+            onPasswordChange(it)
+        }
     }
 }
 
 @Composable
 fun SignUpMethods(
     onContinueWithoutRegistration: () -> Unit,
-    onSignIn: () -> Unit,
-    email: String,
-    password: String,
-    isEmailError: Boolean,
-    passwordValidationResult: PasswordValidationResult,
-    onEmailChange: (String) -> Unit,
-    onPasswordChange: (String) -> Unit,
+    onSignIn: () -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -99,18 +144,22 @@ fun SignUpMethods(
             .height(450.dp)
             .padding(top = WelcomeTheme.spacing.default, bottom = WelcomeTheme.spacing.default)
     ) {
-        EmailInput(text = email, isError = isEmailError) {
-            onEmailChange(it)
-        }
 
-        PasswordInput(modifier = Modifier.padding(bottom = WelcomeTheme.spacing.bottom), text = password, validationStatus = passwordValidationResult) {
-            onPasswordChange(it)
-        }
 
         ContinueWithoutRegText(modifier = Modifier.padding(bottom = WelcomeTheme.spacing.bottom), onContinueWithoutRegistration = onContinueWithoutRegistration)
 
         SignInText(onSignIn = onSignIn)
     }
+}
+
+@Composable
+fun LoginLogo(modifier: Modifier) {
+    Icon(
+        painter = painterResource(id = R.drawable.spyware),
+        contentDescription = null,
+        modifier = modifier
+            .size(200.dp)
+    )
 }
 
 @Composable
@@ -159,6 +208,7 @@ fun EmailInput(modifier: Modifier = Modifier, text: String, isError: Boolean, on
 fun PasswordInput(
     modifier: Modifier = Modifier,
     text: String,
+    isPasswordError: Boolean,
     validationStatus: PasswordValidationResult,
     onValueChange: (String) -> Unit
 ) {
@@ -189,6 +239,7 @@ fun PasswordInput(
             leadingIcon = {
                 Icon(imageVector = Icons.Filled.Lock, contentDescription = null)
             },
+            isError = isPasswordError,
             supportingText = {
                 when (validationStatus) {
                     PasswordValidationResult.PasswordValidationError.SpecialSymbolsError -> {

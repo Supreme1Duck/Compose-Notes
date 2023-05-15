@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.duck.fastnotes.features.login.navigation.ButtonActionsProducer
 import com.example.duck.fastnotes.features.login.navigation.ButtonTextState
-import com.example.duck.fastnotes.features.login.navigation.StartedButtonState
 import com.example.duck.fastnotes.ui.theme.WelcomeTheme
 import com.example.duck.fastnotes.utils.ViewUtils.roundRectShadow
 import com.example.duck.fastnotes.utils.ui.CustomShadowParams
@@ -35,7 +34,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun StartedButton(
     modifier: Modifier,
-    state: StartedButtonState,
     viewModel: ButtonActionsProducer
 ) {
     val uiState by viewModel.buttonState.collectAsState()
@@ -68,7 +66,7 @@ fun StartedButton(
     ) {
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             if (startOffset != 0f)
-                AnimatedText(state.textState, startOffset, viewModel::onButtonAnimationEnd)
+                AnimatedText(uiState.textState, startOffset, viewModel::onButtonAnimationEnd)
         }
     }
 }

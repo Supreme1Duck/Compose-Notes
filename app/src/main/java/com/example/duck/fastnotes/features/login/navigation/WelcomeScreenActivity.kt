@@ -53,8 +53,6 @@ fun WelcomeScreenWrapper(welcomeNavigationViewModel: WelcomeNavigationViewModel 
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
 
-    val buttonState by welcomeNavigationViewModel.buttonState.collectAsState()
-
     LaunchedEffect(key1 = Unit) {
         welcomeNavigationViewModel.event
             .flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
@@ -100,7 +98,6 @@ fun WelcomeScreenWrapper(welcomeNavigationViewModel: WelcomeNavigationViewModel 
 
         StartedButton(
             modifier = Modifier.fillMaxWidth(),
-            state = buttonState,
             viewModel = welcomeNavigationViewModel
         )
     }

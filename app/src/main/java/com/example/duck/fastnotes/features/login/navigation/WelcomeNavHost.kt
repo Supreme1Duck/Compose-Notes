@@ -16,6 +16,7 @@ import com.example.duck.fastnotes.features.login.signin.SignInViewModel
 import com.example.duck.fastnotes.features.login.signup.SignUpScreen
 import com.example.duck.fastnotes.features.login.signup.SignUpViewModel
 import com.example.duck.fastnotes.features.login.welcome.WelcomeScreen
+import com.example.duck.fastnotes.features.login.welcome.WelcomeScreenViewModel
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -43,7 +44,9 @@ fun WelcomeNavHost(
     ) {
         composable(WELCOME_SCREEN) {
             val isOnTop = navController.isOnTop(route = WELCOME_SCREEN)
-            WelcomeScreen(buttonActionsReceiver = buttonActionsReceiver, isOnTop = isOnTop)
+            BaseWelcomeScreen<WelcomeScreenViewModel>(isOnTop = isOnTop, buttonActionsReceiver = buttonActionsReceiver) {
+                WelcomeScreen()
+            }
         }
 
         composable(SIGN_UP_SCREEN) {

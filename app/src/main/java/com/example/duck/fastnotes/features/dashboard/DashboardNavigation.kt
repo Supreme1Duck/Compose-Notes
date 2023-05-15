@@ -1,6 +1,6 @@
 package com.example.duck.fastnotes.features.dashboard
 
-import androidx.compose.foundation.ExperimentalFoundationApi
+import android.util.Log
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.*
@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -43,7 +44,9 @@ sealed class HomeScreens(val route: String) {
 @Composable
 fun DashboardNavigation(navController: NavHostController) {
 
-    NavHost(navController = navController, startDestination = DashboardScreens.Home.route) {
+    NavHost(navController = navController, startDestination = DashboardScreens.Home.route, route = "SomeRoute") {
+
+        homeGraph(navController = navController)
 
         composable(DashboardScreens.Explore.route) {
             TodayScreen()
@@ -52,8 +55,6 @@ fun DashboardNavigation(navController: NavHostController) {
         composable(DashboardScreens.Profile.route) {
             ProfileScreen()
         }
-
-        homeGraph(navController = navController)
     }
 }
 
@@ -99,12 +100,14 @@ fun DashboardBottomBar(navController: NavHostController, items: List<DashboardSc
                     onClick = {
                         if (currentRoute != screen.route && currentGraph != screen.route) {
                             navController.navigate(screen.route) {
-                                popUpTo(DashboardScreens.Home.route) {
-                                    inclusive = true
-                                    saveState = true
+                                navController.graph.findStartDestination().id.let {
+                                    Log.d("DDebug", "StartDestinationRoute -> $it")
+                                    popUpTo(it) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                                launchSingleTop = true
-                                restoreState = true
                             }
                         }
                     })

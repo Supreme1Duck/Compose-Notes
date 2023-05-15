@@ -15,7 +15,7 @@ fun ServerErrorDialog(
             UnknownErrorDialog(title, onCloseDialog)
         }
         is DialogState.Error -> {
-            BaseDialog(title, state, onCloseDialog)
+            BaseErrorDialog(title, state, onCloseDialog)
         }
         else -> {}
     }

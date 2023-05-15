@@ -18,7 +18,7 @@ import com.example.duck.fastnotes.R
 // Base dialog to use in app
 @Preview
 @Composable
-fun BaseDialog(
+fun BaseErrorDialog(
     title: String = "",
     state: DialogState.Error = DialogState.Error(""),
     onCloseDialog: () -> Unit = {},

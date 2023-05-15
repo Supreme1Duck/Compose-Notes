@@ -11,6 +11,9 @@ import com.example.duck.fastnotes.utils.ui.DialogState.Companion.isDialogShown
 import com.example.duck.fastnotes.utils.ui.ServerErrorDialog
 import kotlinx.coroutines.launch
 
+// Base screen wrapper for screens in Welcome section
+// Needed for managing shared button actions & error dialogs
+
 @Composable
 inline fun <reified V: WelcomeBaseViewModel<out Any>> BaseWelcomeScreen(isOnTop: Boolean, buttonActionsReceiver: ButtonActionsReceiver, content: @Composable () -> Unit) {
 
@@ -34,8 +37,9 @@ inline fun <reified V: WelcomeBaseViewModel<out Any>> BaseWelcomeScreen(isOnTop:
         }
         launch {
             viewModel.buttonClickable.collect {
-                if (it)
+                if (it) {
                     buttonActionsReceiver.onButtonEnable()
+                }
                 else buttonActionsReceiver.onButtonDisable()
             }
         }

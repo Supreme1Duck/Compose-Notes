@@ -9,14 +9,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.duck.fastnotes.R
-import com.example.duck.fastnotes.features.login.signup.EmailInput
 import com.example.duck.fastnotes.features.login.signup.MainContent
-import com.example.duck.fastnotes.features.login.signup.PasswordInput
 import com.example.duck.fastnotes.features.login.signup.ValidationUtils
 import com.example.duck.fastnotes.ui.theme.WelcomeTheme
 
+@Preview
 @Composable
 fun SignInScreen() {
     val viewModel = hiltViewModel<SignInViewModel>()
@@ -24,37 +24,21 @@ fun SignInScreen() {
     val uiState by viewModel.state.collectAsState()
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(WelcomeTheme.spacing.large),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = WelcomeTheme.spacing.default),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        MainContent(title = stringResource(id = R.string.sign_in_screen_action))
-
-        SignInInputs(
-            uiState.email,
-            uiState.password,
-            viewModel::onEmailChanged,
-            viewModel::onPasswordChanged
+        MainContent(
+            title = stringResource(id = R.string.sign_in_screen_title),
+            email = uiState.email,
+            password = uiState.password,
+            isEmailError = uiState.inputsEmptyError,
+            isPasswordError = uiState.inputsEmptyError,
+            passwordValidationResult = ValidationUtils.PasswordValidationResult.Success,
+            onEmailChange = viewModel::onEmailChanged,
+            onPasswordChange = viewModel::onPasswordChanged
         )
     }
-}
-
-@Composable
-fun SignInInputs(
-    email: String,
-    password: String,
-    onEmailChanged: (String) -> Unit,
-    onPasswordChanged: (String) -> Unit,
-) {
-    EmailInput(modifier = Modifier,
-        text = email,
-        isError = false,
-        onValueChange = onEmailChanged
-    )
-
-    PasswordInput(modifier = Modifier,
-        text = password,
-        validationStatus = ValidationUtils.PasswordValidationResult.Success,
-        onValueChange = onPasswordChanged
-    )
 }

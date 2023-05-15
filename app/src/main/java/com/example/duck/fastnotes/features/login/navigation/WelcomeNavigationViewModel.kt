@@ -67,13 +67,11 @@ class WelcomeNavigationViewModel @Inject constructor() : ViewModel(), ButtonActi
         if (currentScreen == route)
             return
 
-        _buttonState.value = _buttonState.value.copy(enabled = false)
-
         viewModelScope.launch {
             if (screenList.indexOf(route) < screenList.indexOf(currentScreen)) {
                 _buttonState.value = _buttonState.value.copy(
                     textState = ButtonTextState.AnimateBackwards(buttonTextsMap[route] ?: 0, buttonTextsMap[currentScreen] ?: 0),
-                    enabled = true
+                    enabled = false
                 )
 
                 currentScreen = route
@@ -83,7 +81,7 @@ class WelcomeNavigationViewModel @Inject constructor() : ViewModel(), ButtonActi
 
                 _buttonState.value = _buttonState.value.copy(
                     textState = ButtonTextState.AnimateForward(buttonTextsMap[route] ?: 0, buttonTextsMap[currentScreen] ?: 0),
-                    enabled = true
+                    enabled = false
                 )
 
                 currentScreen = route

@@ -10,6 +10,7 @@ import com.example.duck.fastnotes.utils.ui.ObserverUtils.call
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,7 +20,7 @@ class SignUpViewModel @Inject constructor(
 ): WelcomeBaseViewModel<SignUpState>(SignUpState.initialState()) {
 
     private val _continueWithoutRegistrationAction = Channel<Unit>()
-    val continueWithoutRegistrationAction = _continueWithoutRegistrationAction.consumeAsFlow()
+    val continueWithoutRegistrationAction = _continueWithoutRegistrationAction.receiveAsFlow()
 
     fun onEmailChanged(email: String) {
         reduce { state ->

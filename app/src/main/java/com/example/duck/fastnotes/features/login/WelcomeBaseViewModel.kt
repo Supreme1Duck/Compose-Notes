@@ -27,14 +27,14 @@ abstract class WelcomeBaseViewModel<UIState>(
     private val _errorEvent = Channel<LoginError>()
 
     private val _showDialogEvent = Channel<DialogState>()
-    val showDialogEvent = _showDialogEvent.consumeAsFlow()
+    val showDialogEvent = _showDialogEvent.receiveAsFlow()
 
-    private val _buttonClickable = MutableStateFlow(true)
-    val buttonClickable = _buttonClickable.asStateFlow()
+    private val _buttonClickable = MutableSharedFlow<Boolean>()
+    val buttonClickable = _buttonClickable.asSharedFlow()
 
     init {
         viewModelScope.launch {
-            _errorEvent.consumeAsFlow().collect {
+            _errorEvent.receiveAsFlow().collect {
                 when (it) {
                     is LoginError.FirebaseError -> {
                         _showDialogEvent.send(DialogState.Error(it.error))
@@ -64,9 +64,9 @@ abstract class WelcomeBaseViewModel<UIState>(
                 val result = validate()
 
                 if (result) {
-                    uiEvent.send(ScreenStatus.Success)
+                    sendEvent(ScreenStatus.Success)
                 } else {
-                    uiEvent.send(ScreenStatus.Failure)
+                    sendEvent(ScreenStatus.Failure)
                 }
             } catch (e: FirebaseException) {
                 _errorEvent.send(LoginError.FirebaseError(e.localizedMessage ?: ""))
@@ -79,7 +79,9 @@ abstract class WelcomeBaseViewModel<UIState>(
     }
 
     fun setButtonClickable(clickable: Boolean) {
-        _buttonClickable.value = clickable
+        viewModelScope.launch {
+            _buttonClickable.emit(clickable)
+        }
     }
 
     fun onCloseDialog() {

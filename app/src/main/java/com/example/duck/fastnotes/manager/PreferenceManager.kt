@@ -1,6 +1,7 @@
 package com.example.duck.fastnotes.manager
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -36,14 +37,14 @@ class PreferenceManager @Inject constructor(@ApplicationContext private val cont
         val name = preference[nameKey] ?: ""
         val imageUrl = preference[imageKey] ?: ""
         val registeredSince = preference[registeredSince] ?: ""
-        val notRegistered = preference[notRegisteredKey] ?: false
+        val userCreatedAndNotRegistered = preference[notRegisteredKey] ?: false
 
         return UserInfoData(
             login = login,
             name = name,
             imageUrl = imageUrl,
             registeredSince = registeredSince,
-            notRegistered
+            notRegistered = userCreatedAndNotRegistered
         )
     }
 
