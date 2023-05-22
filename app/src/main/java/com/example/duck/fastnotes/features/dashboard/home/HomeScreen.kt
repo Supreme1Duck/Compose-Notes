@@ -1,8 +1,11 @@
 package com.example.duck.fastnotes.features.dashboard.home
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Person
@@ -10,7 +13,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -34,7 +40,6 @@ fun HomeScreen() {
         Modifier
             .fillMaxSize()
             .padding(horizontal = spacing)) {
-
         if (state.isLoading) {
             ShowLoading()
         } else {
@@ -43,9 +48,7 @@ fun HomeScreen() {
             if (state.isShowDialog)
                 ErrorDialog(viewModel::dismissDialog)
 
-            ShowTasks(state.taskList ?: emptyList()) {
-
-            }
+            ShowTasks(state.taskList ?: emptyList(), viewModel::onTaskClicked)
         }
     }
 }
@@ -73,12 +76,47 @@ fun Title(userName: String) {
 }
 
 @Composable
-fun ShowLoading() {
+fun Modifiers(selected: Int, modifiers: List<Unit>) {
+    LazyColumn(modifier = Modifier
+        .fillMaxWidth()
+        .wrapContentHeight()) {
 
+    }
 }
 
 @Composable
-fun ShowTasks(list: List<NoteItem>, onNoteClick: (id: Int) -> Unit) {
+fun ModifierItem(text: String, selected: Boolean) {
+    Box {
+        Card(shape = RoundedCornerShape(12.dp)) {
+            Text(text = text, color = if (selected) BasePurple else MainTheme.colors.onPrimary)
+        }
+    }
+}
+
+@Composable
+fun ShowLoading() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        CircularProgressIndicator(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .size(140.dp),
+            color = BasePurple,
+            strokeWidth = 2.dp
+        )
+    }
+}
+
+@Composable
+fun ShowTasks(list: List<NoteItem>, onTaskClicked: (id: Int) -> Unit) {
+    val context = LocalContext.current
+
+    if (list.isEmpty()) {
+
+        NoTasksInfo()
+        
+        return
+    }
+    
     Text(
         text = stringResource(id = R.string.dashboard_title_tasks),
         style = FastNotesTypography.subtitle1,
@@ -111,4 +149,19 @@ fun ErrorDialog(onDismiss: () -> Unit) {
         },
         onDismissRequest = onDismiss
     )
+}
+
+@Composable
+fun NoTasksInfo(modifier: Modifier = Modifier) {
+    Column(modifier = modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+        Text(
+            modifier = Modifier.padding(bottom = 50.dp),
+            text = stringResource(id = R.string.dashboard_no_tasks_info)
+        )
+
+        Image(
+            painter = painterResource(id = R.drawable.old),
+            contentDescription = null,
+        )
+    }
 }

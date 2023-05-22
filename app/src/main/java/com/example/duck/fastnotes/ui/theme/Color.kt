@@ -34,6 +34,8 @@ val WelcomeSecondaryVariantColor = Color(0xFF1B1A17)
 val WelcomeOnSecondaryColor = Color.Black
 val WelcomeTertiaryColor = Color(0xE4E31CFA)
 
+val BasePurple = Color(0xE47F09D5)
+
 val ErrorColor = Color(0xFFEF4444)
 val WelcomeBackgroundColor = Color.White
 
@@ -54,7 +56,19 @@ val WelcomeScreenColorsComposition = staticCompositionLocalOf {
     WelcomeScreenColors()
 }
 
-val MaterialTheme.wColors: WelcomeScreenColors
-    @Composable
-    @ReadOnlyComposable
-    get() = WelcomeScreenColorsComposition.current
+@Immutable
+data class MainColors(
+    val primary: Color = WelcomePrimaryColor,
+    val primaryVariant : Color = WelcomePrimaryVariantColor,
+    val onPrimary: Color = WelcomeOnPrimaryColor,
+    val secondary: Color = WelcomeSecondaryColor,
+    val secondaryVariant: Color = WelcomeSecondaryVariantColor,
+    val onSecondary: Color = WelcomeOnSecondaryColor,
+    val tertiary: Color = WelcomeTertiaryColor,
+    val background: Color = WelcomeBackgroundColor,
+    val error: Color = ErrorColor
+)
+
+val MainColorsComposition = staticCompositionLocalOf {
+    MainColors()
+}

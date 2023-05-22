@@ -25,6 +25,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.duck.fastnotes.R
 import com.example.duck.fastnotes.features.login.navigation.WelcomeScreenActivity
 import com.example.duck.fastnotes.ui.theme.FastNotesTheme
+import com.example.duck.fastnotes.ui.theme.MainTheme
 import com.example.duck.fastnotes.ui.theme.OnPrimaryColor
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.consumeAsFlow
@@ -41,7 +42,9 @@ class DashboardActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            DashboardScreen()
+            MainTheme {
+                DashboardScreen()
+            }
         }
 
         viewModel.notRegisteredEvent.consumeAsFlow().onEach {

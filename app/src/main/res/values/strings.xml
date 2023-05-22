@@ -43,6 +43,7 @@
     <string name="dashboard_premium_title">Go Premium!</string>
     <string name="dashboard_premium_description">Get unlimited access to all our features!</string>
     <string name="dashboard_title_tasks">Tasks</string>
+    <string name="dashboard_no_tasks_info">You have no tasks for today!</string>
 
     <string name="dashboard_note_action_image">Action</string>
     <string name="dashboard_note_action_estimate">%d left</string>

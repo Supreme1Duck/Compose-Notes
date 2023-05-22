@@ -11,6 +11,7 @@ import com.example.duck.fastnotes.utils.ui.UiEvent
 import com.example.duck.fastnotes.utils.ui.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -29,7 +30,20 @@ class HomeViewModel @Inject constructor(
     override val state: StateFlow<HomeState> = reducer.state
 
     init {
-        getInitialData()
+//        getInitialData()
+        viewModelScope.launch {
+            reducer.reduce(
+                state.value,
+                event = HomeScreenEvents.ShowLoading
+            )
+
+            delay(2000L)
+
+            reducer.reduce(
+                state.value,
+                event = HomeScreenEvents.ShowList(emptyList())
+            )
+        }
     }
 
     fun dismissDialog() {
@@ -63,6 +77,10 @@ class HomeViewModel @Inject constructor(
                 Log.e("Villain", "HomeViewModel getUserInfo e: ${e.printStackTrace()}")
             }
         }
+    }
+
+    fun onTaskClicked(taskId: Int) {
+
     }
 }
 
