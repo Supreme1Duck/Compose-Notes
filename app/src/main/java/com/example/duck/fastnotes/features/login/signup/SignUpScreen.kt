@@ -51,8 +51,8 @@ fun SignUpScreen(
     Column(
         Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = WelcomeTheme.spacing.default),
+            .padding(horizontal = WelcomeTheme.spacing.default)
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         MainContent(
