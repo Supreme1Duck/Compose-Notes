@@ -146,8 +146,6 @@ fun SignUpMethods(
             .fillMaxWidth()
             .padding(top = WelcomeTheme.spacing.default, bottom = WelcomeTheme.spacing.default)
     ) {
-
-
         ContinueWithoutRegText(modifier = Modifier.padding(bottom = WelcomeTheme.spacing.bottom), onContinueWithoutRegistration = onContinueWithoutRegistration)
 
         SignInText(onSignIn = onSignIn)

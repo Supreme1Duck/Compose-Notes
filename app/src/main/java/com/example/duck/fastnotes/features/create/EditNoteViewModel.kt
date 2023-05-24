@@ -1,15 +1,11 @@
 package com.example.duck.fastnotes.features.create
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.duck.fastnotes.domain.data.InvalidTaskItem
 import com.example.duck.fastnotes.domain.data.NoteItem
 import com.example.duck.fastnotes.domain.usecase.EditNoteUseCase
+import com.example.duck.fastnotes.features.core.BaseViewModel
 import com.example.duck.fastnotes.utils.Common.CREATE_NOTE_ERROR
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +18,7 @@ import javax.inject.Inject
 class EditNoteViewModel @Inject constructor(
     private val useCase: EditNoteUseCase,
     savedStateHandle: SavedStateHandle
-) : ViewModel() {
+) : BaseViewModel<EditNoteViewModel.UIState>(UIState.initial()) {
 
     private companion object {
         const val NOTE_KEY = "noteId"
@@ -30,7 +26,6 @@ class EditNoteViewModel @Inject constructor(
     }
 
     val note: SharedFlow<NoteItem> = flow {
-        Timber.tag(TAG).d(Thread.currentThread().name)
         val id = savedStateHandle.get<Int>(NOTE_KEY)
         emit(useCase.getNoteById(id))
     }.flowOn(Dispatchers.IO)
@@ -43,26 +38,18 @@ class EditNoteViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            note.collect {
-                Timber.tag("DDebug").d("Working - ${Thread.currentThread().name}")
-            }
+//            note.collect {
+//
+//            }
         }
     }
 
-    var title by mutableStateOf("")
-        private set
-
-    var body by mutableStateOf("")
-        private set
-
-    var noteType = MutableLiveData<NoteType>(NoteType.Default)
-
-    private val _eventFlow = MutableSharedFlow<UIState>()
+    private val _eventFlow = MutableSharedFlow<UIEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    fun checkCanDone(): Boolean = title.isNotBlank()
+    fun checkCanDone(): Boolean = uiState.title.isNotBlank()
 
-    fun checkCanDelete(): Boolean = title.isNotBlank()
+    fun checkCanDelete(): Boolean = uiState.title.isNotBlank()
 
     private fun getNoteType(label: String): NoteType {
         return when (label) {
@@ -79,45 +66,62 @@ class EditNoteViewModel @Inject constructor(
 
     private fun getResult(): NoteItem {
         return NoteItem(
-            name = title,
-            body = body,
-            type = noteType.value?.label ?: "",
+            name = uiState.title,
+            body = uiState.description,
+            type = uiState.type.label,
             date = null,
             time = null
         )
     }
 
-    fun onEvent(event: EditNoteScreenContract) {
-        when (event) {
-            EditNoteScreenContract.OnSaveItem -> {
-                viewModelScope.launch {
-                    try {
-                        useCase.insertNote(getResult())
-                        _eventFlow.emit(UIState.SaveNote)
-                    } catch (e: InvalidTaskItem) {
-                        _eventFlow.emit(UIState.ShowSnackbar())
-                    }
-                }
-            }
-            is EditNoteScreenContract.OnTypeChanged -> {
-                noteType.value = getNoteType(event.label)
-                checkCanDone()
-            }
-            is EditNoteScreenContract.OnEnteredContent -> {
-                title = event.text
-                checkCanDone()
-            }
-            is EditNoteScreenContract.OnEnteredBody -> {
-                body = event.text
-            }
-            EditNoteScreenContract.OnDeleteItem -> {
-                // TODO
+    fun onTitleChanged(title: String) {
+        reduce {
+            it.copy(title = title)
+        }
+        checkCanDone()
+    }
+
+    fun onDescriptionChanged(description: String) {
+        reduce {
+            it.copy(description = description)
+        }
+        checkCanDone()
+    }
+
+    fun onTypeChanged(type: String) {
+        reduce {
+            it.copy(type = getNoteType(type))
+        }
+        checkCanDone()
+    }
+
+    fun onSaveItem() {
+        viewModelScope.launch {
+            try {
+                useCase.insertNote(getResult())
+                _eventFlow.emit(UIEvent.SaveNote)
+            } catch (e: InvalidTaskItem) {
+                _eventFlow.emit(UIEvent.ShowSnackbar())
             }
         }
     }
 
-    sealed class UIState {
-        class ShowSnackbar(val message: String = CREATE_NOTE_ERROR) : UIState()
-        object SaveNote : UIState()
+    fun onDeleteItem() {
+
+    }
+
+    sealed class UIEvent {
+        class ShowSnackbar(val message: String = CREATE_NOTE_ERROR) : UIEvent()
+        object SaveNote : UIEvent()
+    }
+
+    data class UIState(
+        val title: String,
+        val description: String,
+        val type: NoteType
+    ) {
+        companion object {
+            fun initial() = UIState("", "", NoteType.Default)
+        }
     }
 }

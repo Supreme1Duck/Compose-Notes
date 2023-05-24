@@ -14,7 +14,7 @@ data class Spacing(
     val extraLarge: Dp = 64.dp,
     val extraLarger: Dp = 96.dp,
     val maxLarge: Dp = 128.dp,
-    val bottom: Dp = 40.dp,
+    val bottom: Dp = 55.dp,
 )
 
 val WelcomeScreenSpacingComposition = staticCompositionLocalOf {

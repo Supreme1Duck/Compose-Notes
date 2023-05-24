@@ -22,6 +22,7 @@ import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.duck.fastnotes.R
 import com.example.duck.fastnotes.domain.data.NoteItem
+import com.example.duck.fastnotes.features.create.NoteItem
 import com.example.duck.fastnotes.ui.WelcomeScreenSpacingComposition
 import com.example.duck.fastnotes.ui.theme.*
 import com.example.duck.fastnotes.utils.Dimens
@@ -34,19 +35,18 @@ fun HomeScreen() {
     val viewModel = hiltViewModel<HomeViewModel>()
     val spacing = WelcomeScreenSpacingComposition.current.bottom
 
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.uiStateFlow.collectAsStateWithLifecycle()
+
+    val stateLoading by viewModel.showLoading.collectAsStateWithLifecycle(initialValue = false)
 
     Column(
         Modifier
             .fillMaxSize()
-            .padding(horizontal = spacing)) {
-        if (state.isLoading) {
+            .padding(horizontal = MainTheme.spacing.default)) {
+        if (stateLoading) {
             ShowLoading()
         } else {
             Title(userName = state.userName ?: "")
-
-            if (state.isShowDialog)
-                ErrorDialog(viewModel::dismissDialog)
 
             ShowTasks(state.taskList ?: emptyList(), viewModel::onTaskClicked)
         }
@@ -110,12 +110,12 @@ fun ShowLoading() {
 fun ShowTasks(list: List<NoteItem>, onTaskClicked: (id: Int) -> Unit) {
     val context = LocalContext.current
 
-    if (list.isEmpty()) {
-
-        NoTasksInfo()
-        
-        return
-    }
+//    if (list.isEmpty()) {
+//
+//        NoTasksInfo()
+//
+//        return
+//    }
     
     Text(
         text = stringResource(id = R.string.dashboard_title_tasks),
@@ -126,8 +126,15 @@ fun ShowTasks(list: List<NoteItem>, onTaskClicked: (id: Int) -> Unit) {
         )
     )
 
-    LazyVerticalGrid(columns = GridCells.Fixed(2)) {
-
+    LazyVerticalGrid(
+        modifier = Modifier.padding(top = MainTheme.spacing.default),
+        columns = GridCells.Fixed(2),
+        verticalArrangement = Arrangement.spacedBy(MainTheme.spacing.small),
+        horizontalArrangement = Arrangement.spacedBy(MainTheme.spacing.small)
+    ) {
+        items(5) { index ->
+            NoteItem(index)
+        }
     }
 }
 

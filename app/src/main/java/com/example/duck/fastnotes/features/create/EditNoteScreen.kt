@@ -1,6 +1,5 @@
 package com.example.duck.fastnotes.features.create
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,9 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -25,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
@@ -37,24 +35,26 @@ import com.example.duck.fastnotes.utils.ViewUtils.noRippleClickable
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+
 @ExperimentalComposeUiApi
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun EditNoteScreen(
     viewModel: EditNoteViewModel = hiltViewModel(),
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit = {}
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
 
     val snackbarHostState = remember { SnackbarHostState() }
 
+    val uiState by viewModel.uiStateFlow.collectAsState()
+
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
-                EditNoteViewModel.UIState.SaveNote -> onNavigateBack()
+                EditNoteViewModel.UIEvent.SaveNote -> onNavigateBack()
 
-                is EditNoteViewModel.UIState.ShowSnackbar -> {
+                is EditNoteViewModel.UIEvent.ShowSnackbar -> {
                     launch {
                         keyboardController?.hide()
                         snackbarHostState.showSnackbar(
@@ -75,10 +75,10 @@ fun EditNoteScreen(
             Icons.Filled.ArrowBack,
             contentDescription = stringResource(id = R.string.create_screen_back),
             modifier = Modifier
-                    .layoutId("back")
-                    .noRippleClickable {
-                        onNavigateBack()
-                    }
+                .layoutId("back")
+                .noRippleClickable {
+                    onNavigateBack()
+                }
         )
 
         Text(
@@ -94,24 +94,24 @@ fun EditNoteScreen(
             Icons.Filled.Done,
             contentDescription = stringResource(id = R.string.create_screen_done),
             modifier = Modifier
-                    .layoutId("done")
-                    .noRippleClickable { viewModel.onEvent(EditNoteScreenContract.OnSaveItem) }
-                    .alpha(if (!viewModel.checkCanDone()) 0.5f else 1f)
+                .layoutId("done")
+                .noRippleClickable(viewModel::onSaveItem)
+                .alpha(if (!viewModel.checkCanDone()) 0.5f else 1f)
         )
 
-        if (viewModel.checkCanDelete())
-            Icon(
-                Icons.Filled.Delete,
-                contentDescription = stringResource(id = R.string.create_screen_delete),
-                modifier = Modifier
-                    .layoutId("delete")
-                    .noRippleClickable { viewModel.onEvent(EditNoteScreenContract.OnDeleteItem) }
-            )
+//        if (viewModel.checkCanDelete())
+//            Icon(
+//                Icons.Filled.Delete,
+//                contentDescription = stringResource(id = R.string.create_screen_delete),
+//                modifier = Modifier
+//                    .layoutId("delete")
+//                    .noRippleClickable(viewModel::onDeleteItem)
+//            )
 
         TextField(
-            value = viewModel.title,
+            value = uiState.title,
             placeholder = { Text(text = stringResource(id = R.string.create_screen_hint_title)) },
-            onValueChange = { viewModel.onEvent(EditNoteScreenContract.OnEnteredContent(it)) },
+            onValueChange = viewModel::onTitleChanged,
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.Sentences,
@@ -124,33 +124,32 @@ fun EditNoteScreen(
                 }
             ),
             modifier = Modifier
-                    .layoutId("titleEditText")
-                    .fillMaxWidth()
-                    .padding(vertical = Dimens.DEFAULT_MARGIN)
+                .layoutId("titleEditText")
+                .fillMaxWidth()
+                .padding(vertical = Dimens.DEFAULT_MARGIN)
         )
 
         TextField(
-            value = viewModel.body,
+            value = uiState.description,
             placeholder = { Text(text = stringResource(id = R.string.create_screen_hint_body)) },
-            onValueChange = { viewModel.onEvent(EditNoteScreenContract.OnEnteredBody(it)) },
+            onValueChange = viewModel::onDescriptionChanged,
             modifier = Modifier
-                    .layoutId("bodyEditText")
-                    .fillMaxWidth()
+                .layoutId("bodyEditText")
+                .fillMaxWidth()
         )
 
         ToggleGroup(
             options = getBasicNotes().map { it.label to it.color.value },
-            selectedOption = viewModel.noteType.value?.label,
-            modifier = Modifier.layoutId("tags")
-        ) { label ->
-            viewModel.onEvent(EditNoteScreenContract.OnTypeChanged(label))
-        }
+            selectedOption = uiState.type.label,
+            modifier = Modifier.layoutId("tags"),
+            onClick = viewModel::onTypeChanged
+        )
 
         SnackbarHost(
             hostState = snackbarHostState,
             modifier = Modifier
-                    .layoutId("snackbar")
-                    .padding(bottom = Dimens.BOTTOM_BAR_SIZE)
+                .layoutId("snackbar")
+                .padding(bottom = Dimens.BOTTOM_BAR_SIZE)
         )
     }
 }
