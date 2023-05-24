@@ -32,7 +32,6 @@ fun TodayScreen(list: List<Unit> = emptyList()) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BlackColor)
             .verticalScroll(rememberScrollState())
             .padding(vertical = Dimens.DEFAULT_MARGIN)
             .padding(start = Dimens.SMALLER_MARGIN)
@@ -47,7 +46,7 @@ fun TodayScreen(list: List<Unit> = emptyList()) {
                 Icons.Outlined.KeyboardArrowLeft,
                 contentDescription = stringResource(R.string.today_screen_back),
                 Modifier.padding(end = Dimens.DEFAULT_MARGIN, top = Dimens.SMALLER_MARGIN).size(32.dp),
-                tint = Color.White
+                tint = Color.Black
             )
 
             Column(
@@ -56,14 +55,14 @@ fun TodayScreen(list: List<Unit> = emptyList()) {
                 Text(
                     text = stringResource(id = R.string.today_screen_title),
                     style = FastNotesTypography.h2,
-                    color = Color.White,
+                    color = Color.Black,
                     modifier = Modifier.padding(start = Dimens.LARGER_MARGIN),
 
                 )
                 Text(
                     text = stringResource(id = R.string.today_screen_subtitle, 3),
                     style = MaterialTheme.typography.subtitle1,
-                    color = PrimaryColor,
+                    color = Color.Black,
                     modifier = Modifier
                         .padding(vertical = Dimens.SMALL_MARGIN)
                         .padding(start = Dimens.LARGER_MARGIN)
@@ -173,7 +172,7 @@ fun TimeLineView(list: List<DrawLineItem>) {
                         android.graphics
                             .Paint()
                             .apply {
-                                color = android.graphics.Color.parseColor("#FFFFFF")
+                                color = android.graphics.Color.parseColor("#000000")
                                 textSize = 40F
                             }
                     )

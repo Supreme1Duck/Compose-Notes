@@ -3,7 +3,9 @@
 package com.example.duck.fastnotes.features.login.signup
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
@@ -49,6 +51,7 @@ fun SignUpScreen(
     Column(
         Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(horizontal = WelcomeTheme.spacing.default),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
@@ -141,11 +144,8 @@ fun SignUpMethods(
         verticalArrangement = Arrangement.Bottom,
         modifier = Modifier
             .fillMaxWidth()
-            .height(450.dp)
             .padding(top = WelcomeTheme.spacing.default, bottom = WelcomeTheme.spacing.default)
     ) {
-
-
         ContinueWithoutRegText(modifier = Modifier.padding(bottom = WelcomeTheme.spacing.bottom), onContinueWithoutRegistration = onContinueWithoutRegistration)
 
         SignInText(onSignIn = onSignIn)

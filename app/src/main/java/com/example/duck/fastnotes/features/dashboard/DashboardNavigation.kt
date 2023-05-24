@@ -101,7 +101,6 @@ fun DashboardBottomBar(navController: NavHostController, items: List<DashboardSc
                         if (currentRoute != screen.route && currentGraph != screen.route) {
                             navController.navigate(screen.route) {
                                 navController.graph.findStartDestination().id.let {
-                                    Log.d("DDebug", "StartDestinationRoute -> $it")
                                     popUpTo(it) {
                                         saveState = true
                                     }
