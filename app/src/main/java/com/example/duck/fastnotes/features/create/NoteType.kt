@@ -9,13 +9,13 @@ sealed class NoteType(
     val iconResource: Int
 ) {
 
-    object Personal : NoteType("Personal", ColorTypeWrapper(PersonalNoteColor), R.drawable.ic_person)
-    object Health : NoteType("Health", ColorTypeWrapper(HealthNoteColor), R.drawable.ic_health)
-    object Work : NoteType("Work", ColorTypeWrapper(WorkNoteColor), R.drawable.ic_work)
-    object Entertainment : NoteType("Entertainment", ColorTypeWrapper(RelaxNoteColor), R.drawable.ic_fun)
-    object Education : NoteType("Education", ColorTypeWrapper(EducationNoteColor), R.drawable.ic_education)
-    object Shopping : NoteType("Shopping", ColorTypeWrapper(ShoppingNoteColor), R.drawable.ic_shopping)
-    object Sport : NoteType("Sport", ColorTypeWrapper(SportNoteColor), R.drawable.ic_sport)
+    object Personal : NoteType("Персональные", ColorTypeWrapper(PersonalNoteColor), R.drawable.ic_person)
+    object Health : NoteType("Здоровье", ColorTypeWrapper(HealthNoteColor), R.drawable.ic_health)
+    object Work : NoteType("Работа", ColorTypeWrapper(WorkNoteColor), R.drawable.ic_work)
+    object Entertainment : NoteType("Развлечения", ColorTypeWrapper(RelaxNoteColor), R.drawable.ic_fun)
+    object Education : NoteType("Образование", ColorTypeWrapper(EducationNoteColor), R.drawable.ic_education)
+    object Shopping : NoteType("Покупки", ColorTypeWrapper(ShoppingNoteColor), R.drawable.ic_shopping)
+    object Sport : NoteType("Спорт", ColorTypeWrapper(SportNoteColor), R.drawable.ic_sport)
     object Default : NoteType("Default", ColorTypeWrapper(DefaultNoteColor), -1)
 
 }

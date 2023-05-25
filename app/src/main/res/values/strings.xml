@@ -51,13 +51,13 @@
 
     <string name="today_screen_no_notes">No notes for today!</string>
     <string name="today_screen_back">Go Back</string>
-    <string name="today_screen_title">Personal Tasks</string>
+    <string name="today_screen_title">Персональные задачи</string>
     <string name="today_screen_dismiss_dialog">Dismiss</string>
     <string name="today_screen_error_dialog_title">An error occurred when getting data</string>
     <string name="today_screen_error_dialog_retry">Retry</string>
-    <string name="today_screen_subtitle">У вас %d задач на сегодня!</string>
+    <string name="today_screen_subtitle">У вас %d задачи на сегодня!</string>
 
-    <string name="create_screen_title">Create</string>
+    <string name="create_screen_title">Создать</string>
     <string name="create_screen_back">Back</string>
     <string name="create_screen_done">Done</string>
     <string name="create_screen_delete">Delete</string>
