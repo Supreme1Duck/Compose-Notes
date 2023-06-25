@@ -57,7 +57,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.2.0-alpha02"
+        kotlinCompilerExtensionVersion = "1.4.0"
     }
     packagingOptions {
         resources {
@@ -105,6 +105,7 @@ dependencies {
     implementation(Dependencies.composeHiltNav)
     implementation(Dependencies.landscapistGlide)
     implementation(Dependencies.landscapistCoil)
+    implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
 
     implementation("pub.devrel:easypermissions:3.0.0")
 

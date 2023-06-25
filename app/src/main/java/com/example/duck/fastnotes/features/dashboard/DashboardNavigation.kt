@@ -1,6 +1,5 @@
 package com.example.duck.fastnotes.features.dashboard
 
-import android.util.Log
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.*
@@ -20,7 +19,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navigation
-import com.example.duck.fastnotes.features.create.EditNoteScreen
+import com.example.duck.fastnotes.features.create.ui.EditNoteScreen
 import com.example.duck.fastnotes.features.dashboard.home.HomeScreen
 import com.example.duck.fastnotes.features.dashboard.personal.ProfileScreen
 import com.example.duck.fastnotes.features.dashboard.today.TodayScreen

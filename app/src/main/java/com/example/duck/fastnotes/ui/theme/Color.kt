@@ -1,6 +1,5 @@
 package com.example.duck.fastnotes.ui.theme
 
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 
@@ -18,6 +17,7 @@ val BlackColor = Color(0xFF101010)
 
 val PersonalNoteColor = Color(0xFFFF4F4A)
 val WorkNoteColor = Color(0xFF80C8FF)
+val PriorityTaskColor = Color(0xFF304FFE)
 val HealthNoteColor = Color(0xFFFFF44A)
 val RelaxNoteColor = Color(0xFF4AFF4D)
 val EducationNoteColor = Color(0xFFD84AFF)

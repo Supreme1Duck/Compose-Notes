@@ -1,16 +1,24 @@
-package com.example.duck.fastnotes.features.create
+package com.example.duck.fastnotes.features.create.ui
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -28,7 +36,11 @@ import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.duck.fastnotes.R
-import com.example.duck.fastnotes.features.create.BasicTypes.getBasicNotes
+import com.example.duck.fastnotes.domain.data.SubTask
+import com.example.duck.fastnotes.features.create.bottomsheets.ui.PriorityBottomSheet
+import com.example.duck.fastnotes.features.create.data.BasicTypes.getBasicNotes
+import com.example.duck.fastnotes.features.create.data.NoteType
+import com.example.duck.fastnotes.features.create.viewmodel.EditNoteViewModel
 import com.example.duck.fastnotes.features.dashboard.home.ToggleGroup
 import com.example.duck.fastnotes.utils.Dimens
 import com.example.duck.fastnotes.utils.ViewUtils.noRippleClickable
@@ -36,6 +48,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
+@Preview
 @ExperimentalComposeUiApi
 @Composable
 fun EditNoteScreen(
@@ -99,15 +112,6 @@ fun EditNoteScreen(
                 .alpha(if (!viewModel.checkCanDone()) 0.5f else 1f)
         )
 
-//        if (viewModel.checkCanDelete())
-//            Icon(
-//                Icons.Filled.Delete,
-//                contentDescription = stringResource(id = R.string.create_screen_delete),
-//                modifier = Modifier
-//                    .layoutId("delete")
-//                    .noRippleClickable(viewModel::onDeleteItem)
-//            )
-
         TextField(
             value = uiState.title,
             placeholder = { Text(text = stringResource(id = R.string.create_screen_hint_title)) },
@@ -152,6 +156,11 @@ fun EditNoteScreen(
                 .padding(bottom = Dimens.BOTTOM_BAR_SIZE)
         )
     }
+
+    if (uiState.type is NoteType.Priority)
+        PriorityBottomSheet(tasks = (uiState.type as NoteType.Priority).subTasks ?: emptyList()) {
+            viewModel.onPrioritySubtasksChanged(it)
+        }
 }
 
 val constraints = ConstraintSet {
@@ -161,8 +170,8 @@ val constraints = ConstraintSet {
     val titleEditText = createRefFor("titleEditText")
     val bodyEditText = createRefFor("bodyEditText")
     val tags = createRefFor("tags")
-    val colors = createRefFor("colors")
     val snackBar = createRefFor("snackbar")
+    val time = createRefFor("time")
 
     val guideline = createGuidelineFromTop(0.7f)
 
@@ -198,8 +207,9 @@ val constraints = ConstraintSet {
         start.linkTo(parent.start)
         end.linkTo(parent.end)
     }
-    constrain(colors) {
+    constrain(time) {
         top.linkTo(tags.bottom)
+        bottom.linkTo(parent.bottom)
         start.linkTo(parent.start)
     }
     constrain(snackBar) {

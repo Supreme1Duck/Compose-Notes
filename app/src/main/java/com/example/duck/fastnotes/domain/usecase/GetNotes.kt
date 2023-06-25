@@ -4,7 +4,7 @@ import androidx.compose.ui.graphics.Color
 import com.example.duck.fastnotes.data.OrderType
 import com.example.duck.fastnotes.domain.data.NoteItem
 import com.example.duck.fastnotes.domain.repository.NotesRepository
-import com.example.duck.fastnotes.features.create.ColorTypeWrapper
+import com.example.duck.fastnotes.features.create.data.ColorTypeWrapper
 import kotlinx.coroutines.flow.Flow
 
 class GetNotes(

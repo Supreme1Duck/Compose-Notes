@@ -1,6 +1,6 @@
 package com.example.duck.fastnotes.data
 
-import com.example.duck.fastnotes.features.create.ColorTypeWrapper
+import com.example.duck.fastnotes.features.create.data.ColorTypeWrapper
 
 sealed class OrderType(val type: String? = null, val color: ColorTypeWrapper? = null) {
 

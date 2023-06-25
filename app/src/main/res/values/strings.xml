@@ -5,27 +5,30 @@
 
     <string name="error_dialog_unknown_description">Internal error has occurred!</string>
 
+    <string name="common_cancel">Cancel</string>
+    <string name="common_done">Done</string>
+
     <string name="welcome_screen_title">VILLAIN</string>
-    <string name="welcome_screen_hello">Добро пожаловать</string>
+    <string name="welcome_screen_hello">Welcome to</string>
     <string name="welcome_screen_online_functions">Want to use online functions?</string>
-    <string name="welcome_screen_action">Дальше</string>
+    <string name="welcome_screen_action">Next</string>
     <string name="welcome_screen_checkbox_alert">Please confirm the agreement!</string>
-    <string name="welcome_screen_terms_checkbox">Условия и соглашение</string>
-    <string name="welcome_screen_terms_info">"Выбирая, вы даете согласие на обработку персональных данных в целях улучшения сервиса"</string>
+    <string name="welcome_screen_terms_checkbox">Terms and agreement</string>
+    <string name="welcome_screen_terms_info">"By checking, you confirm that your personal data will be used in order to improve service"</string>
     <string name="welcome_screen_checkmark_description">CheckMark</string>
 
     <string name="welcome_screen_navigation_start">start</string>
 
-    <string name="sign_in_screen_action">Войти</string>
-    <string name="sign_in_screen_title">Войдите чтобы продолжить!</string>
+    <string name="sign_in_screen_action">Sign in</string>
+    <string name="sign_in_screen_title">Sign in to continue!</string>
 
-    <string name="sign_up_screen_action">Зарегистрироваться</string>
-    <string name="sign_up_screen_title">Войдите чтобы продолжить!</string>
-    <string name="sign_up_screen_continue_without_reg">Продолжить без регистрации</string>
-    <string name="sign_up_already_have_acc">Уже есть аккаунт?</string>
-    <string name="sign_up_screen_action_sign_in">Войти</string>
-    <string name="sign_up_screen_email_hint">Логин</string>
-    <string name="sign_up_screen_password_hint">Пароль</string>
+    <string name="sign_up_screen_action">Sign up</string>
+    <string name="sign_up_screen_title">Sign up to continue!</string>
+    <string name="sign_up_screen_continue_without_reg">Continue without registration</string>
+    <string name="sign_up_already_have_acc">Already have an account?</string>
+    <string name="sign_up_screen_action_sign_in">Sign in</string>
+    <string name="sign_up_screen_email_hint">Login</string>
+    <string name="sign_up_screen_password_hint">Password</string>
     <string name="sign_up_screen_password_special_symbols_not_allowed">Special symbols are not allowed</string>
     <string name="sign_up_screen_password_spaces_not_allowed">No spaces are allowed</string>
     <string name="sign_up_screen_password_min_10_characters">Password must contain minimum 10 characters</string>
@@ -35,15 +38,15 @@
     <string name="dashboard_navigation_date_range">Date Range</string>
     <string name="note_item_select">Select</string>
     <string name="dashboard_app_bar_profile">Account</string>
-    <string name="dashboard_app_bar_title">Добрый день, %s!</string>
-    <string name="dashboard_app_bar_empty_name">гость</string>
+    <string name="dashboard_app_bar_title">Good day, %s!</string>
+    <string name="dashboard_app_bar_empty_name">guest</string>
     <string name="dashboard_loading_state">Loading</string>
     <string name="dashboard_error_state">Error while loading, retrying</string>
     <string name="dashboard_premium_icon">Premium</string>
     <string name="dashboard_premium_title">Go Premium!</string>
     <string name="dashboard_premium_description">Get unlimited access to all our features!</string>
-    <string name="dashboard_title_tasks">Задачи</string>
-    <string name="dashboard_no_tasks_info">Нет задач на сегодня!</string>
+    <string name="dashboard_title_tasks">My tasks</string>
+    <string name="dashboard_no_tasks_info">You have no tasks!</string>
 
     <string name="dashboard_note_action_image">Action</string>
     <string name="dashboard_note_action_estimate">%d left</string>
@@ -51,11 +54,11 @@
 
     <string name="today_screen_no_notes">No notes for today!</string>
     <string name="today_screen_back">Go Back</string>
-    <string name="today_screen_title">Персональные задачи</string>
+    <string name="today_screen_title">Personal tasks</string>
     <string name="today_screen_dismiss_dialog">Dismiss</string>
     <string name="today_screen_error_dialog_title">An error occurred when getting data</string>
     <string name="today_screen_error_dialog_retry">Retry</string>
-    <string name="today_screen_subtitle">У вас %d задачи на сегодня!</string>
+    <string name="today_screen_subtitle">You have %d tasks for today!</string>
 
     <string name="create_screen_title">Создать</string>
     <string name="create_screen_back">Back</string>

@@ -3,7 +3,7 @@ package com.example.duck.fastnotes.manager
 import com.example.duck.fastnotes.database.NotesDao
 import com.example.duck.fastnotes.domain.data.NoteItem
 import com.example.duck.fastnotes.domain.repository.NotesRepository
-import com.example.duck.fastnotes.features.create.ColorTypeWrapper
+import com.example.duck.fastnotes.features.create.data.ColorTypeWrapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

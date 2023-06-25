@@ -24,6 +24,7 @@ class HomeViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             showLoading()
+
             getTasks()
         }
     }
@@ -31,10 +32,6 @@ class HomeViewModel @Inject constructor(
     private fun getTasks() {
         useCase.getTasks()
             .onEach { list ->
-                delay(2000L)
-
-                Log.d("DDebug", "$list")
-
                 reduce {
                     it.copy(taskList = list)
                 }
@@ -45,7 +42,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onTaskClicked(taskId: Int) {
-        Log.d("DDebug", "Task clicked -> $taskId")
+
     }
 }
 

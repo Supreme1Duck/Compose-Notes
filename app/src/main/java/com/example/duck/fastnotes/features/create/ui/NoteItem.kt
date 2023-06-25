@@ -1,4 +1,4 @@
-package com.example.duck.fastnotes.features.create
+package com.example.duck.fastnotes.features.create.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding

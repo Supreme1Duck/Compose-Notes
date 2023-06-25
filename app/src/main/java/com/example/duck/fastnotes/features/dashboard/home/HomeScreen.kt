@@ -1,11 +1,11 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package com.example.duck.fastnotes.features.dashboard.home
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Person
@@ -17,32 +17,28 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.duck.fastnotes.R
 import com.example.duck.fastnotes.domain.data.NoteItem
-import com.example.duck.fastnotes.features.create.NoteItem
-import com.example.duck.fastnotes.ui.WelcomeScreenSpacingComposition
 import com.example.duck.fastnotes.ui.theme.*
 import com.example.duck.fastnotes.utils.Dimens
 import com.example.duck.fastnotes.utils.Dimens.DEFAULT_MARGIN
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @ExperimentalMaterialApi
 @Composable
 fun HomeScreen() {
     val viewModel = hiltViewModel<HomeViewModel>()
-    val spacing = WelcomeScreenSpacingComposition.current.bottom
 
     val state by viewModel.uiStateFlow.collectAsStateWithLifecycle()
 
-    val stateLoading by viewModel.showLoading.collectAsStateWithLifecycle(initialValue = false)
+    val stateLoading by viewModel.showLoading.collectAsStateWithLifecycle(false)
 
     Column(
         Modifier
             .fillMaxSize()
-            .padding(horizontal = MainTheme.spacing.default)) {
+    ) {
         if (stateLoading) {
             ShowLoading()
         } else {
@@ -55,41 +51,31 @@ fun HomeScreen() {
 
 @Composable
 fun Title(userName: String) {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .padding(bottom = Dimens.LARGE_MARGIN, top = Dimens.SMALL_MARGIN)
-    ) {
-        Icon(
-            Icons.Outlined.Person,
-            contentDescription = stringResource(id = R.string.dashboard_app_bar_profile),
+    Column(Modifier.padding(horizontal = MainTheme.spacing.default)) {
+        Row(
             Modifier
-                .padding(start = DEFAULT_MARGIN)
-                .align(Alignment.CenterVertically)
-        )
-        Text(
-            text = stringResource(id = R.string.dashboard_app_bar_title, stringResource(id = R.string.dashboard_app_bar_empty_name)),
-            Modifier.padding(start = DEFAULT_MARGIN),
-            style = FastNotesTypography.h3
-        )
-    }
-}
-
-@Composable
-fun Modifiers(selected: Int, modifiers: List<Unit>) {
-    LazyColumn(modifier = Modifier
-        .fillMaxWidth()
-        .wrapContentHeight()) {
-
-    }
-}
-
-@Composable
-fun ModifierItem(text: String, selected: Boolean) {
-    Box {
-        Card(shape = RoundedCornerShape(12.dp)) {
-            Text(text = text, color = if (selected) BasePurple else MainTheme.colors.onPrimary)
+                .fillMaxWidth()
+                .padding(bottom = Dimens.LARGE_MARGIN, top = Dimens.SMALL_MARGIN)
+        ) {
+            Icon(
+                Icons.Outlined.Person,
+                contentDescription = stringResource(id = R.string.dashboard_app_bar_profile),
+                Modifier
+                    .padding(start = DEFAULT_MARGIN)
+                    .align(Alignment.CenterVertically)
+            )
+            Text(
+                text = stringResource(id = R.string.dashboard_app_bar_title,
+                    stringResource(id = R.string.dashboard_app_bar_empty_name)),
+                Modifier.padding(start = DEFAULT_MARGIN),
+                style = FastNotesTypography.h3
+            )
         }
+
+        Divider(
+            modifier = Modifier.fillMaxWidth(),
+            color = MainTheme.colors.secondary,
+        )
     }
 }
 
@@ -116,25 +102,36 @@ fun ShowTasks(list: List<NoteItem>, onTaskClicked: (id: Int) -> Unit) {
 //
 //        return
 //    }
-    
+//
     Text(
         text = stringResource(id = R.string.dashboard_title_tasks),
-        style = FastNotesTypography.subtitle1,
+        style = MainTheme.typography.caption.copy(color = MainTheme.colors.onPrimary, fontSize = 16.sp),
         modifier = Modifier.padding(
-            start = DEFAULT_MARGIN,
+            top = MainTheme.spacing.default,
+            start = MainTheme.spacing.default,
             bottom = Dimens.SMALLER_MARGIN
         )
     )
 
-    LazyVerticalGrid(
-        modifier = Modifier.padding(top = MainTheme.spacing.default),
-        columns = GridCells.Fixed(2),
-        verticalArrangement = Arrangement.spacedBy(MainTheme.spacing.small),
-        horizontalArrangement = Arrangement.spacedBy(MainTheme.spacing.small)
-    ) {
-        items(5) { index ->
-            NoteItem(index)
-        }
+    BaseTasks(modifier = Modifier.padding(top = MainTheme.spacing.default))
+
+//    LazyVerticalGrid(
+//        modifier = Modifier.padding(top = MainTheme.spacing.default),
+//        columns = GridCells.Fixed(2),
+//        verticalArrangement = Arrangement.spacedBy(MainTheme.spacing.small),
+//        horizontalArrangement = Arrangement.spacedBy(MainTheme.spacing.small)
+//    ) {
+//        items(5) { index ->
+//            NoteItem(index)
+//        }
+//    }
+}
+
+@Composable
+fun BaseTasks(modifier: Modifier, taskList: List<Unit> = emptyList(), onTaskClicked: (id: Int) -> Unit = {}) {
+
+    HorizontalPager(modifier = modifier, pageCount = 5, contentPadding = PaddingValues(start = MainTheme.spacing.default, end = MainTheme.spacing.extraLarge), pageSpacing = 12.dp) {
+        BaseTask()
     }
 }
 

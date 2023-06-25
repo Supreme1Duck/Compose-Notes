@@ -1,4 +1,4 @@
-package com.example.duck.fastnotes.database
+package com.example.duck.fastnotes.database.converters
 
 import androidx.room.TypeConverter
 import org.joda.time.DateTime

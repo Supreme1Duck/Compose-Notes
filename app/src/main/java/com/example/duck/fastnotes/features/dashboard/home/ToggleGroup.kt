@@ -5,12 +5,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.dp
-import com.example.duck.fastnotes.features.create.NoteTypeItem
+import com.example.duck.fastnotes.features.create.ui.NoteTypeItem
 import com.example.duck.fastnotes.utils.Dimens
-import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
+import com.google.accompanist.flowlayout.MainAxisAlignment
 
 @Composable
 fun ToggleGroup(
@@ -26,7 +25,7 @@ fun ToggleGroup(
         modifier = modifier
             .fillMaxWidth()
             .padding(top = Dimens.SMALL_MARGIN),
-        lastLineMainAxisAlignment = FlowMainAxisAlignment.Center
+        mainAxisAlignment = MainAxisAlignment.Center
     ) {
         options.forEach {
             NoteTypeItem(name = it.first, color = it.second, selectedOption == it.first) {
