@@ -20,7 +20,9 @@ fun NoteTypeItem(name: String, color: Color, isActive: Boolean, action: () -> Un
     Card(shape = RoundedCornerShape(15.dp),
         backgroundColor = if (isActive) color else Color.White,
         elevation = 5.dp,
-        onClick = action
+        onClick = {
+            if (!isActive) action()
+        }
     ) {
         Text(
             text = name,

@@ -36,12 +36,12 @@ import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.duck.fastnotes.R
-import com.example.duck.fastnotes.domain.data.SubTask
 import com.example.duck.fastnotes.features.create.bottomsheets.ui.PriorityBottomSheet
 import com.example.duck.fastnotes.features.create.data.BasicTypes.getBasicNotes
 import com.example.duck.fastnotes.features.create.data.NoteType
 import com.example.duck.fastnotes.features.create.viewmodel.EditNoteViewModel
 import com.example.duck.fastnotes.features.dashboard.home.ToggleGroup
+import com.example.duck.fastnotes.ui.theme.MainTheme
 import com.example.duck.fastnotes.utils.Dimens
 import com.example.duck.fastnotes.utils.ViewUtils.noRippleClickable
 import kotlinx.coroutines.flow.collectLatest
@@ -155,12 +155,37 @@ fun EditNoteScreen(
                 .layoutId("snackbar")
                 .padding(bottom = Dimens.BOTTOM_BAR_SIZE)
         )
+
+        uiState.type.let {
+            if (it is NoteType.Priority && !it.subTasks.isNullOrEmpty()) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .layoutId("tasksCount")
+                        .padding(top = MainTheme.spacing.default)
+                        .noRippleClickable {
+                            viewModel.onSubTasksClicked()
+                        },
+                    text = stringResource(
+                        id = R.string.create_screen_subtasks_count,
+                        it.subTasks.size
+                    ),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
     }
 
-    if (uiState.type is NoteType.Priority)
-        PriorityBottomSheet(tasks = (uiState.type as NoteType.Priority).subTasks ?: emptyList()) {
+    if (uiState.type is NoteType.Priority && !uiState.isSubInfoShown) {
+        PriorityBottomSheet(
+            tasks = (uiState.type as NoteType.Priority).subTasks ?: emptyList(),
+            onCancel = {
+                viewModel.onBottomSheetCancel()
+            }
+        ) {
             viewModel.onPrioritySubtasksChanged(it)
         }
+    }
 }
 
 val constraints = ConstraintSet {
@@ -172,6 +197,7 @@ val constraints = ConstraintSet {
     val tags = createRefFor("tags")
     val snackBar = createRefFor("snackbar")
     val time = createRefFor("time")
+    val tasksCount = createRefFor("tasksCount")
 
     val guideline = createGuidelineFromTop(0.7f)
 
@@ -216,5 +242,9 @@ val constraints = ConstraintSet {
         bottom.linkTo(parent.bottom)
         start.linkTo(parent.start)
         end.linkTo(parent.end)
+    }
+    constrain(tasksCount) {
+        top.linkTo(tags.bottom)
+        start.linkTo(parent.start)
     }
 }

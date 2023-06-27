@@ -11,7 +11,14 @@ import com.example.duck.fastnotes.features.create.data.NoteType
 import com.example.duck.fastnotes.utils.Common.CREATE_NOTE_ERROR
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -21,6 +28,11 @@ class EditNoteViewModel @Inject constructor(
     private val useCase: EditNoteUseCase,
     savedStateHandle: SavedStateHandle,
 ) : BaseViewModel<EditNoteViewModel.UIState>(UIState.initial()) {
+
+    // Note types storing data
+
+    var priorityNoteType : NoteType.Priority? = null
+    var everyDayNoteType : NoteType.EveryDay? = null
 
     private companion object {
         const val NOTE_KEY = "noteId"
@@ -48,7 +60,7 @@ class EditNoteViewModel @Inject constructor(
     private fun getNoteType(label: String): NoteType {
         return when (label) {
             NoteType.EveryDay.label -> NoteType.EveryDay
-            NoteType.Priority.LABEL -> NoteType.Priority()
+            NoteType.Priority.LABEL -> priorityNoteType ?: NoteType.Priority()
             NoteType.OneTime.label -> NoteType.OneTime
             NoteType.Soon.label -> NoteType.Soon
             else -> throw IllegalArgumentException("Invalid note type!")
@@ -81,7 +93,7 @@ class EditNoteViewModel @Inject constructor(
 
     fun onTypeChanged(type: String) {
         reduce {
-            it.copy(type = getNoteType(type))
+            it.copy(type = getNoteType(type), isSubInfoShown = false)
         }
         checkCanDone()
     }
@@ -97,9 +109,25 @@ class EditNoteViewModel @Inject constructor(
         }
     }
 
-    fun onPrioritySubtasksChanged(subTasks: List<SubTask>) {
+    fun onSubTasksClicked() {
         reduce {
-            it.copy(type = (it.type as NoteType.Priority).copy(subTasks = subTasks))
+            it.copy(isSubInfoShown = false)
+        }
+    }
+
+    fun onBottomSheetCancel() {
+        reduce {
+            it.copy(isSubInfoShown = true)
+        }
+    }
+
+    fun onPrioritySubtasksChanged(subTasks: List<SubTask>) {
+        val subTaskList = subTasks.toMutableList()
+
+        priorityNoteType = priorityNoteType?.copy(subTasks = subTaskList) ?: (uiState.type as NoteType.Priority).copy(subTasks = subTaskList)
+
+        reduce {
+            it.copy(type = (it.type as NoteType.Priority).copy(subTasks = subTaskList), isSubInfoShown = true)
         }
     }
 
@@ -116,6 +144,7 @@ class EditNoteViewModel @Inject constructor(
         val title: String,
         val description: String,
         val type: NoteType,
+        val isSubInfoShown: Boolean = false
     ) {
         companion object {
             fun initial() = UIState("", "", NoteType.Default)

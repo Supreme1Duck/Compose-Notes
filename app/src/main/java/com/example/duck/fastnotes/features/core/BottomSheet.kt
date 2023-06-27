@@ -8,20 +8,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.duck.fastnotes.R
 import com.example.duck.fastnotes.ui.theme.MainTheme
@@ -29,7 +24,10 @@ import com.example.duck.fastnotes.utils.ViewUtils.noRippleClickable
 import kotlinx.coroutines.launch
 
 /**
- * Base compose bottom sheet wrapper for all sheets in application
+ * Base compose bottom sheet wrapper for all sheets in application.
+ *
+ * Note: Use it with [modalSheetState] @param initialValue = false to use with animation.
+ *
  */
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -41,6 +39,10 @@ fun BottomSheetUI(modalSheetState: ModalBottomSheetState, onDone: () -> Unit, on
         coroutineScope.launch {
             modalSheetState.hide()
         }
+    }
+
+    LaunchedEffect(key1 = true) {
+        modalSheetState.show()
     }
 
     ModalBottomSheetLayout(
@@ -62,7 +64,8 @@ fun BottomSheetUI(modalSheetState: ModalBottomSheetState, onDone: () -> Unit, on
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .wrapContentHeight(),
+                        .wrapContentHeight()
+                        .padding(horizontal = MainTheme.spacing.small),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
 
@@ -73,11 +76,13 @@ fun BottomSheetUI(modalSheetState: ModalBottomSheetState, onDone: () -> Unit, on
 
                     Text(
                         modifier = Modifier.noRippleClickable(onDone),
-                        text = stringResource(id = R.string.common_done)
+                        text = stringResource(id = R.string.common_done),
                     )
                 }
 
-                content()
+                Column(modifier = Modifier.padding(top = MainTheme.spacing.default)) {
+                    content()
+                }
             }
         }
     ) {}
