@@ -1,26 +1,35 @@
 package com.example.duck.fastnotes.features.create.data
 
-import com.example.duck.fastnotes.R
+import com.example.duck.fastnotes.domain.data.NoteTime
 import com.example.duck.fastnotes.domain.data.SubTask
-import com.example.duck.fastnotes.ui.theme.*
+import com.example.duck.fastnotes.ui.theme.DefaultNoteColor
+import com.example.duck.fastnotes.ui.theme.PersonalNoteColor
+import com.example.duck.fastnotes.ui.theme.PriorityTaskColor
+import com.example.duck.fastnotes.ui.theme.RelaxNoteColor
+import com.example.duck.fastnotes.ui.theme.WorkNoteColor
 
 sealed class NoteType(
     val label: String,
-    val color: ColorTypeWrapper,
-    val iconResource: Int
+    val color: ColorTypeWrapper
 ) {
 
-    object EveryDay : NoteType("Every Day", ColorTypeWrapper(PersonalNoteColor), R.drawable.ic_person)
+    data class EveryDay(
+        val noteTime: NoteTime? = null
+    ) : NoteType("Every Day", ColorTypeWrapper(PersonalNoteColor)) {
+        companion object {
+            const val LABEL = "Every Day"
+        }
+    }
 
     data class Priority(
         val subTasks: List<SubTask>? = null,
-    ) : NoteType("Priority", ColorTypeWrapper(PriorityTaskColor), R.drawable.ic_health) {
+    ) : NoteType("Priority", ColorTypeWrapper(PriorityTaskColor)) {
         companion object {
             const val LABEL = "Priority"
         }
     }
 
-    object OneTime : NoteType("One Time", ColorTypeWrapper(WorkNoteColor), R.drawable.ic_work)
-    object Soon : NoteType("Nearest", ColorTypeWrapper(RelaxNoteColor), R.drawable.ic_fun)
-    object Default : NoteType("Default", ColorTypeWrapper(DefaultNoteColor), -1)
+    object OneTime : NoteType("One Time", ColorTypeWrapper(WorkNoteColor))
+    object Soon : NoteType("Nearest", ColorTypeWrapper(RelaxNoteColor))
+    object Default : NoteType("Default", ColorTypeWrapper(DefaultNoteColor))
 }

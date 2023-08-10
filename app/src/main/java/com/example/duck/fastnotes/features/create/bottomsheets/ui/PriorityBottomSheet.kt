@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.duck.fastnotes.R
 import com.example.duck.fastnotes.domain.data.SubTask
@@ -42,7 +43,7 @@ fun PriorityBottomSheet(tasks: List<SubTask>, onCancel: () -> Unit, onResult: (L
         viewModel.initialize(tasks)
     }
 
-    val subTasks by viewModel.prioritySubTasksItems.collectAsState()
+    val subTasks by viewModel.prioritySubTasksItems.collectAsStateWithLifecycle()
 
     val modalSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
@@ -53,9 +54,9 @@ fun PriorityBottomSheet(tasks: List<SubTask>, onCancel: () -> Unit, onResult: (L
     BottomSheetUI(
         modalSheetState = modalSheetState,
         onDone = {
-            onResult(subTasks)
             coroutineScope.launch {
                 modalSheetState.hide()
+                onResult(subTasks)
             }
         },
         onCancel = {

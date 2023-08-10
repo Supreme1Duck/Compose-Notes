@@ -8,7 +8,7 @@ object Versions {
     const val coroutinesVersion = "1.5.2"
     const val dataStoreVersion = "1.1.0-dev01"
     const val viewModelVersion = "2.5.1"
-    const val materialVersion = "1.0.1"
+    const val materialVersion = "1.1.1"
     const val hiltVersion = "2.46.1"
     const val timberVersion = "4.7.1"
     const val coreVersion = "1.7.0"

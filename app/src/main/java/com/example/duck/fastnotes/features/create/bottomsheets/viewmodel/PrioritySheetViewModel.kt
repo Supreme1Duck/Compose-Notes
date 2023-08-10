@@ -5,7 +5,7 @@ import com.example.duck.fastnotes.domain.data.SubTask
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class PrioritySheetViewModel(): ViewModel() {
+class PrioritySheetViewModel: ViewModel() {
 
     private val _prioritySubTasksItems = MutableStateFlow(mutableListOf<SubTask>())
     val prioritySubTasksItems = _prioritySubTasksItems.asStateFlow()

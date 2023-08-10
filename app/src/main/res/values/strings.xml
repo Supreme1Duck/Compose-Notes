@@ -68,7 +68,23 @@
     <string name="create_screen_hint_body">Text</string>
     <string name="create_screen_add_subtasks">Add subtasks!</string>
     <string name="create_screen_info_subtasks">But, You can leave it empty…</string>
-    <string name="create_screen_subtasks_count">%s tasks</string>
+    <string name="create_screen_every_day_time_info">%s : %s</string>
+    <string name="create_screen_every_day_sheet_title">Select dates and time</string>
+    <string name="create_screen_every_day_sheet_description">Long click on day item to uncheck</string>
+
+    <string name="create_screen_info_monday">Monday</string>
+    <string name="create_screen_info_tuesday">Tuesday</string>
+    <string name="create_screen_info_wednesday">Wednesday</string>
+    <string name="create_screen_info_thursday">Thursday</string>
+    <string name="create_screen_info_friday">Friday</string>
+    <string name="create_screen_info_saturday">Saturday</string>
+    <string name="create_screen_info_sunday">Sunday</string>
+    <string name="create_screen_info_undefined">Empty</string>
+
+    <plurals name="create_screen_subtasks_count">
+        <item quantity="one">%d task</item>
+        <item quantity="other">%d tasks</item>
+    </plurals>
 
     <string name="personal_screen_bin">Icon info</string>
     <string name="personal_screen_title">Got you!</string>
