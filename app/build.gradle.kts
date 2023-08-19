@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     id("com.android.application")
     kotlin("android")
@@ -135,6 +137,9 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-dynamic-links-ktx")
+
+    implementation("com.maxkeppeler.sheets-compose-dialogs:core:1.2.0")
+    implementation("com.maxkeppeler.sheets-compose-dialogs:clock:1.2.0")
 
     implementation(Dependencies.timber)
 

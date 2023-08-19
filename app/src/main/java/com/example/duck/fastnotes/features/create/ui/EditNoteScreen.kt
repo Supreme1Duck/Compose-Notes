@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.example.duck.fastnotes.features.create.ui
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,6 +17,7 @@ import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -26,6 +30,7 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -36,6 +41,8 @@ import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.duck.fastnotes.R
+import com.example.duck.fastnotes.domain.data.NoteTime
+import com.example.duck.fastnotes.features.create.bottomsheets.ui.EveryDayBottomSheet
 import com.example.duck.fastnotes.features.create.bottomsheets.ui.PriorityBottomSheet
 import com.example.duck.fastnotes.features.create.data.BasicTypes.getBasicNotes
 import com.example.duck.fastnotes.features.create.data.NoteType
@@ -46,6 +53,7 @@ import com.example.duck.fastnotes.utils.Dimens
 import com.example.duck.fastnotes.utils.ViewUtils.noRippleClickable
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 
 @Preview
@@ -166,8 +174,9 @@ fun EditNoteScreen(
                         .noRippleClickable {
                             viewModel.onSubTasksClicked()
                         },
-                    text = stringResource(
-                        id = R.string.create_screen_subtasks_count,
+                    text = pluralStringResource(
+                        id = R.plurals.create_screen_subtasks_count,
+                        count = it.subTasks.size,
                         it.subTasks.size
                     ),
                     textAlign = TextAlign.Center
@@ -176,15 +185,33 @@ fun EditNoteScreen(
         }
     }
 
-    if (uiState.type is NoteType.Priority && !uiState.isSubInfoShown) {
-        PriorityBottomSheet(
-            tasks = (uiState.type as NoteType.Priority).subTasks ?: emptyList(),
-            onCancel = {
-                viewModel.onBottomSheetCancel()
+    if (!uiState.isSubInfoShown) {
+        Log.d("DDebug", "UIState shown ${!uiState.isSubInfoShown}")
+        when (uiState.type) {
+            is NoteType.EveryDay -> {
+                EveryDayBottomSheet(
+                    noteTime = (uiState.type as NoteType.EveryDay).noteTime ?: NoteTime(emptyMap(), null),
+                    onCancel = viewModel::onBottomSheetCancel,
+                ) {
+                    viewModel.onNoteTimeChanged()
+                }
             }
-        ) {
-            viewModel.onPrioritySubtasksChanged(it)
+            is NoteType.Priority -> {
+                PriorityBottomSheet(
+                    tasks = (uiState.type as NoteType.Priority).subTasks ?: emptyList(),
+                    onCancel = {
+                        viewModel.onBottomSheetCancel()
+                    }
+                ) {
+                    viewModel.onPrioritySubtasksChanged(it)
+                }
+            }
+            else -> {
+                Timber.tag("EditNoteScreen").e("Unused note type!")
+            }
         }
+    } else {
+        Log.d("DDebug", "UIState shown ${!uiState.isSubInfoShown}")
     }
 }
 

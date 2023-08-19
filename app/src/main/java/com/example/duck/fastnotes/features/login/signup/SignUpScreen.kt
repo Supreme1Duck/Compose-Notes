@@ -24,6 +24,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.duck.fastnotes.R
 import com.example.duck.fastnotes.features.login.signup.ValidationUtils.PasswordValidationResult
 import com.example.duck.fastnotes.features.login.welcome.ImageLogo
@@ -38,7 +39,7 @@ fun SignUpScreen(
 ) {
     val viewModel = hiltViewModel<SignUpViewModel>()
 
-    val uiState by viewModel.state.collectAsState()
+    val uiState by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(key1 = Unit) {
         launch {

@@ -6,7 +6,7 @@ import java.io.Serializable
 object BasicTypes {
 
     fun getBasicNotes() = listOf(
-        NoteType.EveryDay,
+        NoteType.EveryDay(),
         NoteType.Priority(),
         NoteType.OneTime,
         NoteType.Soon
